@@ -1,5 +1,5 @@
 body {
-    font: 20px Montserrat, sans-serif;
+    font: 10px Montserrat, sans-serif;
     line-height: 1.8;
     color: #f5f6f7;
 }
@@ -7,11 +7,11 @@ p {font-size: 16px;}
 .margin {margin-bottom: 45px;}
 .bg-1 {
     background-color: #1abc9c; /* Green */
-    color: #ffffff;
+    color: #000000;
 }
 .bg-2 {
     background-color: #474e5d; /* Dark Blue */
-    color: #ffffff;
+    color: #ecece6;
 }
 .bg-3 {
     background-color: #ffffff; /* White */

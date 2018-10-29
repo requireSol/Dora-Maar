@@ -34,7 +34,7 @@ class BaseTable extends HTMLDivElement {
 .row.header {
     font-weight: 900;
     color: #ffffff;
-    background: #ea6153;
+    background: #000000;
 }
 
 .cell {
