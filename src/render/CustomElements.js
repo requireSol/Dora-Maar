@@ -23,7 +23,7 @@ class OrderBookView extends ObserverBaseElement {
         this.table.setTitle(title);
         const round3 = (x) => round(x, 3);
         this.table.setColumnModifier([round3, round3, round3, null]);
-        this.table.setColumnOrder([0,1,2,3]);
+        this.table.setColumnOrder([0, 1, 2, 3]);
 
         this.notificationBox = document.createElement("div", {is: "notification-box"});
 
@@ -88,6 +88,7 @@ class TradesView extends ObserverBaseElement {
         const soldOrBoughtOrBoth = this.getAttribute("data-soldOrBoughtOrBoth");
         return new TradesRequest(currencyPair, recordCount, soldOrBoughtOrBoth, recordCount);
     }
+
     update(data, metadata) {
         this.table.fillTable(data, metadata);
     }
@@ -246,11 +247,12 @@ class NotificationBox extends HTMLDivElement {
         }
     }
 
-    addNewNotification(level, title, message = "") {
+    addNewNotification(level, title, message = "", timeout = "-1") {
         const notification = document.createElement("div", {is: "notification-msg"});
         notification.setAttribute("data-level", level);
         notification.setAttribute("data-title", title);
         notification.setAttribute("data-message", message);
+        notification.setAttribute("data-timeout", timeout);
         this.appendChild(notification);
     }
 }
@@ -260,19 +262,22 @@ class NotificationMessage extends HTMLDivElement {
         super();
         //const shadow = this.attachShadow({mode: "open"});
         this.isShadowDOMInitialized = false;
-
+        this.closeTimeout = null;
     }
 
     connectedCallback() {
+        const notification = this;
         if (!this.isShadowDOMInitialized) {
-            const notification = this;
             notification.classList.add("notification");
             notification.classList.add(this.getLevel());
 
             this.closeButton = document.createElement("span");
             this.closeButton.classList.add("close-button");
             this.closeButton.onclick = function () {
-                notification.style.display = "none";
+                console.log(notification.parentElement);
+                clearTimeout(notification.closeTimeout);
+                if (notification.style.display !== "none")
+                    notification.style.display = "none";
                 notification.remove();
             };
             this.closeButton.innerHTML = "&times";
@@ -296,6 +301,12 @@ class NotificationMessage extends HTMLDivElement {
             this.notificationTitle.textContent = this.getTitle();
 
             this.notificationBody.textContent = this.getMessage();
+        }
+        const timeout = this.getTimeout();
+        if (timeout >= 0) {
+            this.closeTimeout = setTimeout(function () {
+                notification.closeButton.onclick(null);
+            }, timeout);
         }
 
     }
@@ -323,6 +334,14 @@ class NotificationMessage extends HTMLDivElement {
             message = "Unknown Error";
         }
         return message;
+    }
+
+    getTimeout() {
+        let timeout = parseInt(this.getAttribute("data-timeout"));
+        if (isNaN(timeout)) {
+            timeout = -1;
+        }
+        return timeout;
     }
 
 
