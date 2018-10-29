@@ -6,13 +6,6 @@ body {
     background: #0c0180;
 }
 
-
-.wrapper {
-    float: left;
-    position: relative;
-}
-
-
 @keyframes example {
     from {
         background-color: yellow;
