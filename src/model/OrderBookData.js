@@ -1,4 +1,4 @@
-class OrderBookData {
+export class OrderBookData {
     /**
      * the order book's data structure
      * [

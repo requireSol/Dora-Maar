@@ -1,4 +1,4 @@
-class BaseTable extends HTMLDivElement {
+export class BaseTable extends HTMLDivElement {
     constructor() {
         super();
     }

@@ -1,4 +1,6 @@
-class SubDescriptorQueue {
+import {_requestEqualsRequest, responseMatchesRequest} from "../../core/SubscriptionManager.js";
+
+export class SubDescriptorQueue {
     constructor() {
         this.sourcePositionMapping = new Map();
         this.queue = [];
@@ -68,7 +70,7 @@ class SubDescriptorQueue {
         let matchingSubDescriptors = [];
         for (let i = this.queue.length - 1; i >= 0; i--) {
             const subDesc = this.queue[i];
-            if (subscriptionManager.responseMatchesRequest(response, subDesc.apiRequest)) {
+            if (responseMatchesRequest(response, subDesc.apiRequest)) {
                 matchingSubDescriptors.push(subDesc);
                 this.sourcePositionMapping.delete(subDesc.observer);
                 this.queue.splice(i, 1);
@@ -84,7 +86,7 @@ class SubDescriptorQueue {
      */
     isAlreadyInQueue(subDesc) {
         for (const queuedSubDesc of this.queue) {
-            if (subscriptionManager._requestEqualsRequest(queuedSubDesc.apiRequest, subDesc.apiRequest)) {
+            if (_requestEqualsRequest(queuedSubDesc.apiRequest, subDesc.apiRequest)) {
                 return true;
             }
         }
@@ -96,7 +98,7 @@ class SubDescriptorQueue {
 /**
  * An Object to describe a subscription.
  */
-class SubscriptionDescriptor {
+export class SubscriptionDescriptor {
     /**
      * Creates a SubscriptionDescriptor
      * @param {Observer|ObserverBaseElement} observer the origin of the request

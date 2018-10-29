@@ -1,4 +1,4 @@
-class CandlesData {
+export class CandlesData {
     constructor(snapshotData) {
         this.candles = snapshotData.slice(0, this.maxLength);
         this.maxLength = 60;
