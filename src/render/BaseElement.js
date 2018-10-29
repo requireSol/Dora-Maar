@@ -33,12 +33,11 @@ class ObserverBaseElement extends HTMLElement {
     connectedCallback() {
         const style = document.createElement("style");
         style.innerText = `
-     .wrapper {
+     :host {
     float: left;
     position: relative;
 }`;
         this.shadow.appendChild(style);
-        this.classList.add("wrapper");
     }
 
     info() {
