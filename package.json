@@ -1,0 +1,11 @@
+{
+  "requires": true,
+  "lockfileVersion": 1,
+  "dependencies": {
+    "jparticles": {
+      "version": "2.0.1",
+      "resolved": "https://registry.npmjs.org/jparticles/-/jparticles-2.0.1.tgz",
+      "integrity": "sha1-5aPPDtsbHCBGYs6te8UEPuGGtWc="
+    }
+  }
+}
