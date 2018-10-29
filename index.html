@@ -9,6 +9,32 @@
     <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!-- Import all effects -->
+     <script src="node_modules/jparticles/production/jparticles.all.js"></script>
+    <link rel="stylesheet" type="text/css" href="table.css" media="screen" />
+    <script src="src/model/CandlesData.js"></script>
+    <script src="src/model/TradesData.js"></script>
+    <script src="src/model/TickerData.js"></script>
+    <script src="src/model/OrderBookData.js"></script>
+    <script src="src/model/requests.js"></script>
+    <script src="src/core/DataHandler.js"></script>
+    <script src="src/core/ObserverHandler.js"></script>
+    <script src="src/core/ErrorAndInfoHandler.js"></script>
+    <script src="src/core/MessageHandler.js"></script>
+    <script src="src/common/collections/SubDescriptorQueue.js"></script>
+    <script src="src/core/SubscriptionManager.js"></script>
+    <script src="src/core/Connector.js"></script>
+    <script src="src/core/TimerAndActions.js"></script>
+    <script src="src/render/BaseElement.js"></script>
+    <script src="src/render/BaseTable.js"></script>
+    <script src="src/render/CustomTables.js"></script>
+    <script src="src/common/utils/MathUtils.js"></script>
+    <script src="src/common/utils/DateUtils.js"></script>
+    <script src="src/render/CustomElements.js"></script>
+    <script src="src/main.js"></script>
+    <script src="src/render/ElementRegistry.js"></script>
+    <!--<script src="element_table.js"></script>-->
+
     <style>
         body {
             font: 20px Montserrat, sans-serif;
@@ -56,6 +82,7 @@
 <!-- Navbar -->
 <nav class="navbar navbar-default navbar-inverse">
     <div class="container">
+
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
                 <span class="icon-bar"></span>
@@ -76,8 +103,10 @@
 
 <!-- First Container -->
 <div class="container-fluid bg-1 text-center">
+
     <h3 class="margin">Who We Are?</h3>
     <img src="images/code-670x335.jpg" class="img-responsive img-circle margin" style="display:inline" alt="Bird" width="350" height="350">
+
         <h3>We are two Students with passion<br></h3>
 </div>
 
@@ -94,7 +123,7 @@
 <div class="container-fluid bg-3 text-center">
     <h3 class="margin">Project</h3><br>
     <div class="row">
-        <h3>Project</h3>
+        <order-book-view data-askOrBid="ask" data-count="20" data-pair="XMRBTC"></order-book-view>
     </div>
 </div>
 
