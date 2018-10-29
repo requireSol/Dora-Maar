@@ -1,11 +1,11 @@
 class OrderBookRequest {
     /**
-     * Object to request order book data
-     * @param precision
-     * @param recordCount
-     * @param askOrBid
-     * @param currencyPair
-     * @param updateRate
+     * Object to request order book data.
+     * @param precision the precision of the price
+     * @param recordCount number of entries, maximum number is 90
+     * @param askOrBid the order book's type, ask or bid
+     * @param currencyPair the order book's currency pair
+     * @param updateRate the update frequency, real time or every two seconds
      * @constructor
      */
     constructor(precision, recordCount, askOrBid, currencyPair, updateRate) {
@@ -19,10 +19,10 @@ class OrderBookRequest {
 
 class TickerRequest {
     /**
-     * Object to request ticker data
-     * @param currencyPair
-     * @param recordCount
-     * @param initialRecordCount
+     * Object to request ticker data.
+     * @param currencyPair the ticker's currency pair
+     * @param recordCount the maximum number of records
+     * @param initialRecordCount the maximum number of records of the first update
      * @constructor
      */
     constructor(currencyPair, recordCount, initialRecordCount) {
@@ -34,11 +34,11 @@ class TickerRequest {
 
 class TradesRequest {
     /**
-     * Object to request trades data
-     * @param currencyPair
-     * @param recordCount
-     * @param soldOrBoughtOrBoth
-     * @param initialRecordCount
+     * Object to request trades data.
+     * @param currencyPair the trades' currency pair
+     * @param recordCount the maximum number of records
+     * @param soldOrBoughtOrBoth the type of entries, only sold, only bought or sold and both records
+     * @param initialRecordCount the maximum number of records of the first update
      * @constructor
      */
     constructor(currencyPair, recordCount, soldOrBoughtOrBoth, initialRecordCount) {
@@ -51,11 +51,11 @@ class TradesRequest {
 
 class CandlesRequest {
     /**
-     * Object to request candles data
-     * @param currencyPair
-     * @param timeFrame
-     * @param recordCount
-     * @param initialRecordCount
+     * Object to request candles data.
+     * @param currencyPair the candles' currency pair
+     * @param timeFrame the time interval between two data points
+     * @param recordCount the number of data points
+     * @param initialRecordCount the number of data points of the first update
      * @constructor
      */
     constructor(currencyPair, timeFrame, recordCount, initialRecordCount) {
