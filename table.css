@@ -1,0 +1,29 @@
+body {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: #3b3b3b;
+    background: #0c0180;
+}
+
+
+.wrapper {
+    float: left;
+    position: relative;
+}
+
+
+@keyframes example {
+    from {
+        background-color: yellow;
+    }
+    to {
+        opacity: 100;
+    }
+}
+
+.change {
+    animation-name: example;
+    animation-duration: 1s;
+
+}
