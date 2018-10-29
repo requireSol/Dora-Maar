@@ -49,7 +49,7 @@ let ObserverHandler = {
         this.observer.set(chanId, obs);
 
         const dataObject = DataHandler.dataObjects.get(chanId);
-        this.informObserver({"level": "success", "title": "data is available"});
+        this.informObserver({"level": "success", "title": "data is available"}, [subDesc]);
         this.updateOneObserver(subDesc, dataObject);
     },
 
@@ -238,7 +238,7 @@ let ObserverHandler = {
     /**
      * Sends a message to the observers of a channel.
      * @param {Object} message the message to send
-     * @param {Number} chanIdOrListOfSubDesc the channel id for channel specific observers or null for all observers
+     * @param {Number|Array} chanIdOrListOfSubDesc the channel id for channel specific observers or null for all observers
      */
     informObserver: function (message, chanIdOrListOfSubDesc = null) {
         if (chanIdOrListOfSubDesc instanceof Number) {
