@@ -1,4 +1,11 @@
-class OrderBookView extends ObserverBaseElement {
+import {ObserverBaseElement} from "./BaseElement.js";
+import {OrderBookRequest, TickerRequest, TradesRequest} from "../model/requests.js";
+import {OrderBookData} from "../model/OrderBookData.js";
+import {TradesData} from "../model/TradesData.js";
+import {TickerData} from "../model/TickerData.js";
+import {round} from "../common/utils/MathUtils.js";
+
+export class OrderBookView extends ObserverBaseElement {
     static get observedAttributes() {
         return ["data-count", "data-pair", "data-askOrBid"];
     }
@@ -51,7 +58,7 @@ class OrderBookView extends ObserverBaseElement {
     }
 }
 
-class TradesView extends ObserverBaseElement {
+export class TradesView extends ObserverBaseElement {
     static get observedAttributes() {
         return ["data-count", "data-pair", "data-soldOrBoughtOrBoth"];
     }
@@ -98,7 +105,7 @@ class TradesView extends ObserverBaseElement {
     }
 }
 
-class TickerView extends ObserverBaseElement {
+export class TickerView extends ObserverBaseElement {
     /*static get observedAttributes() {
         return ["data-count", "data-pair"];
     }*/
@@ -164,7 +171,7 @@ class TickerView extends ObserverBaseElement {
     }*/
 }
 
-class NotificationBox extends HTMLDivElement {
+export class NotificationBox extends HTMLDivElement {
     constructor() {
         super();
         this.isInitialized = false;
@@ -257,7 +264,7 @@ class NotificationBox extends HTMLDivElement {
     }
 }
 
-class NotificationMessage extends HTMLDivElement {
+export class NotificationMessage extends HTMLDivElement {
     constructor() {
         super();
         //const shadow = this.attachShadow({mode: "open"});

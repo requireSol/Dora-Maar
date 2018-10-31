@@ -1,4 +1,4 @@
-class TickerData {
+export class TickerData {
     /**
      * the ticker data structure
      * @param snapshotData

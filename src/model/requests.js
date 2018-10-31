@@ -1,4 +1,4 @@
-class OrderBookRequest {
+export class OrderBookRequest {
     /**
      * Object to request order book data.
      * @param precision the precision of the price
@@ -17,7 +17,7 @@ class OrderBookRequest {
     }
 }
 
-class TickerRequest {
+export class TickerRequest {
     /**
      * Object to request ticker data.
      * @param currencyPair the ticker's currency pair
@@ -32,7 +32,7 @@ class TickerRequest {
     }
 }
 
-class TradesRequest {
+export class TradesRequest {
     /**
      * Object to request trades data.
      * @param currencyPair the trades' currency pair
@@ -49,7 +49,7 @@ class TradesRequest {
     }
 }
 
-class CandlesRequest {
+export class CandlesRequest {
     /**
      * Object to request candles data.
      * @param currencyPair the candles' currency pair

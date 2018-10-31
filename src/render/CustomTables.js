@@ -1,4 +1,6 @@
-class OrderBookTable extends BaseTable {
+import {BaseTable} from "./BaseTable.js";
+
+export class OrderBookTable extends BaseTable {
     constructor() {
         super();
     }
@@ -12,7 +14,7 @@ class OrderBookTable extends BaseTable {
 }
 
 
-class TradesTable extends BaseTable {
+export class TradesTable extends BaseTable {
     constructor(size, columnNames, parentNode, title) {
         super(size, columnNames, parentNode, title);
     }
@@ -25,7 +27,7 @@ class TradesTable extends BaseTable {
 }
 
 
-class TickerTable extends BaseTable {
+export class TickerTable extends BaseTable {
     constructor(size, columnNames, parentNode, title) {
         super(size, columnNames, parentNode, title);
     }

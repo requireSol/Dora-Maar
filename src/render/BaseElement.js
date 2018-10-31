@@ -1,4 +1,6 @@
-class Observer {
+import {requestData, stopDataRequest} from "../core/ObserverHandler.js";
+
+export class Observer {
     constructor() {
         this.clientRequest = null;
     }
@@ -12,18 +14,18 @@ class Observer {
     }
 
     subscribeToData(clientRequest) {
-        ObserverHandler.requestData(this, clientRequest);
+        requestData(this, clientRequest);
         this.clientRequest = clientRequest;
     }
 
     unsubscribeFromData() {
-        ObserverHandler.stopDataRequest(this);
+        stopDataRequest(this);
     }
 }
 
 
 
-class ObserverBaseElement extends HTMLElement {
+export class ObserverBaseElement extends HTMLElement {
     constructor() {
         super();
         this.shadow = this.attachShadow({mode: "open"});
@@ -49,11 +51,11 @@ class ObserverBaseElement extends HTMLElement {
     }
 
     subscribeToData(clientRequest) {
-        ObserverHandler.requestData(this, clientRequest);
+        requestData(this, clientRequest);
         this.clientRequest = clientRequest;
     }
 
     unsubscribeFromData() {
-        ObserverHandler.stopDataRequest(this);
+        stopDataRequest(this);
     }
 }

@@ -1,4 +1,4 @@
-class TradesData {
+export class TradesData {
     /**
      * the trades data structure
      * [
