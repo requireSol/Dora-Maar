@@ -22,6 +22,13 @@ export class OrderBookView extends ObserverBaseElement {
 
     connectedCallback() {
         super.connectedCallback();
+        //temp for testing
+
+        const btn = document.createElement("button");
+
+        btn.innerText = "create notification";
+        this.shadow.appendChild(btn);
+
         const request = this.createRequestFromAttributes();
         const title = "ORDERBOOK - " + request.askOrBid.toUpperCase() + " - " + request.currencyPair;
         this.table = document.createElement("div", {is: "order-book-table"});
@@ -33,7 +40,10 @@ export class OrderBookView extends ObserverBaseElement {
         this.table.setColumnOrder([0, 1, 2, 3]);
 
         this.notificationBox = document.createElement("div", {is: "notification-box"});
-
+        const box = this.notificationBox;
+        btn.onclick = function() {
+            box.addNotification("warn", "title", "message");
+        };
 
         this.shadow.appendChild(this.table);
         this.shadow.appendChild(this.notificationBox);
@@ -54,7 +64,7 @@ export class OrderBookView extends ObserverBaseElement {
     }
 
     info(message) {
-        this.notificationBox.addNewNotification(message["level"], message["title"], message["msg"]);
+        this.notificationBox.addNotification(message["level"], message["title"], message["msg"]);
     }
 }
 
@@ -101,7 +111,7 @@ export class TradesView extends ObserverBaseElement {
     }
 
     info(message) {
-        this.notificationBox.addNewNotification(message["level"], message["title"], message["msg"]);
+        this.notificationBox.addNotification(message["level"], message["title"], message["msg"]);
     }
 }
 
@@ -149,7 +159,7 @@ export class TickerView extends ObserverBaseElement {
     }
 
     info(message) {
-        this.notificationBox.addNewNotification(message["level"], message["title"], message["msg"]);
+        this.notificationBox.addNotification(message["level"], message["title"], message["msg"]);
     }
 
     /*attributeChangedCallback(name, oldValue, newValue) {
@@ -175,6 +185,8 @@ export class NotificationBox extends HTMLDivElement {
     constructor() {
         super();
         this.isInitialized = false;
+        this.replaceableMessages = [];
+        this.allMessages = [];
     }
 
     connectedCallback() {
@@ -254,13 +266,61 @@ export class NotificationBox extends HTMLDivElement {
         }
     }
 
-    addNewNotification(level, title, message = "", timeout = "-1") {
+    addNotification(level, title, message = "", timeout = "15000") {
         const notification = document.createElement("div", {is: "notification-msg"});
         notification.setAttribute("data-level", level);
         notification.setAttribute("data-title", title);
         notification.setAttribute("data-message", message);
-        notification.setAttribute("data-timeout", timeout);
+        notification.setAttribute("data-timeout", "7500");
+        notification.setAttribute("data-isVolatile", "true");
+        notification.setAttribute("data-isReplaceable", "true");
+        notification.setAttribute("data-minimumTimeout", "5000");
+
+        if (this.allMessages.length === this.getMaxCount()) {
+            this.closeOldestMessage();
+        }
+        for (const message of this.allMessages) {
+            message.isReplaceRequested = true;
+        }
+
+        this.allMessages.push(notification);
         this.appendChild(notification);
+    }
+
+    closeReplaceableMessages() {
+        for (let i = this.replaceableMessages.length - 1; i >= 0; i--) {
+            this.replaceableMessages[i].closeButton.onclick(null);
+        }
+    }
+    removeMessage(notification) {
+        for (let i = this.allMessages.length - 1; i >= 0; i--) {
+            if (i < this.replaceableMessages && this.replaceableMessages[i] === notification) {
+                this.replaceableMessages.splice(i, 1);
+                break;
+            }
+            if (this.allMessages[i] === notification) {
+                this.allMessages.splice(i, 1);
+                break;
+            }
+        }
+    }
+
+    closeOldestMessage() {
+        const oldestMessage = this.allMessages.shift();
+        oldestMessage.closeButton.onclick(null);
+    }
+    markMessageAsReplaceable(notification) {
+        if (notification.isConnected) {
+            this.replaceableMessages.push(notification);
+        }
+    }
+
+    getMaxCount() {
+        let maxCount = parseInt(this.getAttribute("data-maxCount"));
+        if (isNaN(maxCount)) {
+            maxCount = 4;
+        }
+        return maxCount;
     }
 }
 
@@ -270,86 +330,148 @@ export class NotificationMessage extends HTMLDivElement {
         //const shadow = this.attachShadow({mode: "open"});
         this.isShadowDOMInitialized = false;
         this.closeTimeout = null;
+        this.closeMinimumTimeout = null;
+        this.isReplaceRequested = false;
+    }
+
+    applyAttributes() {
+        // update level
+        this.classList.remove("success", "info", "warn", "error");
+        this.classList.add(this.getLevel());
+        // update title
+        this.notificationTitle.textContent = this.getTitle();
+        // update message
+        this.notificationBody.textContent = this.getMessage();
+    }
+
+    applyTimeouts() {
+        clearTimeout(this.closeMinimumTimeout);
+        clearTimeout(this.closeTimeout);
+
+        const notification = this;
+        const parent = this.parentElement;
+
+        if (this.isVolatile()) {
+            const timeout = this.getTimeout();
+            if (timeout >= 0) {
+                this.closeTimeout = setTimeout(function () {
+                    notification.closeButton.onclick(null);
+                }, timeout);
+            }
+        }
+        if (this.isReplaceable()) {
+            const minimumTimeout = this.getMinimumTimeout();
+            if (minimumTimeout >= 0) {
+                this.closeMinimumTimeout = setTimeout(function () {
+                    if (this.isReplaceRequested) {
+                        notification.closeButton.onclick(null);
+                    } else {
+                        parent.markMessageAsReplaceable(this);
+                    }
+                }, minimumTimeout);
+            } else {
+                parent.markMessageAsReplaceable(this);
+            }
+        }
     }
 
     connectedCallback() {
         const notification = this;
-        if (!this.isShadowDOMInitialized) {
-            notification.classList.add("notification");
-            notification.classList.add(this.getLevel());
+        const parent = this.parentElement;
 
+        if (!this.isShadowDOMInitialized) {
+            this.classList.add("notification");
+
+            // build close button
             this.closeButton = document.createElement("span");
             this.closeButton.classList.add("close-button");
             this.closeButton.onclick = function () {
-                console.log(notification.parentElement);
+                if (!notification.isConnected) {
+                    return;
+                }
+
+                clearTimeout(notification.closeMinimumTimeout);
                 clearTimeout(notification.closeTimeout);
-                if (notification.style.display !== "none")
-                    notification.style.display = "none";
+                notification.closeTimeout = null;
+                notification.closeMinimumTimeout = null;
+
+                parent.removeMessage(this);
                 notification.remove();
             };
             this.closeButton.innerHTML = "&times";
             this.appendChild(this.closeButton);
-
+            // build title
             this.notificationTitle = document.createElement("p");
             this.notificationTitle.classList.add("notification-title");
-            this.notificationTitle.textContent = this.getTitle();
             this.appendChild(this.notificationTitle);
-
+            // build body
             this.notificationBody = document.createElement("p");
             this.notificationBody.classList.add("notification-text");
-            this.notificationBody.textContent = this.getMessage();
             this.appendChild(this.notificationBody);
 
             this.isShadowDOMInitialized = true;
-        } else {
-            this.classList.remove("success", "info", "warn", "error");
-            this.classList.add(this.getLevel());
-
-            this.notificationTitle.textContent = this.getTitle();
-
-            this.notificationBody.textContent = this.getMessage();
         }
-        const timeout = this.getTimeout();
-        if (timeout >= 0) {
-            this.closeTimeout = setTimeout(function () {
-                notification.closeButton.onclick(null);
-            }, timeout);
-        }
+        this.applyAttributes();
 
+        parent.closeReplaceableMessages();
+
+        this.applyTimeouts();
     }
 
     getLevel() {
         let level = this.getAttribute("data-level");
-
-        if (!this.hasAttribute("data-level") || !level in ["success", "info", "warn", "error"]) {
+        if (!["success", "info", "warn", "error"].includes(level)) {
             level = "error";
         }
         return level;
     }
 
     getTitle() {
-        let title = this.getAttribute("data-title");
-        if (!this.hasAttribute("data-title")) {
-            title = "Unknown";
+        let title = "Unknown";
+        if (this.hasAttribute("data-title")) {
+            title = this.getAttribute("data-title");
         }
         return title;
     }
 
     getMessage() {
-        let message = this.getAttribute("data-message");
-        if (!this.hasAttribute("data-title")) {
-            message = "Unknown Error";
+        let message = "Unknown Error";
+        if (this.hasAttribute("data-title")) {
+            message = this.getAttribute("data-message");
         }
         return message;
     }
 
     getTimeout() {
         let timeout = parseInt(this.getAttribute("data-timeout"));
-        if (isNaN(timeout)) {
-            timeout = -1;
+        let minimumTimeout = parseInt(this.getAttribute("data-minimumTimeout"));
+
+        if (!isNaN(minimumTimeout) && !isNaN(timeout)) {
+            return Math.max(minimumTimeout, timeout);
         }
-        return timeout;
+        if (isNaN(timeout)) {
+            return -1;
+        } else {
+            return timeout;
+        }
     }
 
+    isVolatile() {
+        let isVolatile = this.getAttribute("data-isVolatile");
+        return isVolatile !== "false";
+    }
+
+    getMinimumTimeout() {
+        let minimumTimeout = parseInt(this.getAttribute("data-minimumTimeout"));
+        if (isNaN(minimumTimeout)) {
+            minimumTimeout = 5000;
+        }
+        return minimumTimeout;
+    }
+
+    isReplaceable() {
+        let isReplaceable = this.getAttribute("data-isReplaceable");
+        return isReplaceable !== "false";
+    }
 
 }
