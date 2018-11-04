@@ -22,13 +22,6 @@ export class OrderBookView extends ObserverBaseElement {
 
     connectedCallback() {
         super.connectedCallback();
-        //temp for testing
-
-        const btn = document.createElement("button");
-
-        btn.innerText = "create notification";
-        this.shadow.appendChild(btn);
-
         const request = this.createRequestFromAttributes();
         const title = "ORDERBOOK - " + request.askOrBid.toUpperCase() + " - " + request.currencyPair;
         this.table = document.createElement("div", {is: "order-book-table"});
@@ -40,10 +33,6 @@ export class OrderBookView extends ObserverBaseElement {
         this.table.setColumnOrder([0, 1, 2, 3]);
 
         this.notificationBox = document.createElement("div", {is: "notification-box"});
-        const box = this.notificationBox;
-        btn.onclick = function() {
-            box.addNotification("warn", "title", "message");
-        };
 
         this.shadow.appendChild(this.table);
         this.shadow.appendChild(this.notificationBox);
@@ -266,15 +255,15 @@ export class NotificationBox extends HTMLDivElement {
         }
     }
 
-    addNotification(level, title, message = "", timeout = "15000") {
+    addNotification(level, title, message = "", isVolatile = true, timeout = 15000, isReplaceable = true, minimumTimeout = 5000) {
         const notification = document.createElement("div", {is: "notification-msg"});
         notification.setAttribute("data-level", level);
         notification.setAttribute("data-title", title);
         notification.setAttribute("data-message", message);
-        notification.setAttribute("data-timeout", "7500");
-        notification.setAttribute("data-isVolatile", "true");
-        notification.setAttribute("data-isReplaceable", "true");
-        notification.setAttribute("data-minimumTimeout", "5000");
+        notification.setAttribute("data-timeout", "" + timeout);
+        notification.setAttribute("data-isVolatile", "" + isVolatile);
+        notification.setAttribute("data-isReplaceable", "" + isReplaceable);
+        notification.setAttribute("data-minimumTimeout", "" + minimumTimeout);
 
         if (this.allMessages.length === this.getMaxCount()) {
             this.closeOldestMessage();
