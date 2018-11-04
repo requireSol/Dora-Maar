@@ -2,9 +2,52 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6343c043-f453-4991-ad06-a60296eca515" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/app.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/jparticles/.eslintignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/jparticles/.eslintrc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/jparticles/CHANGELOG.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/jparticles/CHANGELOG_en.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/jparticles/LICENSE" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/jparticles/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/jparticles/bin/gulp-wrap.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/jparticles/bin/gulpfile.build.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/jparticles/bin/gulpfile.dev.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/jparticles/dev/jparticles.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/jparticles/dev/particle.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/jparticles/dev/snow.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/jparticles/dev/wave.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/jparticles/dev/wave_loading.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/jparticles/docs/compatibility_table.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/jparticles/docs/development_flow.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/jparticles/package.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/jparticles/production/jparticles.all.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/jparticles/production/jparticles.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/jparticles/production/particle.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/jparticles/production/snow.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/jparticles/production/wave.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/jparticles/production/wave_loading.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/jparticles/samples/1_old_browser.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/jparticles/samples/2_amd.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/jparticles/samples/3_use_all.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/jparticles/samples/4_rebuild_performance_test.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/jparticles/samples/css/style.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/jparticles/samples/img/merry_christmas.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/jparticles/samples/js/event.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/jparticles/samples/js/require.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/jparticles/samples/lowpoly.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/jparticles/samples/meteor.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/jparticles/samples/particle.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/jparticles/samples/particle_parallax.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/jparticles/samples/particle_parallax_orientation.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/jparticles/samples/snow.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/jparticles/samples/wave.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/jparticles/samples/waveLoading.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/jparticles/samples/waveLoading_page.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/jparticles/samples/wave_resize.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/jparticles/samples/wave_setOptions.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/jparticles/test/helpers/dom.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/jparticles/test/jparticles.spec.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -62,22 +105,26 @@
         <counts>
           <entry key="html" value="1" />
           <entry key="js" value="1" />
+          <entry key="json" value="2" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
           <entry key="HTML" value="1" />
+          <entry key="JSON" value="2" />
           <entry key="JavaScript" value="1" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="html" value="38" />
+          <entry key="json" value="1" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="HTML" value="38" />
+          <entry key="JSON" value="1" />
         </counts>
       </usages-collector>
     </session>
@@ -85,10 +132,19 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/package.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="30">
+              <caret line="2" selection-end-line="2" selection-end-column="1" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="175">
-              <caret line="87" column="6" selection-start-line="87" selection-start-column="6" selection-end-line="87" selection-end-column="6" />
+            <state relative-caret-position="145">
+              <caret line="85" selection-start-line="85" selection-end-line="85" />
               <folding>
                 <element signature="n#style#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
               </folding>
@@ -131,6 +187,7 @@
         <option value="$PROJECT_DIR$/css/table.css" />
         <option value="$PROJECT_DIR$/app.js" />
         <option value="$PROJECT_DIR$/index.html" />
+        <option value="$PROJECT_DIR$/package.json" />
       </list>
     </option>
   </component>
@@ -211,12 +268,12 @@
       <updated>1540830859934</updated>
       <workItem from="1540830861093" duration="1322000" />
       <workItem from="1540832970122" duration="86000" />
-      <workItem from="1541344399969" duration="1095000" />
+      <workItem from="1541344399969" duration="1508000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="3408000" />
+    <option name="totallyTimeSpent" value="3821000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="277" y="22" width="974" height="724" extended-state="0" />
@@ -271,13 +328,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/package.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="11" selection-start-line="4" selection-start-column="11" selection-end-line="4" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-8">
@@ -290,11 +340,25 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="175">
-          <caret line="87" column="6" selection-start-line="87" selection-start-column="6" selection-end-line="87" selection-end-column="6" />
+        <state relative-caret-position="145">
+          <caret line="85" selection-start-line="85" selection-end-line="85" />
           <folding>
             <element signature="n#style#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/package-lock.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="17" column="5" selection-end-line="730" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/package.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" selection-end-line="2" selection-end-column="1" />
         </state>
       </provider>
     </entry>
