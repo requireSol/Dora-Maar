@@ -1,5 +1,5 @@
 import {send} from "./Connector.js";
-import {_assignObserverToId, informObserver} from "./ObserverHandler.js";
+import {assignObserverToId, informObserver} from "./ObserverHandler.js";
 import {remove as removeDataObject} from "./DataHandler.js"
 import {SubDescriptorQueue} from "../common/collections/SubDescriptorQueue.js";
 
@@ -18,17 +18,17 @@ export let subscriptionQueue = new SubDescriptorQueue();
 /**
  * Channel ids to resubscribe.
  */
-let resubscriptionChannels = new Set();
+export let resubscriptionChannels = new Set();
 
 /**
  * Unsubscription requests that have not yet been sent to the server.
  */
-let unsubscriptionQueue = [];
+export let unsubscriptionQueue = new Set();
 
 /**
  * Sent unsubscription requests for which no response has yet been received.
  */
-let pendingUnsubscriptions = new Set();
+export let pendingUnsubscriptions = new Set();
 
 /**
  * Handles a subscription event from the server.
@@ -39,7 +39,7 @@ export function internalSubscribe(subscriptionEvent) {
     const list = pendingQueue.popMatchingRequestsSubDescriptors(subscriptionEvent);
     for (const subDesc of list) {
         subscribedChannels.set(ID, subDesc.apiRequest);
-        _assignObserverToId(ID, subDesc);
+        assignObserverToId(ID, subDesc);
     }
 }
 
@@ -84,15 +84,25 @@ export function internalUnsubscribe(unsubscriptionEvent) {
  * @param {SubscriptionDescriptor} subDesc the requested subscription
  */
 export function requestSubscription(subDesc) {
-    const isPending = pendingQueue.isAlreadyInQueue(subDesc);
-    if (isPending) {
-        pendingQueue.add(subDesc);
-    } else {
-        const hasBeenSent = send(JSON.stringify(subDesc.apiRequest));
-        if (hasBeenSent) {
+    const channelId = subDesc.channelId;
+    if (channelId === null) {
+        const isPending = pendingQueue.isAlreadyInQueue(subDesc);
+        if (isPending) {
             pendingQueue.add(subDesc);
         } else {
-            subscriptionQueue.add(subDesc);
+            const hasBeenSent = send(JSON.stringify(subDesc.apiRequest));
+            if (hasBeenSent) {
+                pendingQueue.add(subDesc);
+            } else {
+                subscriptionQueue.add(subDesc);
+            }
+        }
+    } else {
+        if (unsubscriptionQueue.delete(channelId)) {
+            assignObserverToId(channelId, subDesc);
+
+        } else if (pendingUnsubscriptions.delete(channelId)) {
+            resubscriptionChannels.add(channelId);
         }
     }
 }
@@ -107,7 +117,7 @@ export function requestUnsubscription(chanId) {
         "chanId": chanId
     };
     if (!send(JSON.stringify(action))) {
-        unsubscriptionQueue.push(chanId);
+        unsubscriptionQueue.add(chanId);
     } else {
         pendingUnsubscriptions.add(chanId);
     }
@@ -158,14 +168,15 @@ export function _requestEqualsRequest(request1, request2) {
 /**
  * Get the channel's id if the channel is already subscribed
  * @param {APIRequest} subscriptionRequest an api request
- * @returns {Number|undefined} the channel's id or undefined if the channel is not subscribed
+ * @returns {Number|null} the channel's id or null if the channel is not subscribed
  */
 export function getIdFromRequest(subscriptionRequest) {
     for (const [id, request] of subscribedChannels.entries()) {
         if (_requestEqualsRequest(request, subscriptionRequest))
             return id;
     }
-    return undefined;
+    //unsubscriptionQueue.
+    return null;
 }
 
 /**
@@ -198,9 +209,10 @@ export function processAllQueuedRequests() {
  * Requests the unsubscription of all queued channels.
  */
 export function processAllQueuedUnsubscriptions() {
-    for (let i = unsubscriptionQueue.length - 1; i >= 0; i--) {
-        requestUnsubscription(unsubscriptionQueue.splice(i, 1)[0])
+    for (const channelId of unsubscriptionQueue) {
+        requestUnsubscription(channelId);
     }
+    unsubscriptionQueue.clear();
 }
 
 /**
@@ -227,7 +239,7 @@ export function moveAllPendingUnsupscriptionsInQueue() {
  * Clears the unsubscription queue.
  */
 export function clearUnsubscriptionQueue() {
-    unsubscriptionQueue.length = 0;
+    unsubscriptionQueue.clear()
 }
 
 /**

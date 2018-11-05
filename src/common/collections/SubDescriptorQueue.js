@@ -1,4 +1,6 @@
 import {_requestEqualsRequest, responseMatchesRequest} from "../../core/SubscriptionManager.js";
+import {convertToApiRequest} from "../../core/ObserverHandler.js";
+import {getIdFromRequest} from "../../core/SubscriptionManager.js";
 
 export class SubDescriptorQueue {
     constructor() {
@@ -8,7 +10,7 @@ export class SubDescriptorQueue {
     }
 
     /**
-     * Clears all queued elements
+     * Clears all queued elements.
      */
     clear() {
         this.sourcePositionMapping.clear();
@@ -17,7 +19,7 @@ export class SubDescriptorQueue {
     }
 
     /**
-     * Adds a element to the queue.
+     * Adds an element to the queue.
      * @param {SubscriptionDescriptor} subDesc the element to be added
      */
     add(subDesc) {
@@ -46,7 +48,7 @@ export class SubDescriptorQueue {
     }
 
     /**
-     * Removes an SubscriptionDescriptor from the queue.
+     * Removes a SubscriptionDescriptor from the queue.
      * @param {Observer|ObserverBaseElement} source the observer of the SubscriptionDescriptor
      * @returns {boolean} whether the SubscriptionDescriptor was in the queue
      */
@@ -100,16 +102,19 @@ export class SubDescriptorQueue {
  */
 export class SubscriptionDescriptor {
     /**
-     * Creates a SubscriptionDescriptor
+     * Creates a SubscriptionDescriptor.
      * @param {Observer|ObserverBaseElement} observer the origin of the request
      * @param {ClientRequest} clientRequest the request of the observer
-     * @param {APIRequest} apiRequest the request to be sent to the server
      * @param {boolean} needInitialData has the observer not yet received data
+     * @param {APIRequest|null} apiRequest the request to be sent to the server
      */
-    constructor(observer, clientRequest, apiRequest, needInitialData=true) {
+    constructor(observer, clientRequest, needInitialData=true, apiRequest = null) {
         this.observer = observer;
         this.clientRequest = clientRequest;
-        this.apiRequest = apiRequest;
+        this.apiRequest = apiRequest === null ? convertToApiRequest(clientRequest) : apiRequest;
         this.needInitialData = needInitialData;
+    }
+    get channelId() {
+        return getIdFromRequest(this.apiRequest);
     }
 }

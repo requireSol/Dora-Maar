@@ -1,4 +1,4 @@
-import {getIdFromRequest, requestSubscription, subscriptionQueue} from "./SubscriptionManager.js";
+import {requestSubscription, subscriptionQueue, unsubscriptionQueue} from "./SubscriptionManager.js";
 import {dataObjects} from "./DataHandler.js";
 import {CandlesRequest, OrderBookRequest, TickerRequest, TradesRequest} from "../model/requests.js";
 import {SubscriptionDescriptor} from "../common/collections/SubDescriptorQueue.js";
@@ -20,19 +20,8 @@ let observerChanIdMapping = new Map();
  */
 export function requestData(observer, clientRequest) {
     stopDataRequest(observer); // only one subscription per observer
-
-    const apiRequest = _convertToApiRequest(clientRequest);
-    const subDesc = new SubscriptionDescriptor(observer, clientRequest, apiRequest);
-
-    const chanId = getIdFromRequest(apiRequest);
-
-    if (chanId === undefined) {
-        // requested data not in local structure
-        requestSubscription(subDesc);
-    } else {
-        // requested data in local structure
-        _assignObserverToId(chanId, subDesc);
-    }
+    const subDesc = new SubscriptionDescriptor(observer, clientRequest);
+    requestSubscription(subDesc);
 }
 
 /**
@@ -41,7 +30,7 @@ export function requestData(observer, clientRequest) {
  * @param {SubscriptionDescriptor} subDesc the SubscriptionDescriptor containing the observer
  * @private
  */
-export function _assignObserverToId(chanId, subDesc) {
+export function assignObserverToId(chanId, subDesc) {
     let obs = [];
     if (observer.has(chanId)) {
         obs = observer.get(chanId);
@@ -64,7 +53,7 @@ export function stopDataRequest(observer2) {
     const chanId = observerChanIdMapping.get(observer2);
     if (chanId !== undefined) {
         const subDescs = observer.get(chanId);
-        for (let i = subDescs.length - 1; i => 0; i--) {
+        for (let i = subDescs.length - 1; i >= 0; i--) {
             if (subDescs[i].observer === observer2) {
                 subDescs.splice(i, 1);
                 break;
@@ -82,7 +71,7 @@ export function stopDataRequest(observer2) {
  * @returns {APIRequest} the api requests for the server
  * @private
  */
-function _convertToApiRequest(clientRequest) {
+export function convertToApiRequest(clientRequest) {
     if (clientRequest instanceof OrderBookRequest)
         return {
             event: "subscribe",

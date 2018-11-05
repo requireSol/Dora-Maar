@@ -1,6 +1,6 @@
 import {setPlatformStatus, setServerId, supportedVersion} from "./Connector.js";
 import {pendingQueue, getIdFromRequest, internalUnsubscribe, resubscribeAllChannels} from "./SubscriptionManager.js";
-import {_assignObserverToId, informObserver} from "./ObserverHandler.js";
+import {assignObserverToId, informObserver} from "./ObserverHandler.js";
 import {executeAction} from "./TimerAndActions.js";
 
 
@@ -36,7 +36,7 @@ export function handleErrorMessage(errorMessage) {
                     needRestart = true;
                     break;
                 }
-                _assignObserverToId(chanId, subDesc);
+                assignObserverToId(chanId, subDesc);
             }
             if (needRestart) {
                 executeAction("reconnect");
