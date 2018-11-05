@@ -15,7 +15,7 @@ const url = "wss://api.bitfinex.com/ws/2";
 
 let webSocket = null;
 
-export let platformStatus = null;
+export let platformStatus = -1;
 
 export let supportedVersion = 2;
 
@@ -71,7 +71,8 @@ export function initialize() {
  * @returns {boolean} whether the data could be sent to the server.
  */
 export function send(data) {
-    if (navigator.onLine && webSocket instanceof WebSocket && webSocket.readyState === WebSocket.OPEN) {
+    if (navigator.onLine && webSocket instanceof WebSocket && webSocket.readyState === WebSocket.OPEN
+        && platformStatus === 1) {
         webSocket.send(data);
         return true;
     }
@@ -92,6 +93,9 @@ export function pingWebSocket() {
  * Establishes a connection with the server
  */
 function connect() {
+    if (!navigator.onLine) {
+        return;
+    }
 
     webSocket = new WebSocket(url);
 
