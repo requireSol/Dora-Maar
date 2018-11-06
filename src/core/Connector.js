@@ -104,7 +104,6 @@ function connect() {
     webSocket.onopen = function () {
         stopTimer("reconnect");
         console.log("onopen");
-        onNewWebSocketConnection();
 
 
     };
@@ -143,9 +142,9 @@ export function reconnect() {
 }
 
 /**
- * Transfers all previous subscription requests to the new connection
+ * Transfers all previous subscription requests to the operative connection
  */
-function onNewWebSocketConnection() {
+export function onServerIsOperative() {
     clearPendingUnsubscriptions();
     clearUnsubscriptionQueue();
     moveAllPendingRequestsInQueue();

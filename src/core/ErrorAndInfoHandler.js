@@ -1,4 +1,4 @@
-import {setPlatformStatus, setServerId, supportedVersion} from "./Connector.js";
+import {onServerIsOperative, setPlatformStatus, setServerId, supportedVersion} from "./Connector.js";
 import {pendingQueue, getIdFromRequest, internalUnsubscribe, resubscribeAllChannels} from "./SubscriptionManager.js";
 import {assignObserverToId, informObserver} from "./ObserverHandler.js";
 import {executeAction} from "./TimerAndActions.js";
@@ -82,7 +82,7 @@ export function handleInfoMessage(infoMessage) {
 
             break;
         case 20061:
-            resubscribeAllChannels();
+            onServerIsOperative();
             informObserver({
                 "level": "info",
                 "title": infoCodes[infoMessage],
@@ -112,7 +112,8 @@ export function handleConnectionInfoMessage(message) {
             "level": "success",
             "title": "Successfully Connected",
             "msg": "server is operative"
-        })
+        });
+        onServerIsOperative();
     } else if (status === 0) {
         setPlatformStatus(0);
         setServerId(serverId);
