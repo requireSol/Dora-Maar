@@ -17,7 +17,9 @@ export class SubDescriptorQueue {
         this.queue.length = 0;
         this.offset = 0;
     }
-
+    size() {
+        return this.queue.length;
+    }
     /**
      * Adds an element to the queue.
      * @param {SubscriptionDescriptor} subDesc the element to be added

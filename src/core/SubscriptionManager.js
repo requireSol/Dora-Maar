@@ -175,7 +175,6 @@ export function getIdFromRequest(subscriptionRequest) {
         if (_requestEqualsRequest(request, subscriptionRequest))
             return id;
     }
-    //unsubscriptionQueue.
     return null;
 }
 
@@ -199,29 +198,31 @@ export function resubscribeAllChannels(unsubscribeFirst = true) {
  * Requests the subscription of all queued requests.
  */
 export function processAllQueuedRequests() {
-    let subDesc;
-    while ((subDesc = subscriptionQueue.pop()) !== null) {
-        requestSubscription(subDesc);
+    const size = subscriptionQueue.size();
+    for (let i = 0; i < size; i++) {
+        requestSubscription(subscriptionQueue.pop());
     }
+
 }
 
 /**
  * Requests the unsubscription of all queued channels.
  */
 export function processAllQueuedUnsubscriptions() {
-    for (const channelId of unsubscriptionQueue) {
+    const queueCopy = new Set(unsubscriptionQueue);
+    unsubscriptionQueue.clear();
+    for (const channelId of queueCopy) {
         requestUnsubscription(channelId);
     }
-    unsubscriptionQueue.clear();
 }
 
 /**
  * Transfers all pending requests to the request queue.
  */
 export function moveAllPendingRequestsInQueue() {
-    let subDesc;
-    while ((subDesc = pendingQueue.pop()) !== null) {
-        subscriptionQueue.add(subDesc);
+    const size = subscriptionQueue.size();
+    for (let i = 0; i < size; i++) {
+        subscriptionQueue.add(subscriptionQueue.pop());
     }
 }
 
