@@ -24,22 +24,25 @@ export class Observer {
 }
 
 
-
 export class ObserverBaseElement extends HTMLElement {
     constructor() {
         super();
         this.shadow = this.attachShadow({mode: "open"});
+        this.isInitialized = false;
 
     }
 
     connectedCallback() {
-        const style = document.createElement("style");
-        style.innerText = `
-     :host {
-    float: left;
-    position: relative;
+        if (!this.isInitialized) {
+            const style = document.createElement("style");
+            style.innerText = `
+    :host {
+        float: left;
+        position: relative;
 }`;
-        this.shadow.appendChild(style);
+            this.shadow.appendChild(style);
+            this.isInitialized = true;
+        }
     }
 
     info() {
