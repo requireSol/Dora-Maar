@@ -2,7 +2,6 @@ import {requestData, stopDataRequest} from "../core/ObserverHandler.js";
 
 export class Observer {
     constructor() {
-        this.clientRequest = null;
     }
 
     info() {
@@ -15,25 +14,24 @@ export class Observer {
 
     subscribeToData(clientRequest) {
         requestData(this, clientRequest);
-        this.clientRequest = clientRequest;
     }
 
     unsubscribeFromData() {
         stopDataRequest(this);
     }
 }
-
+const isInitializedProperty = Symbol();
 
 export class ObserverBaseElement extends HTMLElement {
     constructor() {
         super();
         this.shadow = this.attachShadow({mode: "open"});
-        this.isInitialized = false;
+        this[isInitializedProperty] = false;
 
     }
 
     connectedCallback() {
-        if (!this.isInitialized) {
+        if (!this[isInitializedProperty]) {
             const style = document.createElement("style");
             style.innerText = `
     :host {
@@ -41,7 +39,7 @@ export class ObserverBaseElement extends HTMLElement {
         position: relative;
 }`;
             this.shadow.appendChild(style);
-            this.isInitialized = true;
+            this[isInitializedProperty] = true;
         }
     }
 
@@ -55,7 +53,6 @@ export class ObserverBaseElement extends HTMLElement {
 
     subscribeToData(clientRequest) {
         requestData(this, clientRequest);
-        this.clientRequest = clientRequest;
     }
 
     unsubscribeFromData() {
