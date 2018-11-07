@@ -1,12 +1,25 @@
+const isInitializedProperty = Symbol();
+
 export class BaseTable extends HTMLDivElement {
     constructor() {
         super();
+        this[isInitializedProperty] = false;
+
+        this._showColumnHeader = true;
+        this._showTitle = true;
+        this._columnModifier = [];
+        this._columnNames = [];
+        this._columnOrder = [];
+        this._title = "";
+        this._rowCount = 10;
+
+        this._underlyingData = null;
     }
 
     connectedCallback() {
-
-        const style = document.createElement("style");
-        style.innerText = `
+        if (!this[isInitializedProperty]) {
+            const style = document.createElement("style");
+            style.innerText = `
 .table {
     display: table;
 }
@@ -43,52 +56,28 @@ export class BaseTable extends HTMLDivElement {
     max-width: 100px;
     display: table-cell;
 }`;
-        this.appendChild(style);
+            this.appendChild(style);
+            this.classList.add("table");
 
-        this.titleDOM = null;
-        this.classList.add("table");
+            this.titleDOM = null;
+            this.headerDOM = null;
+            this.rowsDOM = [];
+            this.cellsDOM = [];
 
-        /*if (!this.hasOwnProperty("columnModifier"))
-            this.columnModifier = [];
-        this.columnOrder = [];
-        for (let i = 0; i < this.columnNames.length; i++) {
-            this.columnOrder.push(i);
-            this.columnModifier.push(null);
-        }*/
-        // first row should be header
-        this.rowsDOM = [];
-        this.cellsDOM = [];
-        this.addTitle(this.title);
+            this.title = this._title;
+            this.showTitle = this._title;
+            this.columnNames = this._columnNames;
+            this.showColumnHeader = this._showColumnHeader;
+            this.rowCount = this._rowCount;
 
-        this.addRow(true);
 
-        this.setRowCount(this.size);
-
-    }
-
-    setColumnNames(columnNames) {
-        this.columnNames = columnNames;
-    }
-
-    setSize(size) {
-        this.size = size;
-    }
-
-    setTitle(title) {
-        this.title = title;
-    }
-
-    setColumnModifier(columnModifier) {
-        this.columnModifier = columnModifier;
-    }
-
-    setColumnOrder(columnOrder) {
-        this.columnOrder = columnOrder;
+            this[isInitializedProperty] = true;
+        }
     }
 
     hideColumn(indexOrColumnName) {
         if (typeof indexOrColumnName === "string") {
-            indexOrColumnName = this.columnOrder.indexOf(this.columnNames.indexOf(indexOrColumnName));
+            indexOrColumnName = this._columnOrder.indexOf(this._columnNames.indexOf(indexOrColumnName));
         }
         for (const row of this.cellsDOM) {
             row[indexOrColumnName].style.display = "none";
@@ -97,21 +86,80 @@ export class BaseTable extends HTMLDivElement {
 
     showColumn(indexOrColumnName) {
         if (typeof indexOrColumnName === "string") {
-            indexOrColumnName = this.columnOrder.indexOf(this.columnNames.indexOf(indexOrColumnName));
+            indexOrColumnName = this._columnOrder.indexOf(this._columnNames.indexOf(indexOrColumnName));
         }
         for (const row of this.cellsDOM) {
             row[indexOrColumnName].style.display = "table-cell";
         }
     }
 
-    setRowCount(count) {
-        const currentCount = this.rowsDOM.length - 1;
+    get showTitle() {
+        return this._showTitle;
+    }
+
+    get showColumnHeader() {
+        return this._showColumnHeader;
+    }
+
+    get columnNames() {
+        return this._columnNames;
+    }
+
+    get columnModifier() {
+        return this._columnModifier;
+    }
+
+    get rowCount() {
+        return this._rowCount;
+    }
+
+    get columnOrder() {
+        return this._columnOrder;
+    }
+
+    get title() {
+        return this._title;
+    }
+
+    set showTitle(showTitle) {
+        this._showTitle = showTitle;
+        if (this.titleDOM !== null) {
+            this.titleDOM.style.display = showTitle ? "table-caption" : "none";
+        }
+    }
+
+    set columnModifier(columnModifier) {
+        this._columnModifier = columnModifier;
+        if (this._underlyingData !== null) {
+            this.fillTable(this._underlyingData)
+        }
+    }
+
+    set columnOrder(columnOrder) {
+        this._columnOrder = columnOrder;
+        if (this._underlyingData !== null) {
+            this.fillTable(this._underlyingData, null);
+        }
+        this.columnNames = this._columnNames;
+    }
+
+    set showColumnHeader(showColumnHeader) {
+        this._showTitle = showColumnHeader;
+        if (this.headerDOM !== null) {
+            this.headerDOM.style.display = showColumnHeader ? "table-row" : "none";
+        }
+    }
+
+    set rowCount(count) {
+        this._rowCount = count;
+
+        const currentCount = this.rowsDOM.length;
         if (count < currentCount) {
-            for (let i = count + 1; i < currentCount + 1; i++) {
+            for (let i = count; i < currentCount; i++) {
                 this.removeChild(this.rowsDOM[i]);
             }
-            this.rowsDOM.splice(count + 1, currentCount - count);
-            this.cellsDOM.splice(count + 1, currentCount - count);
+            this.rowsDOM.splice(count, currentCount - count);
+            this.cellsDOM.splice(count, currentCount - count);
         }
 
         if (count > currentCount) {
@@ -121,50 +169,67 @@ export class BaseTable extends HTMLDivElement {
         }
     }
 
-    setAllCellsToPlaceholder(includeColumnTitles = false, includeTitle = false) {
+    setAllCellsToPlaceholder(includeColumnHeaders = false, includeTitle = false, placeholder = "-") {
         if (includeTitle) {
-            this.titleDOM.textContent = "-"
+            this.titleDOM.textContent = placeholder;
         }
-        for (const row of includeColumnTitles ? this.cellsDOM : this.cellsDOM.slice(1)) {
+        if (includeColumnHeaders) {
+            this.headerDOM.textContent = placeholder;
+        }
+        for (const row of this.cellsDOM) {
             for (const cell of row) {
-                cell.textContent = "-";
+                cell.textContent = placeholder;
             }
         }
-
     }
 
-    static getCell(title, setDataTitle = true, defaultValue = "-") {
+    static getCell(defaultValue = "-") {
         const cell = document.createElement("div");
-        cell.textContent = defaultValue;
         cell.classList.add("cell");
-        if (setDataTitle) {
-            cell.setAttribute("data-title", title);
-        } else {
-            cell.textContent = title;
-        }
+        cell.textContent = defaultValue;
         return cell;
     }
 
-    addRow(isHeader = false) {
+    addRow() {
         const rowDOM = document.createElement("div");
         rowDOM.classList.add("row");
-        if (isHeader) {
-            rowDOM.classList.add("header");
-        }
 
         const internalRow = [];
-        for (const columnIndex of this.columnOrder) {
-            const newCell = BaseTable.getCell(this.columnNames[columnIndex], !isHeader);
+        for (let i = 0; i < this._columnOrder.length; i++) {
+            const newCell = BaseTable.getCell();
             internalRow.push(newCell);
             rowDOM.appendChild(newCell);
         }
+
         this.cellsDOM.push(internalRow);
         this.rowsDOM.push(rowDOM);
+
         this.appendChild(rowDOM);
     }
 
-    addTitle(title) {
-        if (!this.hasOwnProperty("title") || this.titleDOM === null) {
+    set columnNames(columnNames) {
+        this._columnNames = columnNames;
+        if (this.headerDOM === null) {
+            const rowDOM = document.createElement("div");
+            rowDOM.classList.add("row");
+            rowDOM.classList.add("header");
+            for (const columnIndex of this._columnOrder) {
+                const newCell = BaseTable.getCell(this._columnNames[columnIndex]);
+                rowDOM.appendChild(newCell);
+            }
+            this.headerDOM = rowDOM;
+            this.appendChild(rowDOM);
+        } else {
+            for (let i = 0; i < this.headerDOM.length; i++) {
+                this.headerDOM[i].textContent = this._columnNames[this._columnOrder[i]];
+            }
+        }
+    }
+
+    set title(title) {
+        this._title = title;
+
+        if (this.titleDOM === null) {
             const titleDOM = document.createElement("div");
             titleDOM.classList.add("table-caption");
             titleDOM.textContent = title;
@@ -173,20 +238,19 @@ export class BaseTable extends HTMLDivElement {
         } else {
             this.titleDOM.textContent = title;
         }
-
     }
 
     fillRow(index, rowData, changeAnimation = false) {
         const row = this.cellsDOM[index];
-        for (let i = 0; i < this.columnOrder.length; i++) {
+        for (let i = 0; i < this._columnOrder.length; i++) {
             if (changeAnimation) {
                 //row[i].classList.remove("change");
                 //void row[i].offsetWidth;
                 //row[i].classList.add("change");
             }
             //console.log(this);
-            const dataIndex = this.columnOrder[i];
-            const func = this.columnModifier[dataIndex];
+            const dataIndex = this._columnOrder[i];
+            const func = this._columnModifier[dataIndex];
 
             let newContent = rowData[dataIndex];
             if (func instanceof Function) {
@@ -197,8 +261,9 @@ export class BaseTable extends HTMLDivElement {
     }
 
     fillTable(data, metadata) {
-        for (let i = 1; i < this.size + 1 && i < data.length + 1; i++) {
-            this.fillRow(i, data[i - 1]);
+        this._underlyingData = data;
+        for (let i = 1; i < this._rowCount + 1 && i < data.length; i++) {
+            this.fillRow(i, data[i]);
         }
     }
 }
