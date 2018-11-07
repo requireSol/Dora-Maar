@@ -6,9 +6,9 @@ export class OrderBookTable extends BaseTable {
     }
 
     fillTable(data, metadata) {
-        for (let i = 1; i < this.size + 1 && i < data.length + 1; i++) {
-            const newPrice = data[i - 1][3];
-            this.fillRow(i, data[i - 1], metadata.has(newPrice));
+        for (let i = 0; i < this._rowCount && i < data.length; i++) {
+            const newPrice = data[i][3];
+            this.fillRow(i, data[i], metadata.has(newPrice));
         }
     }
 }
@@ -20,8 +20,8 @@ export class TradesTable extends BaseTable {
     }
 
     fillTable(data, metadata) {
-        for (let i = 1; i < this.size + 1 && i < data.length + 1; i++) {
-            this.fillRow(i, data[i - 1], i === 1);
+        for (let i = 0; i < this._rowCount && i < data.length; i++) {
+            this.fillRow(i, data[i], i === 1);
         }
     }
 }
@@ -33,8 +33,8 @@ export class TickerTable extends BaseTable {
     }
 
     fillTable(data, metadata) {
-        for (let i = 1; i < this.size + 1 && i < data.length + 1; i++) {
-            this.fillRow(i, data[i - 1], i === 1);
+        for (let i = 0; i < this._rowCount && i < data.length; i++) {
+            this.fillRow(i, data[i], i === 1);
         }
     }
 }
