@@ -5,10 +5,10 @@ export class TickerData {
      * @constructor
      */
     constructor(snapshotData) {
+        this.maxLength = 25;
         let newRow = snapshotData;
         newRow.push(+new Date());
         this.data = [newRow];
-        this.maxLength = 25;
     }
 
     update(updateData) {

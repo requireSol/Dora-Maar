@@ -16,6 +16,8 @@ export class TradesData {
      * @constructor
      */
     constructor(snapshotData) {
+        this.maxLength = 30;
+
         this.bothUpdated = false;
         this.both = [];
         this.soldUpdated = false;
@@ -37,7 +39,7 @@ export class TradesData {
                 this.boughtUpdated = true;
             }
         }
-        this.maxLength = 30;
+
     }
 
     update(updateData) {
