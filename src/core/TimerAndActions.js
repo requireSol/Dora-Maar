@@ -1,5 +1,5 @@
 import {pingWebSocket, reconnect} from "./Connector.js";
-import {informObserver} from "./ObserverHandler.js";
+import {observer, informObserver} from "./ObserverHandler.js";
 import {requestUnsubscription} from "./SubscriptionManager.js";
 
 const config = {

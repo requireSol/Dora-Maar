@@ -1,5 +1,5 @@
 import {send} from "./Connector.js";
-import {assignObserverToId, informObserver} from "./ObserverHandler.js";
+import {observer, assignObserverToId, informObserver} from "./ObserverHandler.js";
 import {remove as removeDataObject} from "./DataHandler.js"
 import {SubDescriptorQueue} from "../common/collections/SubDescriptorQueue.js";
 
