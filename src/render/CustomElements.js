@@ -5,47 +5,149 @@ import {TradesData} from "../model/TradesData.js";
 import {TickerData} from "../model/TickerData.js";
 import {round} from "../common/utils/MathUtils.js";
 
+const isInitializedProperty = Symbol();
+
 export class OrderBookView extends ObserverBaseElement {
     static get observedAttributes() {
-        return ["data-count", "data-pair", "data-askOrBid"];
+        return ["data-count", "data-pair", "data-askOrBid", "data-title", "data-frequency", "data-precision", "data-action"];
     }
 
     constructor() {
         super();
+        this.parameterBackup = new Map();
+        this[isInitializedProperty] = false;
+        this.table = null;
+        this.notificationBox = null;
     }
 
     disconnectedCallback() {
         this.unsubscribeFromData();
-        this.removeChild(this.table);
-        this.removeChild(this.notificationBox);
     }
 
     connectedCallback() {
         super.connectedCallback();
-        const request = this.createRequestFromAttributes();
-        const title = "ORDERBOOK - " + request.askOrBid.toUpperCase() + " - " + request.currencyPair;
-        this.table = document.createElement("div", {is: "order-book-table"});
-        this.table.setSize(request.recordCount);
-        this.table.setColumnNames(OrderBookData.getDataFields());
-        this.table.setTitle(title);
-        const round3 = (x) => round(x, 3);
-        this.table.setColumnModifier([round3, round3, round3, null]);
-        this.table.setColumnOrder([0, 1, 2, 3]);
+        if (!this[isInitializedProperty]) {
+            // create table
+            this.table = document.createElement("div", {is: "order-book-table"});
+            this.table._columnNames = OrderBookData.getDataFields();
+            const round3 = (x) => round(x, 3);
+            this.table._columnModifier = [round3, round3, round3, null];
+            this.table._columnOrder = [0, 1, 2, 3];
+            // create notification box
+            this.notificationBox = document.createElement("div", {is: "notification-box"});
 
-        this.notificationBox = document.createElement("div", {is: "notification-box"});
-
-        this.shadow.appendChild(this.table);
-        this.shadow.appendChild(this.notificationBox);
-
-        this.subscribeToData(request);
-
+            this.shadow.appendChild(this.table);
+            this.shadow.appendChild(this.notificationBox);
+            this[isInitializedProperty] = true;
+        }
+        this.applyAttributes(true);
     }
 
+    applyAttributes(assumeEverythingChanged = false) {
+        if (this.parameterBackup.has("data-title") || assumeEverythingChanged) {
+            this.table.title = this.title;
+        }
+        if (this.parameterBackup.has("data-count") || assumeEverythingChanged) {
+            this.table.rowCount = this.count;
+            //this.table.applyRowCount();
+        }
+        if (this.parameterBackup.has("data-askOrBid") || this.parameterBackup.has("data-pair")
+            || this.parameterBackup.has("data-frequency") || this.parameterBackup.has("data-precision")
+            || this.parameterBackup.has("data-count") || assumeEverythingChanged) {
+            // need new request
+            this.table.setAllCellsToPlaceholder();
+            this.subscribeToData(this.createRequestFromAttributes());
+        }
+    }
+
+    set askOrBid(askOrBid) {
+        this.setAttribute("data-askOrBid", askOrBid);
+    }
+
+    set count(recordCount) {
+        this.setAttribute("data-count", "" + recordCount);
+    }
+
+    set pair(currencyPair) {
+        this.setAttribute("data-pair", currencyPair);
+    }
+
+    set frequency(frequency) {
+        this.setAttribute("data-frequency", frequency);
+    }
+
+    set precision(precision) {
+        this.setAttribute("data-precision", precision);
+    }
+
+    set title(title) {
+        this.setAttribute("data-title", title);
+    }
+
+    get askOrBid() {
+        let askOrBid = this.getAttribute("data-askOrBid");
+        return ["ask", "bid"].includes(askOrBid) ? askOrBid : "ask";
+    }
+
+    get count() {
+        let recordCount = parseInt(this.getAttribute("data-count"));
+        if (isNaN(recordCount)) {
+            recordCount = 10;
+        }
+        return recordCount;
+    }
+
+    get pair() {
+        let pair = this.getAttribute("data-pair");
+        if (pair === null) {
+            pair = "BTCUSD";
+        }
+        return pair;
+    }
+
+    get frequency() {
+        let frequency = this.getAttribute("data-frequency");
+        return ["realtime", "interval"].includes(frequency) ? frequency : "interval";
+    }
+
+    get precision() {
+        let precision = this.getAttribute("data-precision");
+        if (precision === null) {
+            precision = "P0"
+        }
+        return precision;
+    }
+
+    get title() {
+        let title = this.getAttribute("data-title");
+        if (!this.hasAttribute(title)) {
+            title = "ORDERBOOK - " + this.askOrBid.toUpperCase() + " - " + this.pair;
+        }
+        return title;
+    }
+
+    restoreParameters() {
+        for (const [name, value] of this.parameterBackup.entries()) {
+            this.setAttribute(name, value);
+        }
+        this.parameterBackup.clear();
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        if (name === "data-action") {
+            if (newValue === "restore") {
+                this.restoreParameters();
+            } else if (newValue === "apply") {
+                this.applyAttributes();
+            }
+        } else if (!this.parameterBackup.has(name)) {
+            this.parameterBackup.set(name, oldValue);
+        }
+    }
+
+
     createRequestFromAttributes() {
-        const askOrBid = this.getAttribute("data-askOrBid");
-        const recordCount = parseInt(this.getAttribute("data-count"));
-        const currencyPair = this.getAttribute("data-pair");
-        return new OrderBookRequest("P0", recordCount, askOrBid, currencyPair, "realtime")
+        return new OrderBookRequest("P0", this.count, this.askOrBid, this.pair, this.frequency)
     }
 
     update(data, metadata) {
@@ -59,40 +161,122 @@ export class OrderBookView extends ObserverBaseElement {
 
 export class TradesView extends ObserverBaseElement {
     static get observedAttributes() {
-        return ["data-count", "data-pair", "data-soldOrBoughtOrBoth"];
+        return ["data-count", "data-pair", "data-soldOrBoughtOrBoth", "data-pair", "data-action"];
     }
 
     constructor() {
         super();
+        this.parameterBackup = new Map();
+        this[isInitializedProperty] = false;
+        this.table = null;
+        this.notificationBox = null;
     }
 
     disconnectedCallback() {
         this.unsubscribeFromData();
-        this.removeChild(this.table);
-        this.removeChild(this.notificationBox);
     }
 
     connectedCallback() {
         super.connectedCallback();
-        const request = this.createRequestFromAttributes();
-        const title = request.soldOrBoughtOrBoth.toUpperCase() + " - " + request.currencyPair;
+        if (!this[isInitializedProperty]) {
+            // create table
+            this.table = document.createElement("div", {is: "trades-table"});
+            this.table._columnNames = TradesData.getDataFields();
+            this.table._columnModifier = [null, null, null, null];
+            this.table._columnOrder = [0, 1, 2, 3];
+            // create notification box
+            this.notificationBox = document.createElement("div", {is: "notification-box"});
+            this.shadow.appendChild(this.table);
+            this.shadow.appendChild(this.notificationBox);
+        }
+        this.applyAttributes(true);
 
-        this.table = document.createElement("div", {is: "trades-table"});
-        this.table.setSize(request.recordCount);
-        this.table.setColumnNames(TradesData.getDataFields());
-        this.table.setTitle(title);
+    }
 
-        this.notificationBox = document.createElement("div", {is: "notification-box"});
-        this.shadow.appendChild(this.table);
-        this.shadow.appendChild(this.notificationBox);
-        this.subscribeToData(request);
+    applyAttributes(assumeEverythingChanged = false) {
+        if (this.parameterBackup.has("data-title") || assumeEverythingChanged) {
+            this.table.title = this.title;
+        }
+        if (this.parameterBackup.has("data-count") || assumeEverythingChanged) {
+            this.table.rowCount = this.count;
+            //this.table.applyRowCount();
+        }
+        if (this.parameterBackup.has("data-soldOrBoughtOrBoth") || this.parameterBackup.has("data-pair")
+            || this.parameterBackup.has("data-count") || assumeEverythingChanged) {
+            // need new request
+            this.table.setAllCellsToPlaceholder();
+            this.subscribeToData(this.createRequestFromAttributes());
+        }
+    }
+
+    restoreParameters() {
+        for (const [name, value] of this.parameterBackup.entries()) {
+            this.setAttribute(name, value);
+        }
+        this.parameterBackup.clear();
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        if (name === "data-action") {
+            if (newValue === "restore") {
+                this.restoreParameters();
+            } else if (newValue === "apply") {
+                this.applyAttributes();
+            }
+        } else if (!this.parameterBackup.has(name)) {
+            this.parameterBackup.set(name, oldValue);
+        }
+    }
+
+    set title(title) {
+        this.setAttribute("data-title", title);
+    }
+
+    set soldOrBoughtOrBoth(askOrBid) {
+        this.setAttribute("data-soldOrBoughtOrBoth", askOrBid);
+    }
+
+    set count(recordCount) {
+        this.setAttribute("data-count", "" + recordCount);
+    }
+
+    set pair(currencyPair) {
+        this.setAttribute("data-pair", currencyPair);
+    }
+
+    get soldOrBoughtOrBoth() {
+        let soldOrBoughtOrBoth = this.getAttribute("data-soldOrBoughtOrBoth");
+
+        return ["sold", "bought", "both"].includes(soldOrBoughtOrBoth) ? soldOrBoughtOrBoth : "both";
+    }
+
+
+    get title() {
+        let title = this.getAttribute("data-title");
+        if (title === null) {
+            title = "TRADES - " + this.soldOrBoughtOrBoth.toUpperCase() + " - " + this.pair;
+        }
+        return title;
+    }
+
+    get pair() {
+        let pair = this.getAttribute("data-pair");
+        if (pair === null) {
+            pair = "BTCUSD";
+        }
+        return pair;
+    }
+
+    get count() {
+        let recordCount = parseInt(this.getAttribute("data-count"));
+        if (isNaN(recordCount)) {
+            recordCount = 10;
+        }
+        return recordCount;
     }
 
     createRequestFromAttributes() {
-        const currencyPair = this.getAttribute("data-pair");
-        const recordCount = parseInt(this.getAttribute("data-count"));
-        const soldOrBoughtOrBoth = this.getAttribute("data-soldOrBoughtOrBoth");
-        return new TradesRequest(currencyPair, recordCount, soldOrBoughtOrBoth, recordCount);
+        return new TradesRequest(this.pair, this.count, this.soldOrBoughtOrBoth, this.count);
     }
 
     update(data, metadata) {
@@ -105,42 +289,112 @@ export class TradesView extends ObserverBaseElement {
 }
 
 export class TickerView extends ObserverBaseElement {
-    /*static get observedAttributes() {
-        return ["data-count", "data-pair"];
-    }*/
+    static get observedAttributes() {
+        return ["data-count", "data-pair", "data-title", "data-action"];
+    }
 
     constructor() {
         super();
+        this.parameterBackup = new Map();
+        this[isInitializedProperty] = false;
+        this.table = null;
+        this.notificationBox = null;
     }
 
     disconnectedCallback() {
-        //this.classList.remove("wrapper");
         this.unsubscribeFromData();
-        this.removeChild(this.table);
-        this.removeChild(this.notificationBox);
     }
 
     connectedCallback() {
-        this.classList.add("wrapper");
-        const request = this.createRequestFromAttributes();
-        const title = "TICKER - " + request.currencyPair;
-
-        this.table = document.createElement("div", {is: "trades-table"});
-        this.table.setSize(request.recordCount);
-        this.table.setColumnNames(TickerData.getDataFields());
-        this.table.setTitle(title);
-
-        this.notificationBox = document.createElement("div", {is: "notification-box"});
-        this.shadow.appendChild(this.table);
-        this.shadow.appendChild(this.notificationBox);
-        this.subscribeToData(request);
+        super.connectedCallback();
+        if (!this[isInitializedProperty]) {
+            // create table
+            this.table = document.createElement("div", {is: "ticker-table"});
+            this.table._columnNames = TickerData.getDataFields();
+            const round3 = (x) => round(x, 3);
+            this.table._columnModifier = [null, round3, null, round3, null, null, null, round3, null, null, null];
+            this.table._columnOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+            // create notification box
+            this.notificationBox = document.createElement("div", {is: "notification-box"});
+            this.shadow.appendChild(this.table);
+            this.shadow.appendChild(this.notificationBox);
+        }
+        this.applyAttributes(true);
+        //const title = "TICKER - " + request.currencyPair;
 
     }
 
+    set title(title) {
+        this.setAttribute("data-title", title);
+    }
+
+    set count(recordCount) {
+        this.setAttribute("data-count", "" + recordCount);
+    }
+
+    set pair(currencyPair) {
+        this.setAttribute("data-pair", currencyPair);
+    }
+
+    get title() {
+        let title = this.getAttribute("data-title");
+        if (title === null) {
+            title = "TICKER - " + this.pair;
+        }
+        return title;
+    }
+
+    get pair() {
+        let pair = this.getAttribute("data-pair");
+        if (pair === null) {
+            pair = "BTCUSD";
+        }
+        return pair;
+    }
+
+    get count() {
+        let recordCount = parseInt(this.getAttribute("data-count"));
+        if (isNaN(recordCount)) {
+            recordCount = 10;
+        }
+        return recordCount;
+    }
+
     createRequestFromAttributes() {
-        const currencyPair = this.getAttribute("data-pair");
-        const recordCount = parseInt(this.getAttribute("data-count"));
-        return new TickerRequest(currencyPair, recordCount, recordCount);
+        return new TickerRequest(this.pair, this.count, this.count);
+    }
+
+    applyAttributes(assumeEverythingChanged = false) {
+        if (this.parameterBackup.has("data-title") || assumeEverythingChanged) {
+            this.table.title = this.title;
+        }
+        if (this.parameterBackup.has("data-count") || assumeEverythingChanged) {
+            this.table.rowCount = this.count;
+        }
+        if (this.parameterBackup.has("data-pair") || this.parameterBackup.has("data-count") || assumeEverythingChanged) {
+            // need new request
+            this.table.setAllCellsToPlaceholder();
+            this.subscribeToData(this.createRequestFromAttributes());
+        }
+    }
+
+    restoreParameters() {
+        for (const [name, value] of this.parameterBackup.entries()) {
+            this.setAttribute(name, value);
+        }
+        this.parameterBackup.clear();
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        if (name === "data-action") {
+            if (newValue === "restore") {
+                this.restoreParameters();
+            } else if (newValue === "apply") {
+                this.applyAttributes();
+            }
+        } else if (!this.parameterBackup.has(name)) {
+            this.parameterBackup.set(name, oldValue);
+        }
     }
 
     update(data, metadata) {
@@ -151,23 +405,7 @@ export class TickerView extends ObserverBaseElement {
         this.notificationBox.addNotification(message["level"], message["title"], message["msg"]);
     }
 
-    /*attributeChangedCallback(name, oldValue, newValue) {
-        switch (name) {
-            case "data-pair":
-                // unsubscribe and subscribe to new value
-                console.log(name + " " + oldValue + " -> " + newValue);
-                // this.table.unsubscribeFromData();
-                // this.table.clientRequest.currencyPair = newValue;
-                // this.table.subscribeToData(this.table.clientRequest);
-                break;
 
-            case "data-count":
-                // maybe soft solution is possible
-                console.log(name + " " + oldValue + " -> " + newValue);
-                break;
-
-        }
-    }*/
 }
 
 export class NotificationBox extends HTMLDivElement {
@@ -257,17 +495,17 @@ export class NotificationBox extends HTMLDivElement {
 
     addNotification(level, title, message = "", isVolatile = true, timeout = 15000, isReplaceable = true, minimumTimeout = 5000) {
         const notification = document.createElement("div", {is: "notification-msg"});
-        notification.setAttribute("data-level", level);
-        notification.setAttribute("data-title", title);
-        notification.setAttribute("data-message", message);
-        notification.setAttribute("data-timeout", "" + timeout);
-        notification.setAttribute("data-isVolatile", "" + isVolatile);
-        notification.setAttribute("data-isReplaceable", "" + isReplaceable);
-        notification.setAttribute("data-minimumTimeout", "" + minimumTimeout);
-
-        if (this.allMessages.length === this.getMaxCount()) {
+        notification.level = level;
+        notification.title = title;
+        notification.message = message;
+        notification.timeout = timeout;
+        notification.isVolatile = isVolatile;
+        notification.isReplaceable = isReplaceable;
+        notification.minimumTimeout = minimumTimeout;
+        while (this.allMessages.length >= this.maxCount) {
             this.closeOldestMessage();
         }
+
         for (const message of this.allMessages) {
             message.isReplaceRequested = true;
         }
@@ -281,6 +519,7 @@ export class NotificationBox extends HTMLDivElement {
             this.replaceableMessages[i].closeButton.onclick(null);
         }
     }
+
     removeMessage(notification) {
         for (let i = this.allMessages.length - 1; i >= 0; i--) {
             if (i < this.replaceableMessages && this.replaceableMessages[i] === notification) {
@@ -298,18 +537,23 @@ export class NotificationBox extends HTMLDivElement {
         const oldestMessage = this.allMessages.shift();
         oldestMessage.closeButton.onclick(null);
     }
+
     markMessageAsReplaceable(notification) {
         if (notification.isConnected) {
             this.replaceableMessages.push(notification);
         }
     }
 
-    getMaxCount() {
+    get maxCount() {
         let maxCount = parseInt(this.getAttribute("data-maxCount"));
         if (isNaN(maxCount)) {
             maxCount = 4;
         }
         return maxCount;
+    }
+
+    set maxCount(maxCount) {
+        this.setAttribute("data-maxCount", "" + maxCount);
     }
 }
 
@@ -326,11 +570,11 @@ export class NotificationMessage extends HTMLDivElement {
     applyAttributes() {
         // update level
         this.classList.remove("success", "info", "warn", "error");
-        this.classList.add(this.getLevel());
+        this.classList.add(this.level);
         // update title
-        this.notificationTitle.textContent = this.getTitle();
+        this.notificationTitle.textContent = this.title;
         // update message
-        this.notificationBody.textContent = this.getMessage();
+        this.notificationBody.textContent = this.message;
     }
 
     applyTimeouts() {
@@ -340,16 +584,16 @@ export class NotificationMessage extends HTMLDivElement {
         const notification = this;
         const parent = this.parentElement;
 
-        if (this.isVolatile()) {
-            const timeout = this.getTimeout();
+        if (this.isVolatile) {
+            const timeout = this.timeout;
             if (timeout >= 0) {
                 this.closeTimeout = setTimeout(function () {
                     notification.closeButton.onclick(null);
                 }, timeout);
             }
         }
-        if (this.isReplaceable()) {
-            const minimumTimeout = this.getMinimumTimeout();
+        if (this.isReplaceable) {
+            const minimumTimeout = this.minimumTimeout;
             if (minimumTimeout >= 0) {
                 this.closeMinimumTimeout = setTimeout(function () {
                     if (this.isReplaceRequested) {
@@ -407,7 +651,35 @@ export class NotificationMessage extends HTMLDivElement {
         this.applyTimeouts();
     }
 
-    getLevel() {
+    set level(level) {
+        this.setAttribute("data-level", level);
+    }
+
+    set message(message) {
+        this.setAttribute("data-message", message);
+    }
+
+    set title(title) {
+        this.setAttribute("data-title", title);
+    }
+
+    set timeout(timeout) {
+        this.setAttribute("data-timeout", timeout);
+    }
+
+    set minimumTimeout(minimumTimeout) {
+        this.setAttribute("data-minimumTimeout", minimumTimeout);
+    }
+
+    set isVolatile(isVolatile) {
+        this.setAttribute("data-isVolatile", isVolatile);
+    }
+
+    set isReplaceable(isReplaceable) {
+        this.setAttribute("data-isReplaceable", isReplaceable);
+    }
+
+    get level() {
         let level = this.getAttribute("data-level");
         if (!["success", "info", "warn", "error"].includes(level)) {
             level = "error";
@@ -415,15 +687,15 @@ export class NotificationMessage extends HTMLDivElement {
         return level;
     }
 
-    getTitle() {
-        let title = "Unknown";
-        if (this.hasAttribute("data-title")) {
-            title = this.getAttribute("data-title");
-        }
+    get title() {
+        let title = this.getAttribute("data-title");
+        if (title === null) {
+            title = "Unknown"
+    }
         return title;
     }
 
-    getMessage() {
+    get message() {
         let message = "Unknown Error";
         if (this.hasAttribute("data-title")) {
             message = this.getAttribute("data-message");
@@ -431,7 +703,7 @@ export class NotificationMessage extends HTMLDivElement {
         return message;
     }
 
-    getTimeout() {
+    get timeout() {
         let timeout = parseInt(this.getAttribute("data-timeout"));
         let minimumTimeout = parseInt(this.getAttribute("data-minimumTimeout"));
 
@@ -445,12 +717,12 @@ export class NotificationMessage extends HTMLDivElement {
         }
     }
 
-    isVolatile() {
+    get isVolatile() {
         let isVolatile = this.getAttribute("data-isVolatile");
         return isVolatile !== "false";
     }
 
-    getMinimumTimeout() {
+    get minimumTimeout() {
         let minimumTimeout = parseInt(this.getAttribute("data-minimumTimeout"));
         if (isNaN(minimumTimeout)) {
             minimumTimeout = 5000;
@@ -458,7 +730,7 @@ export class NotificationMessage extends HTMLDivElement {
         return minimumTimeout;
     }
 
-    isReplaceable() {
+    get isReplaceable() {
         let isReplaceable = this.getAttribute("data-isReplaceable");
         return isReplaceable !== "false";
     }
