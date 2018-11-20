@@ -65,7 +65,7 @@ export class BaseTable extends HTMLDivElement {
             this.cellsDOM = [];
 
             this.title = this._title;
-            this.showTitle = this._title;
+            this.showTitle = this._showTitle;
             this.columnNames = this._columnNames;
             this.showColumnHeader = this._showColumnHeader;
             this.rowCount = this._rowCount;
