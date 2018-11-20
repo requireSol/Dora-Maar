@@ -55,6 +55,21 @@ export class BaseTable extends HTMLDivElement {
     width: 100px;
     max-width: 100px;
     display: table-cell;
+}
+
+@keyframes highlight-effect {
+    from {
+        background-color: yellow;
+    }
+    to {
+        opacity: 100;
+    }
+}
+
+.change {
+    animation-name: highlight-effect;
+    animation-duration: 1s;
+
 }`;
             this.appendChild(style);
             this.classList.add("table");
@@ -244,9 +259,9 @@ export class BaseTable extends HTMLDivElement {
         const row = this.cellsDOM[index];
         for (let i = 0; i < this._columnOrder.length; i++) {
             if (changeAnimation) {
-                //row[i].classList.remove("change");
-                //void row[i].offsetWidth;
-                //row[i].classList.add("change");
+                row[i].classList.remove("change");
+                void row[i].offsetWidth;
+                row[i].classList.add("change");
             }
             //console.log(this);
             const dataIndex = this._columnOrder[i];
