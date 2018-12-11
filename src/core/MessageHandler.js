@@ -3,15 +3,7 @@ import {handleConnectionInfoMessage, handleErrorMessage, handleInfoMessage} from
 import {internalSubscribe, internalUnsubscribe} from "./SubscriptionManager.js";
 import {create as createDataObject, dataObjects, update as updateDataObject} from "./DataHandler.js";
 import {abortAction} from "./TimerAndActions.js";
-
-
-const eventTypes = Object.freeze({
-    error: "error",
-    info: "info",
-    subscribed: "subscribed",
-    unsubscribed: "unsubscribed",
-    pong: "pong"
-});
+import {eventConstants} from "../common/Constants.js";
 
 /**
  * Handles every message send by the server
@@ -28,7 +20,6 @@ export function handle(message) {
         } else {
             if (dataObjects.has(chanId)) {
                 //is update
-                console.log("data-update");
                 updateDataObject(receivedData)
             } else {
                 //is snapshot
@@ -38,12 +29,12 @@ export function handle(message) {
 
     } else if (receivedData.hasOwnProperty("event")) {
         switch (receivedData.event) {
-            case eventTypes.error:
+            case eventConstants.ERROR:
                 handleErrorMessage(receivedData);
 
                 break;
 
-            case eventTypes.info:
+            case eventConstants.INFO:
                 if (receivedData.hasOwnProperty("code")) {
                     handleInfoMessage(receivedData);
                 } else {
@@ -52,18 +43,17 @@ export function handle(message) {
                 }
                 break;
 
-            case eventTypes.subscribed:
+            case eventConstants.SUBSCRIBED:
                 //console.log(receivedData);
                 internalSubscribe(receivedData);
 
                 break;
 
-            case eventTypes.unsubscribed:
+            case eventConstants.UNSUBSCRIBED:
                 internalUnsubscribe(receivedData);
 
                 break;
-            case
-            eventTypes.pong:
+            case eventConstants.PONG:
                 console.log("pong");
                 if (abortAction("waitForPong")) {
                     onRestoredWebSocketConnection();

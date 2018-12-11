@@ -43,6 +43,38 @@ export function isValidFrequency(frequency) {
     return false;
 }
 
+export const tradeTypeConstants = {
+    SOLD: "sold",
+    BOUGHT: "bought",
+    BOTH: "both"
+};
+
+export const eventConstants = {
+    SUBSCRIBE: "subscribe",
+    UNSUBSCRIBE: "unsubscribe",
+    SUBSCRIBED: "subscribed",
+    UNSUBSCRIBED: "unsubscribed",
+    ERROR: "error",
+    INFO: "info",
+    PING: "ping",
+    PONG: "pong"
+
+};
+
+export const orderBookTypeConstants = {
+    ASK : "ask",
+    BID : "bid"
+};
+
+export function isValidOrderBookType(orderBookType) {
+    for (const value of Object.values(orderBookTypeConstants)) {
+        if (value === orderBookType) {
+            return true;
+        }
+    }
+    return false;
+}
+
 export const precisionConstants = {
     TWO_SIGNIFICANT_DIGITS: "P3",
     THREE_SIGNIFICANT_DIGITS: "P2",

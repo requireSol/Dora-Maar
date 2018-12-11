@@ -1,7 +1,8 @@
-import {requestSubscription, subscriptionQueue, unsubscriptionQueue} from "./SubscriptionManager.js";
+import {requestSubscription, subscriptionQueue} from "./SubscriptionManager.js";
 import {dataObjects} from "./DataHandler.js";
 import {CandlesRequest, OrderBookRequest, TickerRequest, TradesRequest} from "../model/requests.js";
 import {SubscriptionDescriptor} from "../common/collections/SubDescriptorQueue.js";
+import {channelConstants, eventConstants, orderBookTypeConstants, tradeTypeConstants} from "../common/Constants.js";
 
 /**
  * Maps channel ids to SubscriptionDescriptors
@@ -74,8 +75,8 @@ export function stopDataRequest(observer2) {
 export function convertToApiRequest(clientRequest) {
     if (clientRequest instanceof OrderBookRequest)
         return {
-            event: "subscribe",
-            channel: "book",
+            event: eventConstants.SUBSCRIBE,
+            channel: channelConstants.ORDERBOOK,
             len: (clientRequest["recordCount"] <= 25) ? "25" : "100",
             freq: (clientRequest["updateRate"] === "realtime") ? "F0" : "F1",
             prec: clientRequest["precision"],
@@ -84,22 +85,22 @@ export function convertToApiRequest(clientRequest) {
 
     if (clientRequest instanceof TickerRequest)
         return {
-            event: "subscribe",
-            channel: "ticker",
+            event: eventConstants.SUBSCRIBE,
+            channel: channelConstants.TICKER,
             symbol: "t" + clientRequest["currencyPair"]
         };
 
     if (clientRequest instanceof TradesRequest)
         return {
-            event: "subscribe",
-            channel: "trades",
+            event: eventConstants.SUBSCRIBE,
+            channel: channelConstants.TRADES,
             symbol: "t" + clientRequest["currencyPair"]
         };
 
     if (clientRequest instanceof CandlesRequest)
         return {
-            event: "subscribe",
-            channel: "candles",
+            event: eventConstants.SUBSCRIBE,
+            channel: channelConstants.CANDLES,
             key: "trade:" + clientRequest["timeFrame"] + ":t" + clientRequest["currencyPair"]
         }
 }
@@ -115,12 +116,12 @@ function updateOrderBookObserver(subDesc, bookDataObject) {
     const type = clientRequest["askOrBid"];
     let eventData;
 
-    if (type === "ask" && (bookDataObject.askUpdated)) {
+    if (type === orderBookTypeConstants.ASK && (bookDataObject.askUpdated)) {
         eventData = bookDataObject.ask.slice(0, clientRequest["recordCount"]);
         source.update(eventData, bookDataObject.askNewPriceLevels);
         return;
     }
-    if (type === "bid" && bookDataObject.bidUpdated) {
+    if (type === orderBookTypeConstants.BID && bookDataObject.bidUpdated) {
         eventData = bookDataObject.bid.slice(0, clientRequest["recordCount"]);
         source.update(eventData, bookDataObject.bidNewPriceLevels);
     }
@@ -154,17 +155,17 @@ function updateTradesObserver(subDesc, tradesDataObject, needInitialData) {
     const recordCount = (needInitialData) ? clientRequest["initialRecordCount"] : clientRequest["recordCount"];
     let eventData;
 
-    if (type === "sold" && (tradesDataObject.soldUpdated || needInitialData)) {
+    if (type === tradeTypeConstants.SOLD && (tradesDataObject.soldUpdated || needInitialData)) {
         eventData = tradesDataObject.sold.slice(0, recordCount);
         source.update(eventData);
         return;
     }
-    if (type === "bought" && (tradesDataObject.boughtUpdated || needInitialData)) {
+    if (type === tradeTypeConstants.BOUGHT && (tradesDataObject.boughtUpdated || needInitialData)) {
         eventData = tradesDataObject.bought.slice(0, recordCount);
         source.update(eventData);
         return;
     }
-    if (type === "both" && (tradesDataObject.bothUpdated || needInitialData)) {
+    if (type === tradeTypeConstants.BOTH && (tradesDataObject.bothUpdated || needInitialData)) {
         eventData = tradesDataObject.both.slice(0, recordCount);
         source.update(eventData);
     }

@@ -2,6 +2,7 @@ import {send} from "./Connector.js";
 import {observer, assignObserverToId, informObserver} from "./ObserverHandler.js";
 import {remove as removeDataObject} from "./DataHandler.js"
 import {SubDescriptorQueue} from "../common/collections/SubDescriptorQueue.js";
+import {eventConstants} from "../common/Constants";
 
 
 let subscribedChannels = new Map();
@@ -113,7 +114,7 @@ export function requestSubscription(subDesc) {
  */
 export function requestUnsubscription(chanId) {
     const action = {
-        "event": "unsubscribe",
+        "event": eventConstants.UNSUBSCRIBE,
         "chanId": chanId
     };
     if (!send(JSON.stringify(action))) {
