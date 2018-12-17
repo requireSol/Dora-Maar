@@ -1,93 +1,45 @@
-/*
-use myGame
-db.createCollection("account");
-db.createCollection("progress");
-*/
-
-
-var mongojs = require("mongojs");
-var db = mongojs('localhost:27017/myGame', ['account','progress']);
-
+var createError = require('http-errors');
 var express = require('express');
+var path = require('path');
+var cookieParser = require('cookie-parser');
+var lessMiddleware = require('less-middleware');
+var logger = require('morgan');
+
+var indexRouter = require('./routes/index');
+var usersRouter = require('./routes/users');
+var cryptRouter = require('./routes/crypt');
+
 var app = express();
-var serv = require('http').Server(app);
 
-app.get('/',function(req, res) {
-    res.sendFile(__dirname + '/client/index.html');
-});
-app.use('/client',express.static(__dirname + '/client'));
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'hjs');
 
-serv.listen(2000);
-console.log("Server started.");
+app.use(logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(lessMiddleware(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')));
 
-var SOCKET_LIST = {};
+app.use('/', indexRouter);
+app.use('/users', usersRouter);
+app.use('/', cryptRouter);
 
-
-var DEBUG = true;
-
-var isValidPassword = function(data,cb){
-    db.account.find({username:data.username,password:data.password},function(err,res){
-        if(res.length > 0)
-            cb(true);
-        else
-            cb(false);
-    });
-}
-var isUsernameTaken = function(data,cb){
-    db.account.find({username:data.username},function(err,res){
-        if(res.length > 0)
-            cb(true);
-        else
-            cb(false);
-    });
-}
-var addUser = function(data,cb){
-    db.account.insert({username:data.username,password:data.password},function(err){
-        cb();
-    });
-}
-
-var io = require('socket.io')(serv,{});
-io.sockets.on('connection', function(socket){
-    socket.id = Math.random();
-    SOCKET_LIST[socket.id] = socket;
-
-    socket.on('signIn',function(data){
-        isValidPassword(data,function(res){
-            if(res){
-                Player.onConnect(socket);
-                socket.emit('signInResponse',{success:true});
-            } else {
-                socket.emit('signInResponse',{success:false});
-            }
-        });
-    });
-    socket.on('signUp',function(data){
-        isUsernameTaken(data,function(res){
-            if(res){
-                socket.emit('signUpResponse',{success:false});
-            } else {
-                addUser(data,function(){
-                    socket.emit('signUpResponse',{success:true});
-                });
-            }
-        });
-    });
-
-
-    socket.on('disconnect',function(){
-        delete SOCKET_LIST[socket.id];
-        Player.onDisconnect(socket);
-    });
-
-    socket.on('evalServer',function(data){
-        if(!DEBUG)
-            return;
-        var res = eval(data);
-        socket.emit('evalAnswer',res);
-    });
-
-
-
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  next(createError(404));
 });
 
+// error handler
+app.use(function(err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
+});
+
+module.exports = app;
