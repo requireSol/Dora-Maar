@@ -25,7 +25,7 @@
   <li style="float:right"><a class="active" href="#about">LogIn</a></li>
 </ul>
 <div class="dropdown" style="float:right">
-<span onclick="dropDownToogle()" class="dropbtn glyphicon glyphicon-menu-hamburger" style="color:black"></span>
+  <span onclick="dropDownToogle()" class="dropbtn glyphicon glyphicon-menu-hamburger" style="color:black"></span>
   <div id="myDropdown" class="dropdown-content">
     <a href="#home">Home</a>
     <a href="#about">About</a>
