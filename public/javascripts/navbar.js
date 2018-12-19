@@ -5,6 +5,9 @@
 toggle between hiding and showing the dropdown content */
 function dropDownToogle() {
     document.getElementById("myDropdown").classList.toggle("show");
+    //$(".dropbtn").click(function(){
+    //  $("dropdown-content").fadeIn()
+   // });
   }
   
   // Close the dropdown if the user clicks outside of it
