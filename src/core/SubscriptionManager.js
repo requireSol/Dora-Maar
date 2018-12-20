@@ -2,7 +2,7 @@ import {send} from "./Connector.js";
 import {observer, assignObserverToId, informObserver} from "./ObserverHandler.js";
 import {remove as removeDataObject} from "./DataHandler.js"
 import {SubDescriptorQueue} from "../common/collections/SubDescriptorQueue.js";
-import {eventConstants} from "../common/Constants";
+import {eventConstants} from "../common/Constants.js";
 
 
 let subscribedChannels = new Map();

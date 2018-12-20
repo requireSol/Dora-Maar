@@ -1,4 +1,30 @@
-export class OrderBookRequest {
+import {
+    frequencyConstants,
+    precisionConstants,
+    timeFrameConstants,
+    orderBookTypeConstants,
+    tradeTypeConstants
+} from "../common/Constants.js";
+
+class ClientRequest {
+    constructor(currencyPair) {
+        this.currencyPair = currencyPair;
+    }
+
+    get isValidCurrencyPair() {
+        console.warn("not implemented for now");
+    }
+    get isValid() {
+        console.warn("not implemented");
+    }
+
+    get validationInfo() {
+        console.warn("not implemented");
+    }
+}
+
+
+export class OrderBookRequest extends ClientRequest {
     /**
      * Object to request order book data.
      * @param precision the precision of the price
@@ -9,15 +35,44 @@ export class OrderBookRequest {
      * @constructor
      */
     constructor(precision, recordCount, askOrBid, currencyPair, updateRate) {
+        super(currencyPair);
         this.precision = precision;
         this.recordCount = recordCount;
         this.askOrBid = askOrBid;
-        this.currencyPair = currencyPair;
         this.updateRate = updateRate;
+    }
+
+    get isValidPrecision() {
+        return precisionConstants.hasOwnProperty(this.precision);
+    }
+
+    get isValidUpdateRate() {
+        return frequencyConstants.hasOwnProperty(this.updateRate);
+    }
+
+    get isValidAskOrBid() {
+        return orderBookTypeConstants.hasOwnProperty(this.askOrBid);
+    }
+
+    get isValidRecordCount() {
+        return this.recordCount > 0 && this.recordCount <= 90;
+    }
+
+    get isValid() {
+        return this.isValidPrecision && this.isValidRecordCount && this.isValidAskOrBid && this.isValidUpdateRate;
+    }
+
+    get validationInfo() {
+        return {
+            precision: this.isValidPrecision,
+            recordCount: this.isValidRecordCount,
+            askOrBid: this.isValidAskOrBid,
+            updateRate: this.isValidUpdateRate,
+        }
     }
 }
 
-export class TickerRequest {
+export class TickerRequest extends ClientRequest {
     /**
      * Object to request ticker data.
      * @param currencyPair the ticker's currency pair
@@ -26,13 +81,32 @@ export class TickerRequest {
      * @constructor
      */
     constructor(currencyPair, recordCount, initialRecordCount) {
-        this.currencyPair = currencyPair;
+        super(currencyPair);
         this.recordCount = recordCount;
         this.initialRecordCount = initialRecordCount;
     }
+
+    get isValidRecordCount() {
+        return this.recordCount > 0 && this.recordCount <= 20;
+    }
+
+    get isValidInitialRecordCount() {
+        return this.initialRecordCount > 0 && this.initialRecordCount <= 20;
+    }
+
+    get isValid() {
+        this.isValidRecordCount && this.isValidInitialRecordCount;
+    }
+
+    get validationInfo() {
+        return {
+            recordCount: this.isValidRecordCount,
+            initialRecordCount: this.isValidInitialRecordCount,
+        }
+    }
 }
 
-export class TradesRequest {
+export class TradesRequest extends ClientRequest {
     /**
      * Object to request trades data.
      * @param currencyPair the trades' currency pair
@@ -42,14 +116,38 @@ export class TradesRequest {
      * @constructor
      */
     constructor(currencyPair, recordCount, soldOrBoughtOrBoth, initialRecordCount) {
-        this.currencyPair = currencyPair;
+        super(currencyPair);
         this.recordCount = recordCount;
         this.soldOrBoughtOrBoth = soldOrBoughtOrBoth;
         this.initialRecordCount = initialRecordCount;
     }
+
+    get isValidRecordCount() {
+        return this.recordCount > 0 && this.recordCount <= 20;
+    }
+
+    get isValidInitialRecordCount() {
+        return this.initialRecordCount > 0 && this.initialRecordCount <= 20;
+    }
+
+    get isValidSoldOrBoughtOrBoth() {
+        return tradeTypeConstants.hasOwnProperty(this.soldOrBoughtOrBoth);
+    }
+
+    get isValid() {
+        return this.isValidInitialRecordCount && this.isValidRecordCount && this.isValidSoldOrBoughtOrBoth;
+    }
+
+    get validationInfo() {
+        return {
+            recordCount: this.isValidRecordCount,
+            initialRecordCount: this.isValidInitialRecordCount,
+            soldOrBoughtOrBoth: this.isValidSoldOrBoughtOrBoth,
+        }
+    }
 }
 
-export class CandlesRequest {
+export class CandlesRequest extends ClientRequest {
     /**
      * Object to request candles data.
      * @param currencyPair the candles' currency pair
@@ -59,9 +157,33 @@ export class CandlesRequest {
      * @constructor
      */
     constructor(currencyPair, timeFrame, recordCount, initialRecordCount) {
-        this.currencyPair = currencyPair;
+        super(currencyPair);
         this.timeFrame = timeFrame;
         this.recordCount = recordCount;
         this.initialRecordCount = initialRecordCount;
+    }
+
+    get isValidRecordCount() {
+        return this.recordCount > 0 && this.recordCount <= 20;
+    }
+
+    get isValidInitialRecordCount() {
+        return this.initialRecordCount > 0 && this.initialRecordCount <= 20;
+    }
+
+    get isValidTimeFrame() {
+        return timeFrameConstants.hasOwnProperty(this.timeFrame);
+    }
+
+    get isValid() {
+        return this.isValidTimeFrame && this.isValidRecordCount && this.isValidInitialRecordCount;
+    }
+
+    get validationInfo() {
+        return {
+            timeFrame: this.isValidTimeFrame,
+            recordCount: this.isValidRecordCount,
+            initialRecordCount: this.isValidInitialRecordCount,
+        }
     }
 }
