@@ -21,8 +21,14 @@ let observerChanIdMapping = new Map();
  */
 export function requestData(observer, clientRequest) {
     stopDataRequest(observer); // only one subscription per observer
-    const subDesc = new SubscriptionDescriptor(observer, clientRequest);
-    requestSubscription(subDesc);
+    if (clientRequest.isValid) {
+        const subDesc = new SubscriptionDescriptor(observer, clientRequest);
+        requestSubscription(subDesc);
+    } else {
+        console.error("invalid request: ");
+        console.error(clientRequest.validationInfo);
+    }
+
 }
 
 /**
