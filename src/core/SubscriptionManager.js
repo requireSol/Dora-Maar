@@ -132,7 +132,7 @@ export function requestUnsubscription(chanId) {
  */
 export function responseMatchesRequest(subscriptionEventResponse, subscriptionRequest) {
     for (const key in subscriptionRequest) {
-        if (subscriptionRequest.hasOwnProperty(key) && key !== "event" && subscriptionEventResponse.hasOwnProperty(key) && subscriptionRequest[key] !== subscriptionEventResponse[key]) {
+        if (subscriptionRequest.hasOwnProperty(key) && key !== "event" && subscriptionEventResponse.hasOwnProperty(key) && subscriptionRequest[key] != subscriptionEventResponse[key]) { // not !== bc of integer and string conversion
             return false
         }
     }

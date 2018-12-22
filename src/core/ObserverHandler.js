@@ -71,46 +71,6 @@ export function stopDataRequest(observer2) {
     subscriptionQueue.remove(observer);
 
 }
-
-/**
- * Converts client requests to api requests
- * @param {ClientRequest} clientRequest the client request
- * @returns {APIRequest} the api requests for the server
- * @private
- */
-export function convertToApiRequest(clientRequest) {
-    if (clientRequest instanceof OrderBookRequest)
-        return {
-            event: eventConstants.SUBSCRIBE,
-            channel: channelConstants.ORDERBOOK,
-            len: (clientRequest["recordCount"] <= 25) ? "25" : "100",
-            freq: (clientRequest["updateRate"] === "realtime") ? "F0" : "F1",
-            prec: clientRequest["precision"],
-            symbol: "t" + clientRequest["currencyPair"]
-        };
-
-    if (clientRequest instanceof TickerRequest)
-        return {
-            event: eventConstants.SUBSCRIBE,
-            channel: channelConstants.TICKER,
-            symbol: "t" + clientRequest["currencyPair"]
-        };
-
-    if (clientRequest instanceof TradesRequest)
-        return {
-            event: eventConstants.SUBSCRIBE,
-            channel: channelConstants.TRADES,
-            symbol: "t" + clientRequest["currencyPair"]
-        };
-
-    if (clientRequest instanceof CandlesRequest)
-        return {
-            event: eventConstants.SUBSCRIBE,
-            channel: channelConstants.CANDLES,
-            key: "trade:" + clientRequest["timeFrame"] + ":t" + clientRequest["currencyPair"]
-        }
-}
-
 /**
  * Updates an observer with order book data.
  * @param {SubscriptionDescriptor} subDesc the SubscriptionDescriptor containing the observer

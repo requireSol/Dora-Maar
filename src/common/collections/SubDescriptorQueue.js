@@ -1,5 +1,4 @@
 import {_requestEqualsRequest, responseMatchesRequest} from "../../core/SubscriptionManager.js";
-import {convertToApiRequest} from "../../core/ObserverHandler.js";
 import {getIdFromRequest} from "../../core/SubscriptionManager.js";
 
 export class SubDescriptorQueue {
@@ -113,7 +112,7 @@ export class SubscriptionDescriptor {
     constructor(observer, clientRequest, needInitialData=true, apiRequest = null) {
         this.observer = observer;
         this.clientRequest = clientRequest;
-        this.apiRequest = apiRequest === null ? convertToApiRequest(clientRequest) : apiRequest;
+        this.apiRequest = apiRequest === null ? clientRequest.convertToApiRequest() : apiRequest;
         this.needInitialData = needInitialData;
     }
     get channelId() {

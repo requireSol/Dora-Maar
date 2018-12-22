@@ -3,7 +3,9 @@ import {
     precisionConstants,
     timeFrameConstants,
     orderBookTypeConstants,
-    tradesTypeConstants
+    tradesTypeConstants,
+    channelConstants,
+    eventConstants
 } from "../common/Constants.js";
 import {isValueOfObject, toValueIfKeyOfObject} from "../common/utils/ObjectUtils.js";
 
@@ -21,6 +23,10 @@ class ClientRequest {
     }
 
     get validationInfo() {
+        console.warn("not implemented");
+    }
+
+    convertToApiRequest() {
         console.warn("not implemented");
     }
 }
@@ -72,6 +78,17 @@ export class OrderBookRequest extends ClientRequest {
             updateRate: this.isValidUpdateRate,
         }
     }
+
+    convertToApiRequest() {
+        return {
+            event: eventConstants.SUBSCRIBE,
+            channel: channelConstants.ORDERBOOK,
+            len: "100",
+            freq: this.updateRate,
+            prec: this.precision,
+            symbol: "t" + this.currencyPair,
+        };
+    }
 }
 
 export class TickerRequest extends ClientRequest {
@@ -105,6 +122,14 @@ export class TickerRequest extends ClientRequest {
             recordCount: this.isValidRecordCount,
             initialRecordCount: this.isValidInitialRecordCount,
         }
+    }
+
+    convertToApiRequest() {
+        return {
+            event: eventConstants.SUBSCRIBE,
+            channel: channelConstants.TICKER,
+            symbol: "t" + this.currencyPair,
+        };
     }
 }
 
@@ -147,6 +172,14 @@ export class TradesRequest extends ClientRequest {
             soldOrBoughtOrBoth: this.isValidSoldOrBoughtOrBoth,
         }
     }
+
+    convertToApiRequest() {
+        return {
+            event: eventConstants.SUBSCRIBE,
+            channel: channelConstants.TRADES,
+            symbol: "t" + this.currencyPair,
+        };
+    }
 }
 
 export class CandlesRequest extends ClientRequest {
@@ -186,6 +219,14 @@ export class CandlesRequest extends ClientRequest {
             timeFrame: this.isValidTimeFrame,
             recordCount: this.isValidRecordCount,
             initialRecordCount: this.isValidInitialRecordCount,
+        }
+    }
+
+    convertToApiRequest() {
+        return {
+            event: eventConstants.SUBSCRIBE,
+            channel: channelConstants.CANDLES,
+            key: "trade:" + this.timeFrame + ":t" + this.currencyPair,
         }
     }
 }
