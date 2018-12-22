@@ -2,7 +2,7 @@ import {requestSubscription, subscriptionQueue} from "./SubscriptionManager.js";
 import {dataObjects} from "./DataHandler.js";
 import {CandlesRequest, OrderBookRequest, TickerRequest, TradesRequest} from "../model/requests.js";
 import {SubscriptionDescriptor} from "../common/collections/SubDescriptorQueue.js";
-import {channelConstants, eventConstants, orderBookTypeConstants, tradeTypeConstants} from "../common/Constants.js";
+import {channelConstants, eventConstants, orderBookTypeConstants, tradesTypeConstants} from "../common/Constants.js";
 
 /**
  * Maps channel ids to SubscriptionDescriptors
@@ -161,17 +161,17 @@ function updateTradesObserver(subDesc, tradesDataObject, needInitialData) {
     const recordCount = (needInitialData) ? clientRequest["initialRecordCount"] : clientRequest["recordCount"];
     let eventData;
 
-    if (type === tradeTypeConstants.SOLD && (tradesDataObject.soldUpdated || needInitialData)) {
+    if (type === tradesTypeConstants.SOLD && (tradesDataObject.soldUpdated || needInitialData)) {
         eventData = tradesDataObject.sold.slice(0, recordCount);
         source.update(eventData);
         return;
     }
-    if (type === tradeTypeConstants.BOUGHT && (tradesDataObject.boughtUpdated || needInitialData)) {
+    if (type === tradesTypeConstants.BOUGHT && (tradesDataObject.boughtUpdated || needInitialData)) {
         eventData = tradesDataObject.bought.slice(0, recordCount);
         source.update(eventData);
         return;
     }
-    if (type === tradeTypeConstants.BOTH && (tradesDataObject.bothUpdated || needInitialData)) {
+    if (type === tradesTypeConstants.BOTH && (tradesDataObject.bothUpdated || needInitialData)) {
         eventData = tradesDataObject.both.slice(0, recordCount);
         source.update(eventData);
     }
