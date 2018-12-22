@@ -3,8 +3,9 @@ import {
     precisionConstants,
     timeFrameConstants,
     orderBookTypeConstants,
-    tradeTypeConstants
+    tradesTypeConstants
 } from "../common/Constants.js";
+import {isValueOfObject, toValueIfKeyOfObject} from "../common/utils/ObjectUtils.js";
 
 class ClientRequest {
     constructor(currencyPair) {
@@ -14,6 +15,7 @@ class ClientRequest {
     get isValidCurrencyPair() {
         console.warn("not implemented for now");
     }
+
     get isValid() {
         console.warn("not implemented");
     }
@@ -36,22 +38,22 @@ export class OrderBookRequest extends ClientRequest {
      */
     constructor(precision, recordCount, askOrBid, currencyPair, updateRate) {
         super(currencyPair);
-        this.precision = precision;
+        this.precision = toValueIfKeyOfObject(precision.toUpperCase(), precisionConstants);
         this.recordCount = recordCount;
-        this.askOrBid = askOrBid;
-        this.updateRate = updateRate;
+        this.askOrBid = toValueIfKeyOfObject(askOrBid.toUpperCase(), orderBookTypeConstants);
+        this.updateRate = toValueIfKeyOfObject(updateRate.toUpperCase(), frequencyConstants);
     }
 
     get isValidPrecision() {
-        return precisionConstants.hasOwnProperty(this.precision);
+        return isValueOfObject(this.precision, precisionConstants);
     }
 
     get isValidUpdateRate() {
-        return frequencyConstants.hasOwnProperty(this.updateRate);
+        return isValueOfObject(this.updateRate, frequencyConstants);
     }
 
     get isValidAskOrBid() {
-        return orderBookTypeConstants.hasOwnProperty(this.askOrBid);
+        return isValueOfObject(this.askOrBid, orderBookTypeConstants);
     }
 
     get isValidRecordCount() {
@@ -118,7 +120,7 @@ export class TradesRequest extends ClientRequest {
     constructor(currencyPair, recordCount, soldOrBoughtOrBoth, initialRecordCount) {
         super(currencyPair);
         this.recordCount = recordCount;
-        this.soldOrBoughtOrBoth = soldOrBoughtOrBoth;
+        this.soldOrBoughtOrBoth = toValueIfKeyOfObject(soldOrBoughtOrBoth.toUpperCase(), tradesTypeConstants);
         this.initialRecordCount = initialRecordCount;
     }
 
@@ -131,7 +133,7 @@ export class TradesRequest extends ClientRequest {
     }
 
     get isValidSoldOrBoughtOrBoth() {
-        return tradeTypeConstants.hasOwnProperty(this.soldOrBoughtOrBoth);
+        return isValueOfObject(this.soldOrBoughtOrBoth, tradesTypeConstants);
     }
 
     get isValid() {
@@ -158,7 +160,7 @@ export class CandlesRequest extends ClientRequest {
      */
     constructor(currencyPair, timeFrame, recordCount, initialRecordCount) {
         super(currencyPair);
-        this.timeFrame = timeFrame;
+        this.timeFrame = toValueIfKeyOfObject(timeFrame, timeFrameConstants);
         this.recordCount = recordCount;
         this.initialRecordCount = initialRecordCount;
     }
@@ -172,7 +174,7 @@ export class CandlesRequest extends ClientRequest {
     }
 
     get isValidTimeFrame() {
-        return timeFrameConstants.hasOwnProperty(this.timeFrame);
+        return isValueOfObject(this.timeFrame, timeFrameConstants);
     }
 
     get isValid() {
