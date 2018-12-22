@@ -3,25 +3,6 @@ import {observer, informObserver} from "./ObserverHandler.js";
 import {requestUnsubscription} from "./SubscriptionManager.js";
 
 const config = {
-    getAllSymbols: {
-        timerInterval: 1000 * 60 * 15,
-        action: function () {
-            let xhr = new XMLHttpRequest();
-            xhr.open("GET", "https://api.bitfinex.com/v1/symbols", true);
-            xhr.onload = function (e) {
-                if (xhr.readyState === 4) {
-                    if (xhr.status === 200) {
-                        console.log(xhr.response);
-                    }
-                }
-            };
-            xhr.onerror(console.log.error(xhr.statusText));
-            xhr.send(null);
-        },
-        runningTimer: null,
-        queuedAction: null,
-    },
-
     reconnect: {
         timerInterval: 1000 * 10,
         action: reconnect,

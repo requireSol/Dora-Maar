@@ -1,4 +1,32 @@
-export class OrderBookRequest {
+import {
+    frequencyConstants,
+    precisionConstants,
+    timeFrameConstants,
+    orderBookTypeConstants,
+    tradesTypeConstants
+} from "../common/Constants.js";
+import {isValueOfObject, toValueIfKeyOfObject} from "../common/utils/ObjectUtils.js";
+
+class ClientRequest {
+    constructor(currencyPair) {
+        this.currencyPair = currencyPair;
+    }
+
+    get isValidCurrencyPair() {
+        console.warn("not implemented for now");
+    }
+
+    get isValid() {
+        console.warn("not implemented");
+    }
+
+    get validationInfo() {
+        console.warn("not implemented");
+    }
+}
+
+
+export class OrderBookRequest extends ClientRequest {
     /**
      * Object to request order book data.
      * @param precision the precision of the price
@@ -9,15 +37,44 @@ export class OrderBookRequest {
      * @constructor
      */
     constructor(precision, recordCount, askOrBid, currencyPair, updateRate) {
-        this.precision = precision;
+        super(currencyPair);
+        this.precision = toValueIfKeyOfObject(precision.toUpperCase(), precisionConstants);
         this.recordCount = recordCount;
-        this.askOrBid = askOrBid;
-        this.currencyPair = currencyPair;
-        this.updateRate = updateRate;
+        this.askOrBid = toValueIfKeyOfObject(askOrBid.toUpperCase(), orderBookTypeConstants);
+        this.updateRate = toValueIfKeyOfObject(updateRate.toUpperCase(), frequencyConstants);
+    }
+
+    get isValidPrecision() {
+        return isValueOfObject(this.precision, precisionConstants);
+    }
+
+    get isValidUpdateRate() {
+        return isValueOfObject(this.updateRate, frequencyConstants);
+    }
+
+    get isValidAskOrBid() {
+        return isValueOfObject(this.askOrBid, orderBookTypeConstants);
+    }
+
+    get isValidRecordCount() {
+        return this.recordCount > 0 && this.recordCount <= 90;
+    }
+
+    get isValid() {
+        return this.isValidPrecision && this.isValidRecordCount && this.isValidAskOrBid && this.isValidUpdateRate;
+    }
+
+    get validationInfo() {
+        return {
+            precision: this.isValidPrecision,
+            recordCount: this.isValidRecordCount,
+            askOrBid: this.isValidAskOrBid,
+            updateRate: this.isValidUpdateRate,
+        }
     }
 }
 
-export class TickerRequest {
+export class TickerRequest extends ClientRequest {
     /**
      * Object to request ticker data.
      * @param currencyPair the ticker's currency pair
@@ -26,13 +83,32 @@ export class TickerRequest {
      * @constructor
      */
     constructor(currencyPair, recordCount, initialRecordCount) {
-        this.currencyPair = currencyPair;
+        super(currencyPair);
         this.recordCount = recordCount;
         this.initialRecordCount = initialRecordCount;
     }
+
+    get isValidRecordCount() {
+        return this.recordCount > 0 && this.recordCount <= 20;
+    }
+
+    get isValidInitialRecordCount() {
+        return this.initialRecordCount > 0 && this.initialRecordCount <= 20;
+    }
+
+    get isValid() {
+        this.isValidRecordCount && this.isValidInitialRecordCount;
+    }
+
+    get validationInfo() {
+        return {
+            recordCount: this.isValidRecordCount,
+            initialRecordCount: this.isValidInitialRecordCount,
+        }
+    }
 }
 
-export class TradesRequest {
+export class TradesRequest extends ClientRequest {
     /**
      * Object to request trades data.
      * @param currencyPair the trades' currency pair
@@ -42,14 +118,38 @@ export class TradesRequest {
      * @constructor
      */
     constructor(currencyPair, recordCount, soldOrBoughtOrBoth, initialRecordCount) {
-        this.currencyPair = currencyPair;
+        super(currencyPair);
         this.recordCount = recordCount;
-        this.soldOrBoughtOrBoth = soldOrBoughtOrBoth;
+        this.soldOrBoughtOrBoth = toValueIfKeyOfObject(soldOrBoughtOrBoth.toUpperCase(), tradesTypeConstants);
         this.initialRecordCount = initialRecordCount;
+    }
+
+    get isValidRecordCount() {
+        return this.recordCount > 0 && this.recordCount <= 20;
+    }
+
+    get isValidInitialRecordCount() {
+        return this.initialRecordCount > 0 && this.initialRecordCount <= 20;
+    }
+
+    get isValidSoldOrBoughtOrBoth() {
+        return isValueOfObject(this.soldOrBoughtOrBoth, tradesTypeConstants);
+    }
+
+    get isValid() {
+        return this.isValidInitialRecordCount && this.isValidRecordCount && this.isValidSoldOrBoughtOrBoth;
+    }
+
+    get validationInfo() {
+        return {
+            recordCount: this.isValidRecordCount,
+            initialRecordCount: this.isValidInitialRecordCount,
+            soldOrBoughtOrBoth: this.isValidSoldOrBoughtOrBoth,
+        }
     }
 }
 
-export class CandlesRequest {
+export class CandlesRequest extends ClientRequest {
     /**
      * Object to request candles data.
      * @param currencyPair the candles' currency pair
@@ -59,9 +159,33 @@ export class CandlesRequest {
      * @constructor
      */
     constructor(currencyPair, timeFrame, recordCount, initialRecordCount) {
-        this.currencyPair = currencyPair;
-        this.timeFrame = timeFrame;
+        super(currencyPair);
+        this.timeFrame = toValueIfKeyOfObject(timeFrame, timeFrameConstants);
         this.recordCount = recordCount;
         this.initialRecordCount = initialRecordCount;
+    }
+
+    get isValidRecordCount() {
+        return this.recordCount > 0 && this.recordCount <= 20;
+    }
+
+    get isValidInitialRecordCount() {
+        return this.initialRecordCount > 0 && this.initialRecordCount <= 20;
+    }
+
+    get isValidTimeFrame() {
+        return isValueOfObject(this.timeFrame, timeFrameConstants);
+    }
+
+    get isValid() {
+        return this.isValidTimeFrame && this.isValidRecordCount && this.isValidInitialRecordCount;
+    }
+
+    get validationInfo() {
+        return {
+            timeFrame: this.isValidTimeFrame,
+            recordCount: this.isValidRecordCount,
+            initialRecordCount: this.isValidInitialRecordCount,
+        }
     }
 }

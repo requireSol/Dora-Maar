@@ -21,7 +21,7 @@ export class TradesTable extends BaseTable {
 
     fillTable(data, metadata) {
         for (let i = 0; i < this._rowCount && i < data.length; i++) {
-            this.fillRow(i, data[i], i === 1);
+            this.fillRow(i, data[i], i === 0);
         }
     }
 }
@@ -34,7 +34,7 @@ export class TickerTable extends BaseTable {
 
     fillTable(data, metadata) {
         for (let i = 0; i < this._rowCount && i < data.length; i++) {
-            this.fillRow(i, data[i], i === 1);
+            this.fillRow(i, data[i], i === 0);
         }
     }
 }

@@ -10,6 +10,7 @@ import {
 import {handle as handleMessage} from "./MessageHandler.js";
 import {informObserver} from "./ObserverHandler.js";
 import {executeAction, startTimer, stopTimer} from "./TimerAndActions.js";
+import {eventConstants, platformConstants} from "../common/Constants.js";
 
 const url = "wss://api.bitfinex.com/ws/2";
 
@@ -72,7 +73,7 @@ export function initialize() {
  */
 export function send(data) {
     if (navigator.onLine && webSocket instanceof WebSocket && webSocket.readyState === WebSocket.OPEN
-        && platformStatus === 1) {
+        && platformStatus === platformConstants.OPERATIVE) {
         webSocket.send(data);
         return true;
     }
@@ -83,7 +84,7 @@ export function send(data) {
  * Sends a ping message to the connected server if possible
  */
 export function pingWebSocket() {
-    const action = {event: "ping"};
+    const action = {event: eventConstants.PING};
     if (!send(JSON.stringify(action))) {
 
     }
