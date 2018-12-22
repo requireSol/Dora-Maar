@@ -4,6 +4,7 @@ import {OrderBookData} from "../model/OrderBookData.js";
 import {TradesData} from "../model/TradesData.js";
 import {TickerData} from "../model/TickerData.js";
 import {round} from "../common/utils/MathUtils.js";
+import {frequencyConstants, orderBookTypeConstants, precisionConstants, tradesTypeConstants} from "../common/Constants.js";
 
 const isInitializedProperty = Symbol();
 
@@ -86,7 +87,10 @@ export class OrderBookView extends ObserverBaseElement {
 
     get askOrBid() {
         let askOrBid = this.getAttribute("data-askOrBid");
-        return ["ask", "bid"].includes(askOrBid) ? askOrBid : "ask";
+        if (askOrBid === null) {
+            askOrBid = orderBookTypeConstants.ASK;
+        }
+        return askOrBid
     }
 
     get count() {
@@ -106,14 +110,17 @@ export class OrderBookView extends ObserverBaseElement {
     }
 
     get frequency() {
-        let frequency = this.getAttribute("data-frequency");
-        return ["realtime", "interval"].includes(frequency) ? frequency : "interval";
+        let frequency =  this.getAttribute("data-frequency");
+        if (frequency === null) {
+            frequency = frequencyConstants.EVERY_TWO_SECONDS;
+        }
+        return frequency;
     }
 
     get precision() {
         let precision = this.getAttribute("data-precision");
         if (precision === null) {
-            precision = "P0"
+            precision = precisionConstants.FIVE_SIGNIFICANT_DIGITS;
         }
         return precision;
     }
@@ -246,8 +253,10 @@ export class TradesView extends ObserverBaseElement {
 
     get soldOrBoughtOrBoth() {
         let soldOrBoughtOrBoth = this.getAttribute("data-soldOrBoughtOrBoth");
-
-        return ["sold", "bought", "both"].includes(soldOrBoughtOrBoth) ? soldOrBoughtOrBoth : "both";
+        if (soldOrBoughtOrBoth === null) {
+            soldOrBoughtOrBoth = tradesTypeConstants.BOTH;
+        }
+        return soldOrBoughtOrBoth;
     }
 
 
