@@ -12,30 +12,34 @@
   <link href="https://fonts.googleapis.com/css?family=Patua+One" rel="stylesheet">
   <link href="/stylesheets/style.css" rel="stylesheet">
   <script src="/javascripts/navbar.js"></script>
+   <script src="/javascripts/changeDarkLight.js"></script>
 </head>
 <body id="myPage" data-spy="scroll" data-target=".navbar" data-offset="60">
 
 <!-- Container (Navbar Section) -->
-<div id="navbar" class="container-fluid">
+<div id="navbar" style="background-color:white" class="container-fluid">
 <nav> 
    <div class="row">
     <div class="col-sm-1"></div>
     <div class="col-sm-2">
-      <h2 style="float:left;">Neda
+      <h2 id="logo" style="float:left;">Neda
       </h2>
     </div>
-<ul style="float:right; margin-right:150px;" >
+<ul id="navul" style="float:right; margin-right:150px;" >
   <li><a href="#home">About</a></li>
   <li><a href="#news">News</a></li>
   <li><a href="#contact">Contact</a></li>
   <li><a class="active" href="#about">LogIn</a></li>
+  <li><a onclick="changeStyle()"  id="changeStyle"><span class="glyphicon glyphicon-adjust"></span></a></li>
 </ul>
 <div class="dropdown" style="float:right;">
   <span onclick="dropDownToogle()" class="dropbtn glyphicon glyphicon-menu-hamburger" style="color:black"></span>
   <div id="myDropdown" class="dropdown-content">
-    <a href="#home">Home</a>
-    <a href="#about">About</a>
+    <a href="#home">About</a>
+    <a href="#about">News</a>
     <a href="#contact">Contact</a>
+     <a href="#contact">LogIn</a>
+     <a  onclick="changeStyle()"  id="changeStyle"><span class="glyphicon glyphicon-adjust" style="color:black"></span></a>
   </div>
 </div>
 </nav>
