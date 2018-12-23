@@ -31,7 +31,7 @@ const credentials = {
 // Starting both http & https servers
 const server = https.createServer(credentials, app);
 
-http.createServer(function (req, res) {
+ http.createServer(function (req, res) {
     res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
     res.end();
 }).listen(80);

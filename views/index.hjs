@@ -17,7 +17,7 @@
 <body id="myPage" data-spy="scroll" data-target=".navbar" data-offset="60">
 
 <!-- Container (Navbar Section) -->
-<div id="navbar" style="background-color:white" class="container-fluid">
+<div id="navbar" style="background-color:white; color:black" class="container-fluid">
 <nav> 
    <div class="row">
     <div class="col-sm-1"></div>
@@ -26,20 +26,20 @@
       </h2>
     </div>
 <ul id="navul" style="float:right; margin-right:150px;" >
-  <li><a href="#home">About</a></li>
-  <li><a href="#news">News</a></li>
-  <li><a href="#contact">Contact</a></li>
-  <li><a class="active" href="#about">LogIn</a></li>
-  <li><a onclick="changeStyle()"  id="changeStyle"><span class="glyphicon glyphicon-adjust"></span></a></li>
+  <li><div class="select"  href="#home">About</div></li>
+  <li><div class="select" href="#news">News</div></li>
+  <li><div class="select"  href="#contact">Contact</div></li>
+  <li><div class="select active" href="#about">LogIn</div></li>
+  <li><div class="select" onclick="changeStyle()"  id="changeStyle"><span class="glyphicon glyphicon-adjust"></span></div></li>
 </ul>
 <div class="dropdown" style="float:right;">
   <span onclick="dropDownToogle()" class="dropbtn glyphicon glyphicon-menu-hamburger" style="color:black"></span>
   <div id="myDropdown" class="dropdown-content">
-    <a href="#home">About</a>
-    <a href="#about">News</a>
-    <a href="#contact">Contact</a>
-     <a href="#contact">LogIn</a>
-     <a  onclick="changeStyle()"  id="changeStyle"><span class="glyphicon glyphicon-adjust" style="color:black"></span></a>
+   <div class="select2"  href="#home">About</div>
+  <div class="select2" href="#news">News</div>
+  <div class="select2"  href="#contact">Contact</div>
+  <div class="select2 active" href="#about">LogIn</div>
+  <div class="select2" onclick="changeStyle()"  id="changeStyle"><span class="glyphicon glyphicon-adjust"></span></div>
   </div>
 </div>
 </nav>
@@ -47,8 +47,8 @@
 
 
 <!-- Container (About Section) -->
-<div  id="about" class="container-fluid">
-  <div class="row">
+<div id="block1" class="container-fluid">
+  <div  class="row">
     <div class="col-sm-1"></div>
     <div class="col-sm-6">
       <h4>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</h4><br>
@@ -62,7 +62,7 @@
 </div>
 
 <!-- Container (Our Values) -->
-<div class="container-fluid bg-grey">
+<div id="block2" style="background:#f1f1f1" class="container-fluid">
     <div class="row">
       <div class="col-sm-4">
         <span class="glyphicon glyphicon-signal logo slideanim"></span>
@@ -77,10 +77,10 @@
 </div>
 
 <!-- Container (Contact Section) -->
-<div id="contact" class="container-fluid bg-grey">
-  <h2 class="text-center">CONTACT</h2>
+<div id="block3" class="container-fluid">
   <div class="row">
     <div class="col-sm-5">
+       <h2 class="text-center">CONTACT</h2>
       <p>Contact us and we'll get back to you within 24 hours.</p>
       <p><span class="glyphicon glyphicon-map-marker"></span> Chicago, US</p>
       <p><span class="glyphicon glyphicon-phone"></span> +00 1515151515</p>
@@ -105,7 +105,7 @@
   </div>
 </div>
 
-<footer style="background-color: #65acc2; color: #ffffff" class="container-fluid text-center">
+<footer id = "footer" style="background-color: #65acc2; color: #ffffff" class="container-fluid text-center">
   <a href="#myPage" title="To Top">
     <span style="color: #ffffff" class="glyphicon glyphicon-chevron-up"></span>
   </a>
