@@ -5,11 +5,31 @@ var cookieParser = require('cookie-parser');
 var lessMiddleware = require('less-middleware');
 var logger = require('morgan');
 
+var app = express();
+
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-var cryptRouter = require('./routes/crypt');
 
-var app = express();
+io.sockets.on('connection', function(socket){
+    console.log('socket connection');
+ 
+    socket.on('happy',function(data){
+        console.log('happy because ' + data.reason);
+    });
+;
+    socket.on('disconnect', function(){
+      console.log('user disconnected');
+    });
+   
+    socket.emit('serverMsg',{
+        msg:'hello',
+    });
+   
+});
+ 
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -24,7 +44,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/', cryptRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -42,5 +61,5 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-module.exports = app;
-exports.app = app;
+//IO
+module.exports = {app: app, server: server};
