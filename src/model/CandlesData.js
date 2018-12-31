@@ -19,13 +19,13 @@ export class CandlesData {
             this.candles.splice(-1, 1);
             this.candles.splice(0, 0, updateData);
             this.hasNewTimeStamp = true;
-            console.info("new timestamp");
+            //console.info("new timestamp");
         } else {
             for (let i = 0; i < this.candles.length; i++) {
                 if (updateData[0] === this.candles[i][0]) {
                     this.candles[i] = updateData;
                     this.updatedTimeStampIndex = i;
-                    console.info("update timestamp at index " + i);
+                    //console.info("update timestamp at index " + i);
                     break;
                 }
             }

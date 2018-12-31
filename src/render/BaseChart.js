@@ -180,11 +180,11 @@ export class Chart extends HTMLDivElement {
 
         this.draw();
 
-        setTimeout(() => {
-            this._height = 500;
-            this.maxTicksY = 5;
-            this.width = 500;
-        }, 10000)
+        //setTimeout(() => {
+        //    this._height = 500;
+        //    this.maxTicksY = 5;
+        //    this.width = 500;
+        //}, 10000)
     }
 
     updateOrInitData(data) {
