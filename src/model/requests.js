@@ -114,7 +114,7 @@ export class TickerRequest extends ClientRequest {
     }
 
     get isValid() {
-        this.isValidRecordCount && this.isValidInitialRecordCount;
+        return this.isValidRecordCount && this.isValidInitialRecordCount;
     }
 
     get validationInfo() {
