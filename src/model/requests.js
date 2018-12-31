@@ -199,11 +199,11 @@ export class CandlesRequest extends ClientRequest {
     }
 
     get isValidRecordCount() {
-        return this.recordCount > 0 && this.recordCount <= 20;
+        return this.recordCount > 0 && this.recordCount <= 240;
     }
 
     get isValidInitialRecordCount() {
-        return this.initialRecordCount > 0 && this.initialRecordCount <= 20;
+        return this.initialRecordCount > 0 && this.initialRecordCount <= 240;
     }
 
     get isValidTimeFrame() {

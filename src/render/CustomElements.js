@@ -5,8 +5,172 @@ import {TradesData} from "../model/TradesData.js";
 import {TickerData} from "../model/TickerData.js";
 import {round} from "../common/utils/MathUtils.js";
 import {frequencyConstants, orderBookTypeConstants, precisionConstants, tradesTypeConstants} from "../common/Constants.js";
+import {CandlesRequest} from "../model/requests.js";
 
 const isInitializedProperty = Symbol();
+
+export class CandlesView extends ObserverBaseElement {
+    static get observedAttributes() {
+        return ["data-count", "data-pair", "data-title", "data-timeFrame", "data-action", "data-width", "data-height"];
+    }
+
+    set count(recordCount) {
+        this.setAttribute("data-count", "" + recordCount);
+    }
+
+    set pair(currencyPair) {
+        this.setAttribute("data-pair", currencyPair);
+    }
+
+    set title(title) {
+        this.setAttribute("data-title", title);
+    }
+
+    set timeFrame(timeFrame) {
+        this.setAttribute("data-timeFrame", timeFrame);
+    }
+
+    set width(width) {
+        this.setAttribute("data-width", width);
+    }
+
+    set height(height) {
+        this.setAttribute("data-height", height);
+    }
+
+    get count() {
+        let recordCount = parseInt(this.getAttribute("data-count"));
+        if (isNaN(recordCount)) {
+            recordCount = 50;
+        }
+        return recordCount;
+    }
+
+    get title() {
+        let title = this.getAttribute("data-title");
+        if (title === null) {
+            title = "CANDLECHART - " + this.pair.toUpperCase() + " - " + this.timeFrame;
+        }
+        return title;
+    }
+
+    get timeFrame() {
+        let timeFrame = this.getAttribute("data-timeFrame");
+        if (timeFrame === null) {
+            timeFrame = "1m";
+        }
+        return timeFrame;
+    }
+
+    get width() {
+        let width = parseInt(this.getAttribute("data-width"));
+        if (isNaN(width)) {
+            width = 400;
+        }
+        return width;
+    }
+
+    get height() {
+        let height = parseInt(this.getAttribute("data-height"));
+        if (isNaN(height)) {
+            height = 300;
+        }
+        return height;
+    }
+
+    get pair() {
+        let pair = this.getAttribute("data-pair");
+        if (pair === null) {
+            pair = "BTCUSD";
+        }
+        return pair;
+    }
+
+
+
+    constructor() {
+        super();
+        this.parameterBackup = new Map();
+        this[isInitializedProperty] = false;
+        this.chart = null;
+        this.notificationBox = null;
+    }
+
+    disconnectedCallback() {
+        this.unsubscribeFromData();
+    }
+
+    connectedCallback() {
+        super.connectedCallback();
+        if (!this[isInitializedProperty]) {
+            // create chart
+            this.chart = document.createElement("div", {is: "candle-chart"});
+            this.chart.width = this.width;
+            this.chart.height = this.height;
+            this.chart._dataCount = this.count;
+            // create notification box
+            this.notificationBox = document.createElement("div", {is: "notification-box"});
+
+            this.shadow.appendChild(this.chart);
+            this.shadow.appendChild(this.notificationBox);
+            this[isInitializedProperty] = true;
+        }
+        this.applyAttributes(true);
+    }
+
+    applyAttributes(assumeEverythingChanged = false) {
+        if (this.parameterBackup.has("data-title") || assumeEverythingChanged) {
+            //this.chart.title = this.title; // TODO
+        }
+        if (this.parameterBackup.has("data-count") || assumeEverythingChanged) {
+            this.chart.dataCount = this.count; // TODO
+
+        }
+        if (this.parameterBackup.has("data-pair") || this.parameterBackup.has("data-count")
+            || assumeEverythingChanged) {
+            // need new request
+            //this.chart.clear(); // TODO
+            this.subscribeToData(this.createRequestFromAttributes());
+        }
+    }
+
+    restoreParameters() {
+        for (const [name, value] of this.parameterBackup.entries()) {
+            this.setAttribute(name, value);
+        }
+        this.parameterBackup.clear();
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        if (name === "data-action") {
+            if (newValue === "restore") {
+                this.restoreParameters();
+            } else if (newValue === "apply") {
+                this.applyAttributes();
+            }
+        } else if (!this.parameterBackup.has(name)) {
+            this.parameterBackup.set(name, oldValue);
+        }
+    }
+
+    createRequestFromAttributes() {
+        return new CandlesRequest(this.pair, this.timeFrame, this.count, this.count)
+    }
+
+    update(data, metadata) {
+        this.chart.update(data, metadata);
+
+    }
+
+    info(message) {
+        this.notificationBox.addNotification(message["level"], message["title"], message["msg"]);
+    }
+
+
+
+
+}
+
 
 export class OrderBookView extends ObserverBaseElement {
     static get observedAttributes() {

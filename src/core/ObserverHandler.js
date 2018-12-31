@@ -149,7 +149,14 @@ function updateCandlesObserver(subDesc, CandlesDataObject, needInitialData) {
     const recordCount = (needInitialData) ? clientRequest["initialRecordCount"] : clientRequest["recordCount"];
     const eventData = CandlesDataObject.candles.slice(0, recordCount);
 
-    source.update(eventData);
+    let metadata = new Map();
+    metadata.set("isInitialData", needInitialData);
+    metadata.set("globalLow", CandlesDataObject.globalLow);
+    metadata.set("globalHigh", CandlesDataObject.globalHigh);
+    metadata.set("updatedTimeStampIndex", CandlesDataObject.updatedTimeStampIndex);
+    metadata.set("hasNewTimeStamp", CandlesDataObject.hasNewTimeStamp);
+
+    source.update(eventData, metadata);
 }
 
 /**

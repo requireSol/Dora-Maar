@@ -1,18 +1,38 @@
 export class CandlesData {
     constructor(snapshotData) {
+        this.maxLength = 240;
         this.candles = snapshotData.slice(0, this.maxLength);
-        this.maxLength = 60;
 
         this.globalHigh = this.calcGlobalHigh();
         this.globalLow = this.calcGlobalLow();
+        this.updatedTimeStampIndex = -1;
+        this.hasNewTimeStamp = false;
+
     }
 
     update(updateData) {
-        this.candles.splice(-1, 1);
-        this.candles.splice(0, 0, updateData);
+        updateData = updateData[0];
+        this.updatedTimeStampIndex = -1;
+        this.hasNewTimeStamp = false;
 
-        this.updateGlobalLow(updateData[4]);
-        this.updateGlobalHigh(updateData[3]);
+        if (updateData[0] > this.candles[0][0]) {
+            this.candles.splice(-1, 1);
+            this.candles.splice(0, 0, updateData);
+            this.hasNewTimeStamp = true;
+            console.info("new timestamp");
+        } else {
+            for (let i = 0; i < this.candles.length; i++) {
+                if (updateData[0] === this.candles[i][0]) {
+                    this.candles[i] = updateData;
+                    this.updatedTimeStampIndex = i;
+                    console.info("update timestamp at index " + i);
+                    break;
+                }
+            }
+        }
+
+        this.globalHigh = this.calcGlobalHigh();
+        this.globalLow = this.calcGlobalLow();
     }
 
     static getDataFields() {
