@@ -6,14 +6,12 @@ body {
 h2 {
   font-size: 24px;
   text-transform: uppercase;
-  color: #303030;
   font-weight: 600;
   margin-bottom: 30px;
 }
 h4 {
   font-size: 19px;
   line-height: 1.375em;
-  color: #303030;
   font-weight: 400;
   margin-bottom: 30px;
 }  
@@ -123,20 +121,23 @@ ul {
 
 li {
   float: left;
-  color: black;
 }
 
-li a {
+li .select {
   display: block;
-  color: rgb(0, 0, 0);
   text-align: center;
   padding: 14px 16px;
   text-decoration: none;
+  cursor: pointer;
 }
 
-li a:hover {
-  background-color: rgb(255, 255, 255);
+li .select:hover {
+  font-weight: bold;
   text-decoration: none;
+}
+
+#navbar{
+  background-color: white; 
 }
 
 .dropbtn {
@@ -164,11 +165,15 @@ li a:hover {
 
 }
 
-.dropdown-content a {
-  color: black;
+.dropdown-content .select2 {
+  cursor: pointer;
   padding: 12px 16px;
   text-decoration: none;
   display: block;
+}
+
+.dropdown-content .select2:hover {  
+  font-weight: bold;
 }
 
 .show {display: block;}

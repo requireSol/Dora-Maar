@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 
-var app = require('../app');
+var app = require('../app').app;
 var debug = require('debug')('rase.io:server');
 var http = require('http');
 var https = require('https');
@@ -14,9 +14,9 @@ var fs = require('fs');
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '443');
+var port = normalizePort(process.env.PORT || '80');
 app.set('port', port);
-
+/*
 // Certificate
 const privateKey = fs.readFileSync('/etc/letsencrypt/live/rase.io/privkey.pem', 'utf8');
 const certificate = fs.readFileSync('/etc/letsencrypt/live/rase.io/cert.pem', 'utf8');
@@ -28,23 +28,27 @@ const credentials = {
 	ca: ca
 };
 
+*/
 // Starting both http & https servers
-const server = https.createServer(credentials, app);
-
-http.createServer(function (req, res) {
-    res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
-    res.end();
-}).listen(80);
-
+//var server = https.createServer(credentials, app);
+/*
+ const server = http.createServer(function (req, res) {
+   // res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
+   // res.end();
+}).listen(80);*/
+/*
 server.listen(443, () => {
 	console.log('HTTPS Server running on port 443');
 });
-
+*/
 /**
  * Listen on provided port, on all network interfaces.
  */
 
-//server.listen(port);
+var server = require('../app').server;
+
+server.listen(port);
+console.log("Started on Port " + port);
 server.on('error', onError);
 server.on('listening', onListening);
 
