@@ -10,6 +10,7 @@ export class Chart extends HTMLDivElement {
 
     set title(title) {
         this._title = title;
+        this.titleDiv.textContent = title;
     }
 
     set dataCount(dataCount) {
@@ -27,7 +28,7 @@ export class Chart extends HTMLDivElement {
     }
 
     set height(height) {
-        this._height = height - 17;
+        this._height = height - this.params.SCROLLBAR_HEIGHT - this.params.TITLE_HEIGHT;
         if (this[isInitializedProperty]) {
             this.draw();
         }
@@ -91,6 +92,9 @@ export class Chart extends HTMLDivElement {
             Y_AXIS_MARKER_LENGTH: 5,
             RADIUS_POINT_DATA: 2,
             AXIS_STROKE_WIDTH: 2,
+            TITLE_HEIGHT: 20,
+            SCROLLBAR_HEIGHT: 17,
+            MIN_X_TICK_SPACING: 20,
         };
         this.createSVGGroups();
     }
@@ -335,7 +339,7 @@ export class Chart extends HTMLDivElement {
 :host {
     position: relative;
     width: ${this._width}px;
-    height: ${this._height}px;
+    height: ${this._height + this.params.TITLE_HEIGHT}px;
 }        
 
 .dataThings {
@@ -343,7 +347,7 @@ export class Chart extends HTMLDivElement {
     top: 0;
     left: 0;
     width: ${this._width}px;
-    height: ${this._height + 17}px;
+    height: ${this._height + this.params.SCROLLBAR_HEIGHT + this.params.TITLE_HEIGHT}px;
     background-color: transparent;
     overflow-x: scroll;
     overflow-y: hidden;
@@ -351,7 +355,7 @@ export class Chart extends HTMLDivElement {
 
 .inner {
     position: absolute;
-    top: 0;
+    top: ${this.params.TITLE_HEIGHT}px;
     left: 0;
     background-color: transparent;
     height: ${this._height}px;
@@ -360,7 +364,7 @@ export class Chart extends HTMLDivElement {
 
 .axis {
     position: absolute;
-    top: 0;
+    top: ${this.params.TITLE_HEIGHT}px;
     left: 0;
     width: ${this.maxTextWidthYLabels + this.params.Y_AXIS_MARKER_LENGTH + this.params.Y_LABEL_RIGHT_PADDING + this.params.GRAPH_LEFT_PADDING + 1}px;  /* axis stroke width / 2 */
     height: ${this._height}px;
@@ -372,21 +376,23 @@ export class Chart extends HTMLDivElement {
     top: 0;
     left: 0;
     width: ${this._width}px;
-    height: 20px;
+    height: ${this.params.TITLE_HEIGHT}px;
+    text-align: center;
    
 }`;
 
     }
 
     updateOrInitSVG() {
-        //this.titleDiv = document.createElement("div");
-        //this.titleDiv.classList.add("caption");
-        //this.titleDiv.innerText = this._title;
-        //this.shadow.appendChild(this.titleDiv);
 
         const xOffset = this.maxTextWidthYLabels + this.params.Y_AXIS_MARKER_LENGTH + this.params.Y_LABEL_RIGHT_PADDING +
             this.params.GRAPH_LEFT_PADDING;
         if (!this[isInitializedProperty]) {
+            this.titleDiv = document.createElement("div");
+            this.titleDiv.classList.add("caption");
+            this.titleDiv.innerText = this._title;
+            this.shadow.appendChild(this.titleDiv);
+
             this.svgYAxis = Chart.createSVGNode("svg", {"viewBox": "0 0 " + (xOffset + this.params.AXIS_STROKE_WIDTH / 2) + " " + (this._height)});
             this.svgYAxis.classList.add("axis");
             this.svg = Chart.createSVGNode("svg", {"viewBox": "0 0 " + (this._chartWidth) + " " + (this._height)});
@@ -502,12 +508,12 @@ export class Chart extends HTMLDivElement {
     calculateActualCoords() {
         this.calculateAxisLength();
         this.xTickWidth = this.xAxisWidth / this._dataCount;
-        if (this.xTickWidth < 20) {
-            console.log("two small x width");
-            let additionalSpace = (25 - this.xTickWidth) * this._dataCount;
+        if (this.xTickWidth < this.params.MIN_X_TICK_SPACING) {
+            console.log("too small x width");
+            let additionalSpace = (this.params.MIN_X_TICK_SPACING - this.xTickWidth) * this._dataCount;
             this._chartWidth = this._chartWidth + additionalSpace;
 
-            this.xTickWidth = 25;
+            this.xTickWidth = this.params.MIN_X_TICK_SPACING;
             this.calculateAxisLength();
         }
 

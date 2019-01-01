@@ -108,6 +108,7 @@ export class CandlesView extends ObserverBaseElement {
             this.chart.width = this.width;
             this.chart.height = this.height;
             this.chart._dataCount = this.count;
+            this.chart._title = this.title;
             // create notification box
             this.notificationBox = document.createElement("div", {is: "notification-box"});
 
