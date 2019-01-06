@@ -34,8 +34,6 @@ export class Chart extends HTMLDivElement {
         if (this[isInitializedProperty]) {
             this.draw();
         }
-
-        //this.draw();
     }
 
     set isXAxisDescending(isXAxisDescending) {
@@ -105,6 +103,7 @@ export class Chart extends HTMLDivElement {
         this.params = {
             GRAPH_LEFT_PADDING: 5,
             GRAPH_RIGHT_PADDING: 15,
+            GRAPH_ADDITIONAL_RIGHT_PADDING: 0,
             GRAPH_TOP_PADDING: 5,
             GRAPH_BOTTOM_PADDING: 5,
             Y_LABEL_RIGHT_PADDING: 5,
@@ -116,6 +115,8 @@ export class Chart extends HTMLDivElement {
             TITLE_HEIGHT: 20,
             SCROLLBAR_HEIGHT: 17,
             MIN_X_TICK_SPACING: 20,
+            Y_AXIS_LABEL_FONT_SIZE: 12,
+            X_AXIS_LABEL_FONT_SIZE: 10,
         };
         this.createSVGGroups();
     }
@@ -128,7 +129,7 @@ export class Chart extends HTMLDivElement {
         });
         this.xAxisLabelsGroup = Chart.createSVGNode("g", {
             fill: "red",
-            "font-size": 10,
+            "font-size": this.params.X_AXIS_LABEL_FONT_SIZE,
         });
         this.yAxisMarkersGroup = Chart.createSVGNode("g", {
             style: "stroke:rgb(0,0,0);stroke-width:1"
@@ -136,7 +137,7 @@ export class Chart extends HTMLDivElement {
         this.yAxisLabelsGroup = Chart.createSVGNode("g", {
             fill: "red",
             "text-anchor": "end",
-            "font-size": 12,
+            "font-size": this.params.Y_AXIS_LABEL_FONT_SIZE,
         });
         this.yAxisHelperLines = Chart.createSVGNode("g", {
             style: "stroke:rgb(200,200,200);stroke-width:1;stroke-dasharray:5"
@@ -146,7 +147,7 @@ export class Chart extends HTMLDivElement {
 
     calculateAxisLength() {
         this.xAxisWidth = this._chartWidth - (this.maxTextWidthYLabels +
-            this.params.GRAPH_LEFT_PADDING + this.params.GRAPH_RIGHT_PADDING +
+            this.params.GRAPH_LEFT_PADDING + this.params.GRAPH_RIGHT_PADDING + this.params.GRAPH_ADDITIONAL_RIGHT_PADDING +
             this.params.Y_LABEL_RIGHT_PADDING + this.params.Y_AXIS_MARKER_LENGTH);
 
         this.yAxisHeight = this._height - (this.maxTextWidthXLabels +
@@ -174,10 +175,10 @@ export class Chart extends HTMLDivElement {
     }
 
     adjustParams() {
-        this.maxTextWidthYLabels = Chart.getMaxTextWidth(this.yLabelValues, "12px Arial", this._yLabelModifier);
-        const maxWidth = Chart.getMaxTextWidth(this.data, "10px Arial", (x) => (this._xLabelModifier === null) ? x[0] : this._xLabelModifier(x[0]));
+        this.maxTextWidthYLabels = Chart.getMaxTextWidth(this.yLabelValues, `${this.params.Y_AXIS_LABEL_FONT_SIZE}px Arial`, this._yLabelModifier);
+        const maxWidth = Chart.getMaxTextWidth(this.data, `${this.params.X_AXIS_LABEL_FONT_SIZE}px Arial`, (x) => (this._xLabelModifier === null) ? x[0] : this._xLabelModifier(x[0]));
         this.maxTextWidthXLabels =  Math.sin(Math.PI / 3) * maxWidth;
-        this.params.GRAPH_RIGHT_PADDING = 15 + Math.cos(Math.PI / 3) * maxWidth;
+        this.params.GRAPH_ADDITIONAL_RIGHT_PADDING = Math.cos(Math.PI / 3) * maxWidth;
     }
 
     draw(xAxisValueChanged = true, yAxisValueChanged = true) {
@@ -200,17 +201,10 @@ export class Chart extends HTMLDivElement {
 
     initialization(data, metadata) {
         this.data = data;
-        //this._dataCount = data.length;
         this.minY = metadata.get("globalLow") * 0.997;
         this.maxY = metadata.get("globalHigh") * 1.003;
 
         this.draw();
-
-        //setTimeout(() => {
-        //    this._height = 500;
-        //    this.maxTicksY = 5;
-        //    this.width = 500;
-        //}, 10000)
     }
 
     updateOrInitData(data) {
@@ -437,9 +431,9 @@ export class Chart extends HTMLDivElement {
             this.titleDiv.innerText = this._title;
             this.shadow.appendChild(this.titleDiv);
 
-            this.svgYAxis = Chart.createSVGNode("svg", {"viewBox": "0 0 " + (xOffset + this.params.AXIS_STROKE_WIDTH / 2) + " " + (this._height)});
+            this.svgYAxis = Chart.createSVGNode("svg", {"viewBox": `0 0 ${xOffset + this.params.AXIS_STROKE_WIDTH / 2} ${this._height}`});
             this.svgYAxis.classList.add("axis");
-            this.svg = Chart.createSVGNode("svg", {"viewBox": "0 0 " + (this._chartWidth) + " " + (this._height)});
+            this.svg = Chart.createSVGNode("svg", {"viewBox": `0 0 ${this._chartWidth} ${this._height}`});
             this.svg.classList.add("inner");
 
             this.svg.append(this.xAxis);
@@ -459,8 +453,8 @@ export class Chart extends HTMLDivElement {
 
             this[isInitializedProperty] = true;
         } else {
-            this.svgYAxis.setAttribute("viewBox", "0 0 " + (xOffset + this.params.AXIS_STROKE_WIDTH / 2) + " " + (this._height));
-            this.svg.setAttribute("viewBox", "0 0 " + (this._chartWidth) + " " + (this._height));
+            this.svgYAxis.setAttribute("viewBox", `0 0 ${xOffset + this.params.AXIS_STROKE_WIDTH / 2} ${this._height}`);
+            this.svg.setAttribute("viewBox", `0 0 ${this._chartWidth} ${this._height}`);
         }
     }
 
@@ -596,13 +590,13 @@ export class Chart extends HTMLDivElement {
         this.xAxis.setAttribute("y1", this.yAxisHeight + this.params.GRAPH_TOP_PADDING);
         this.xAxis.setAttribute("x2", this.xAxisWidth + xOffset);
         this.xAxis.setAttribute("y2", this.yAxisHeight + this.params.GRAPH_TOP_PADDING);
-        this.xAxis.setAttribute("style", "stroke:rgb(0,0,0);stroke-width:" + this.params.AXIS_STROKE_WIDTH);
+        this.xAxis.setAttribute("style", `stroke:rgb(0,0,0);stroke-width:${this.params.AXIS_STROKE_WIDTH}`);
 
         this.yAxis.setAttribute("x1", xOffset);
         this.yAxis.setAttribute("y1", this.yAxisHeight + this.params.GRAPH_TOP_PADDING + this.params.AXIS_STROKE_WIDTH / 2);
         this.yAxis.setAttribute("x2", xOffset);
         this.yAxis.setAttribute("y2", this.params.GRAPH_TOP_PADDING);
-        this.yAxis.setAttribute("style", "stroke:rgb(0,0,0);stroke-width:" + this.params.AXIS_STROKE_WIDTH);
+        this.yAxis.setAttribute("style", `stroke:rgb(0,0,0);stroke-width:${this.params.AXIS_STROKE_WIDTH}`);
     }
 
     updateOrCreateXAxisMarkerAndLabels() {
@@ -622,7 +616,7 @@ export class Chart extends HTMLDivElement {
             const text = this.xAxisLabelsGroup.children[i];
             text.setAttribute("x", xAxisMarkerX);
             text.setAttribute("y", this.yAxisHeight + yOffset);
-            text.setAttribute("transform", "rotate(60," + xAxisMarkerX + "," + (this.yAxisHeight + yOffset) + ")");
+            text.setAttribute("transform", `rotate(60,${xAxisMarkerX},${this.yAxisHeight + yOffset})`);
 
         }
         if (this._dataCount < currentCount) {
@@ -648,7 +642,7 @@ export class Chart extends HTMLDivElement {
                     x: xAxisMarkerX,
                     y: this.yAxisHeight + yOffset,
                     "alignment-baseline": "middle",
-                    transform: "rotate(60," + xAxisMarkerX + "," + (this.yAxisHeight + yOffset) + ")",
+                    transform: `rotate(60,${xAxisMarkerX},${this.yAxisHeight + yOffset})`,
                 });
                 text.textContent = "";
                 this.xAxisLabelsGroup.append(text);
