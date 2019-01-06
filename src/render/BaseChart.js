@@ -1,11 +1,12 @@
 import {round} from "../common/utils/MathUtils.js";
+import {getTextMetrics} from "../common/utils/RenderUtils.js";
+import {mtsToLocaleTimeString} from "../common/utils/DateUtils.js";
 
 const isInitializedProperty = Symbol();
 
 export class Chart extends HTMLDivElement {
     connectedCallback() {
         this.shadow = this.attachShadow({mode: "open"});
-        this._chartWidth = this._width;
     }
 
     set title(title) {
@@ -22,6 +23,7 @@ export class Chart extends HTMLDivElement {
 
     set width(width) {
         this._width = width;
+        this._chartWidth = width;
         if (this[isInitializedProperty]) {
             this.draw();
         }
@@ -38,7 +40,23 @@ export class Chart extends HTMLDivElement {
 
     set isXAxisDescending(isXAxisDescending) {
         this._isXAxisDescending = isXAxisDescending;
-        this.updateOrInitData(this.data);
+        if(this[isInitializedProperty]) {
+            this.updateOrInitData(this.data);
+        }
+    }
+
+    set xLabelModifier(xLabelModifier) {
+        this._xLabelModifier = xLabelModifier;
+        if(this[isInitializedProperty]) {
+            this.updateXLabels();
+        }
+    }
+
+    set yLabelModifier(yLabelModifier) {
+        this._yLabelModifier = yLabelModifier;
+        if(this[isInitializedProperty]) {
+            this.updateYLabels();
+        }
     }
 
     get width() {
@@ -76,7 +94,10 @@ export class Chart extends HTMLDivElement {
         this._height = 300;
         this._width = 400;
 
+        this._xLabelModifier = mtsToLocaleTimeString;
+        this._yLabelModifier = null;
 
+        this.yLabelValues = [];
         this.xCoords = [];
         this.maxTextWidthYLabels = 35;
         this.maxTextWidthXLabels = 30;
@@ -136,22 +157,15 @@ export class Chart extends HTMLDivElement {
     static createSVGNode(n, v = {}) {
         n = document.createElementNS("http://www.w3.org/2000/svg", n);
         for (const p in v) {
-            if (v[p] === undefined) {
-                console.log(n)
-            }
             n.setAttributeNS(null, p, v[p]);
         }
         return n
     }
 
-    static getTextWidth(text, fontSize) {
-        return 60;
-    }
-
-    static getMaxTextWidth(data, fontSize) {
+    static getMaxTextWidth(data, font, modifier = null) {
         let maxTextWidth = 0;
-        for (const label in data) {
-            let temp = this.getTextWidth(label, fontSize);
+        for (const label of data) {
+            let temp = getTextMetrics((modifier === null) ? label : modifier(label), font).width;
             if (temp > maxTextWidth) {
                 maxTextWidth = temp;
             }
@@ -159,10 +173,18 @@ export class Chart extends HTMLDivElement {
         return maxTextWidth;
     }
 
-    draw(xAxisValueChanged=true, yAxisValueChanged=true) {
+    adjustParams() {
+        this.maxTextWidthYLabels = Chart.getMaxTextWidth(this.yLabelValues, "12px Arial", this._yLabelModifier);
+        const maxWidth = Chart.getMaxTextWidth(this.data, "10px Arial", (x) => (this._xLabelModifier === null) ? x[0] : this._xLabelModifier(x[0]));
+        this.maxTextWidthXLabels =  Math.sin(Math.PI / 3) * maxWidth;
+        this.params.GRAPH_RIGHT_PADDING = 15 + Math.cos(Math.PI / 3) * maxWidth;
+    }
+
+    draw(xAxisValueChanged = true, yAxisValueChanged = true) {
         if (yAxisValueChanged) {
             this.calculateNiceNumbers();
         }
+        this.adjustParams();
         this.calculateActualCoords();
         this.updateOrCreateXAxisAndYAxis();
         if (xAxisValueChanged) {
@@ -217,6 +239,18 @@ export class Chart extends HTMLDivElement {
         }
     }
 
+    updateXLabels() {
+        for (let i = 0; i < this.data.length; i++) {
+            this.xAxisLabelsGroup[i].textContent = (this._xLabelModifier !== null) ? this._xLabelModifier(this.data[i][0]) : this.data[i][0];
+        }
+    }
+
+    updateYLabels() {
+        for (let i = 0; i < this.yLabelValues.length; i++) {
+            this.yAxisLabelsGroup[i].textContent = (this._yLabelModifier !== null) ? this._yLabelModifier(this.yLabelValues[i]) : this.yLabelValues[i];
+        }
+    }
+
     update(data, metadata) {
         if (metadata.get("isInitialData") || metadata.get("globalLow") < this.niceMinY || metadata.get("globalHigh") > this.niceMaxY) {
             this.initialization(data, metadata);
@@ -243,8 +277,8 @@ export class Chart extends HTMLDivElement {
     shiftLeft(label, open, close, high, low) {
         const count = this.xAxisLabelsGroup.childElementCount;
         for (let i = 1; i < count; i++) {
-            const newLabelText = this.xAxisLabelsGroup.children[i].innerHTML;
-            this.xAxisLabelsGroup.children[i - 1].innerHTML = newLabelText;
+            const newLabelText = this.xAxisLabelsGroup.children[i].textContent;
+            this.xAxisLabelsGroup.children[i - 1].textContent = newLabelText;
         }
 
         for (let i = 1; i < this.dataGroup.childElementCount; i++) {
@@ -264,8 +298,8 @@ export class Chart extends HTMLDivElement {
     shiftRight(label, open, close, high, low) {
         const count = this.xAxisLabelsGroup.childElementCount;
         for (let i = count - 2; i >= 0; i--) {
-            const newLabelText = this.xAxisLabelsGroup.children[i].innerHTML;
-            this.xAxisLabelsGroup.children[i + 1].innerHTML = newLabelText;
+            const newLabelText = this.xAxisLabelsGroup.children[i].textContent;
+            this.xAxisLabelsGroup.children[i + 1].textContent = newLabelText;
         }
 
         for (let i = this.dataGroup.childElementCount - 2; i >= 0; i--) {
@@ -287,7 +321,7 @@ export class Chart extends HTMLDivElement {
         const newCandle = this.createCandle(x, open, close, high, low);
         const oldCandle = this.dataGroup.children[x - 1];
         if (label !== null) {
-            this.xAxisLabelsGroup.children[x - 1].innerHTML = label;
+            this.xAxisLabelsGroup.children[x - 1].textContent = (this._xLabelModifier !== null) ? this._xLabelModifier(label) : label;
         }
         this.dataGroup.replaceChild(newCandle, oldCandle);
     }
@@ -299,6 +333,16 @@ export class Chart extends HTMLDivElement {
         this.niceMinY = Math.floor(this.minY / this.tickSpacingY) * this.tickSpacingY;
         this.niceMaxY = Math.ceil(this.maxY / this.tickSpacingY) * this.tickSpacingY;
         this.tickCountY = Math.round((this.niceMaxY - this.niceMinY) / this.tickSpacingY);
+
+        const currentLength = this.yLabelValues.length;
+        for (let i = 0; i <= this.tickCountY; i++) {
+            if (i < currentLength) {
+                this.yLabelValues[i] = round(this.niceMinY + (this.tickCountY - i) * this.tickSpacingY, 5);
+            } else {
+                this.yLabelValues.push(round(this.niceMinY + (this.tickCountY - i) * this.tickSpacingY, 5));
+            }
+        }
+        console.log(this.yLabelValues);
     }
 
     getNiceNumber(range, round) {
@@ -496,7 +540,7 @@ export class Chart extends HTMLDivElement {
     addCandle(x, open, close, high, low, label = null) {
         const candle = this.createCandle(x, open, close, high, low);
         if (label !== null) {
-            this.xAxisLabelsGroup.children[x - 1].innerHTML = label;
+            this.xAxisLabelsGroup.children[x - 1].textContent = (this._xLabelModifier !== null) ? this._xLabelModifier(label) : label;
         }
         if (x === this.dataGroup.childElementCount) {
             this.dataGroup.append(candle);
@@ -606,7 +650,7 @@ export class Chart extends HTMLDivElement {
                     "alignment-baseline": "middle",
                     transform: "rotate(60," + xAxisMarkerX + "," + (this.yAxisHeight + yOffset) + ")",
                 });
-                text.innerHTML = "point" + (i + 1);
+                text.textContent = "";
                 this.xAxisLabelsGroup.append(text);
             }
         }
@@ -616,7 +660,7 @@ export class Chart extends HTMLDivElement {
         const xOffset = this.maxTextWidthYLabels + this.params.GRAPH_LEFT_PADDING + this.params.Y_LABEL_RIGHT_PADDING + this.params.Y_AXIS_MARKER_LENGTH;
 
         const currentYAxisMarkerCount = this.yAxisMarkersGroup.childElementCount;
-        for (let i = 0; i < this.tickCountY+1 && currentYAxisMarkerCount; i++) {
+        for (let i = 0; i < this.tickCountY + 1 && currentYAxisMarkerCount; i++) {
             let yAxisMarkerY = this.yAxisMinCoordY + i * this.yTickHeight;
 
             const yAxisMarker = this.yAxisMarkersGroup.children[i];
@@ -628,6 +672,8 @@ export class Chart extends HTMLDivElement {
             const text = this.yAxisLabelsGroup.children[i];
             text.setAttribute("x", this.maxTextWidthYLabels + this.params.GRAPH_LEFT_PADDING);
             text.setAttribute("y", yAxisMarkerY);
+            const textValue = (this._yLabelModifier !== null) ? this._yLabelModifier(this.yLabelValues[i]) : this.yLabelValues[i];
+            text.textContent = (this._yLabelModifier !== null) ? this._yLabelModifier(textValue) : textValue;
 
             const helperLine = this.yAxisHelperLines.children[i];
             helperLine.setAttribute("x1", xOffset + this.params.AXIS_STROKE_WIDTH / 2);
@@ -661,7 +707,9 @@ export class Chart extends HTMLDivElement {
                     y: yAxisMarkerY,
                     "alignment-baseline": "central",
                 });
-                text.innerHTML = round(this.niceMinY + (this.tickCountY - i) * this.tickSpacingY, 5);
+                const textValue = this.yLabelValues[i];
+                text.textContent = (this._yLabelModifier !== null) ? this._yLabelModifier(textValue) : textValue;
+
                 this.yAxisLabelsGroup.append(text);
 
                 let helperLine = Chart.createSVGNode("line", {
