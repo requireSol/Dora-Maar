@@ -14,9 +14,15 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 io.sockets.on('connection', function(socket){
+    socket.on('chat message', function(data){
+        socket.emit('send message',data);
+    });
+  });
+  
+io.sockets.on('connection', function(socket){
     console.log('socket connection');
  
-    socket.on('happy',function(data){
+    socket.on('chat message',function(data){
         console.log('happy because ' + data.reason);
     });
 ;
@@ -29,7 +35,6 @@ io.sockets.on('connection', function(socket){
     });
    
 });
- 
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

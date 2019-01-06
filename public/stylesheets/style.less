@@ -17,7 +17,7 @@ h4 {
 }  
 .btn-lg{
 background-color: #65acc2;
-max-width: 150px;
+//max-width: 150px;
 color: #ffffff;
 }
 .btn:hover{
@@ -42,6 +42,7 @@ background-color: #ffffff;
 .logo {
   color: #65acc2;
   font-size: 200px;
+  
 }
 .thumbnail {
   padding: 0 0 15px 0;
@@ -183,7 +184,10 @@ footer .glyphicon {
   margin-bottom: 20px;
   color: #65acc2;
 }
-.slideanim {visibility:hidden;}
+
+.slideanim {
+  visibility:hidden;
+}
 .slide {
   animation-name: slide;
   -webkit-animation-name: slide;
@@ -192,6 +196,9 @@ footer .glyphicon {
   visibility: visible;
 }
 
+#logo{
+  padding-top:100px;
+}
 
 @keyframes slide {
 0% {
@@ -223,8 +230,12 @@ footer .glyphicon {
     width: 100%;
     margin-bottom: 35px;
 }
-nav ul     { display: none; }
-nav .dropdown { display: inline-block; }
+nav ul     {
+   display: none;
+   }
+nav .dropdown { 
+  display: inline-block;
+ }
 }
 @media screen and (max-width: 480px) {
 .logo {
