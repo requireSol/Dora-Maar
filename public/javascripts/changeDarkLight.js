@@ -13,11 +13,15 @@ function changeStyle() {
     var block2 = document.getElementById("block2"); 
     var block3 = document.getElementById("block3");
     var footer = document.getElementById("footer");
+    var title = document.getElementById("title");
     if(document.getElementById("navbar").style.backgroundColor == "white"){
         nav.style.background = "#303851";
         
         logo.style.background = "#303851";
         logo.style.color = "white";
+
+        title.style.background = "#303851";
+        title.style.color = "white";
         
         navul.style.background = "#303851";
         navul.style.color = "white";
@@ -60,6 +64,9 @@ function changeStyle() {
 
         footer.style.background = "#65acc2";
         footer.style.color ="white";
+
+        title.style.background = "#65acc2";
+        title.style.color ="white";
 
     }
 }
