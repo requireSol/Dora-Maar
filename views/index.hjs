@@ -14,8 +14,11 @@
     <link href="/stylesheets/style.css" rel="stylesheet">
     <script src="/javascripts/navbar.js"></script>
     <script src="/javascripts/changeDarkLight.js"></script>
+ 
 </head>
 <body id="myPage" data-spy="scroll" data-target=".navbar" data-offset="60">
+    
+<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
 
 <!-- Container (Navbar Section) -->
 <div id="navbar" style="background-color:white; color:black" class="container-fluid">
@@ -105,6 +108,8 @@ function loadDoc() {
 }
 </script>
 
+
+
 <!-- Container (Contact Section) -->
 <div id="block3" class="container-fluid">
     <div class="row">
@@ -116,44 +121,32 @@ function loadDoc() {
             <p><span class="glyphicon glyphicon-envelope"></span> enamsolaimani@icloud.com</p>
         </div>
         <div class="col-sm-7 slideanim">
+            <form id="telegramMessage">
             <h2 style="color:green;" id="succ"></h2>
             <div id="qwert1" class="row" style="padding-top:50px;">
-                
                 <div class="col-sm-6 form-group">
                     <input class="form-control" id="name" name="name" placeholder="Name" type="text" required>
                 </div>
                 <div class="col-sm-6 form-group">
                     <input class="form-control" id="email" name="email" placeholder="Email" type="email" required>
                 </div>
-                </from>
             </div>
             <textarea class="form-control" id="comments" name="comments" placeholder="Comment" rows="5"></textarea><br>
             <div class="row">
                 <div class="col-sm-12 form-group">
-                   <button id="qwert" onclick="loadDoc()" class="btn btn-default pull-right" type="submit">Send</button>
+                   <input id="qwert" onclick="loadDoc()" class="btn btn-default pull-right" type="submit" value="Send"></input>
                 </div>
             </div>
+            </form>
         </div>
     </div>
 </div>
-        <h2 id="messages"></h2>
-      <input  class="form-control" id="m" autocomplete="off" /><br>
-      <button id ="test" type="submit">Send</button>
-    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
-    <script>
-    var socket = io();
-    $(document).ready(function(){
-        $("#test").click(function(){
-            socket.emit('chat message', $('#m').val());
-            console.log($("#m").val());
-            $('#m').val('');
-        });
-    });
-
-    socket.on('chat message', function(msg){
-        $('#messages').append(text(msg));
-    });
-    </script>
+<script>
+   $(function(){
+       var socket = io.connect();
+   });
+</script>
+     
 
 <footer id = "footer" style="background-color: #65acc2; color: #ffffff" class="container-fluid text-center">
     <a href="#myPage" title="To Top">

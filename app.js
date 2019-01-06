@@ -13,27 +13,21 @@ var io = require('socket.io')(server);
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
+users = [];
+connections = [];
+
 io.sockets.on('connection', function(socket){
-    socket.on('chat message', function(data){
-        socket.emit('send message',data);
+   //Connect
+    connections.push(socket)
+    console.log('socket connection %s', connections.length);
+    
+    //Listen to event disconnect
+    socket.on('disconnect',function(data){
+        //Disconnect
+        connections.splice(connections.indexOf(socket), 1);
+        console.log('socket disconnection %s' , connections.length);
     });
-  });
-  
-io.sockets.on('connection', function(socket){
-    console.log('socket connection');
- 
-    socket.on('chat message',function(data){
-        console.log('happy because ' + data.reason);
-    });
-;
-    socket.on('disconnect', function(){
-      console.log('user disconnected');
-    });
-   
-    socket.emit('serverMsg',{
-        msg:'hello',
-    });
-   
+
 });
 
 // view engine setup
