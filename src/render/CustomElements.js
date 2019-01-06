@@ -1,11 +1,10 @@
 import {ObserverBaseElement} from "./BaseElement.js";
-import {OrderBookRequest, TickerRequest, TradesRequest} from "../model/requests.js";
+import {OrderBookRequest, TickerRequest, TradesRequest, CandlesRequest} from "../model/requests.js";
 import {OrderBookData} from "../model/OrderBookData.js";
 import {TradesData} from "../model/TradesData.js";
 import {TickerData} from "../model/TickerData.js";
 import {round} from "../common/utils/MathUtils.js";
 import {frequencyConstants, orderBookTypeConstants, precisionConstants, tradesTypeConstants} from "../common/Constants.js";
-import {CandlesRequest} from "../model/requests.js";
 
 const isInitializedProperty = Symbol();
 
@@ -86,8 +85,6 @@ export class CandlesView extends ObserverBaseElement {
         return pair;
     }
 
-
-
     constructor() {
         super();
         this.parameterBackup = new Map();
@@ -121,16 +118,14 @@ export class CandlesView extends ObserverBaseElement {
 
     applyAttributes(assumeEverythingChanged = false) {
         if (this.parameterBackup.has("data-title") || assumeEverythingChanged) {
-            //this.chart.title = this.title; // TODO
+            this.chart.title = this.title;
         }
         if (this.parameterBackup.has("data-count") || assumeEverythingChanged) {
-            this.chart.dataCount = this.count; // TODO
+            this.chart.dataCount = this.count;
 
         }
         if (this.parameterBackup.has("data-pair") || this.parameterBackup.has("data-count")
             || assumeEverythingChanged) {
-            // need new request
-            //this.chart.clear(); // TODO
             this.subscribeToData(this.createRequestFromAttributes());
         }
     }
@@ -166,10 +161,6 @@ export class CandlesView extends ObserverBaseElement {
     info(message) {
         this.notificationBox.addNotification(message["level"], message["title"], message["msg"]);
     }
-
-
-
-
 }
 
 
