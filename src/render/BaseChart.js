@@ -11,7 +11,9 @@ export class Chart extends HTMLDivElement {
 
     set title(title) {
         this._title = title;
-        this.titleDiv.textContent = title;
+        if (this[isInitializedProperty]) {
+            this.titleDiv.textContent = title;
+        }
     }
 
     set dataCount(dataCount) {
@@ -38,21 +40,21 @@ export class Chart extends HTMLDivElement {
 
     set isXAxisDescending(isXAxisDescending) {
         this._isXAxisDescending = isXAxisDescending;
-        if(this[isInitializedProperty]) {
+        if (this[isInitializedProperty]) {
             this.updateOrInitData(this.data);
         }
     }
 
     set xLabelModifier(xLabelModifier) {
         this._xLabelModifier = xLabelModifier;
-        if(this[isInitializedProperty]) {
+        if (this[isInitializedProperty]) {
             this.updateXLabels();
         }
     }
 
     set yLabelModifier(yLabelModifier) {
         this._yLabelModifier = yLabelModifier;
-        if(this[isInitializedProperty]) {
+        if (this[isInitializedProperty]) {
             this.updateYLabels();
         }
     }
@@ -143,6 +145,8 @@ export class Chart extends HTMLDivElement {
             style: "stroke:rgb(200,200,200);stroke-width:1;stroke-dasharray:5"
         });
 
+        this.dataTooltipTriggers = Chart.createSVGNode("g", {});
+
     }
 
     calculateAxisLength() {
@@ -177,7 +181,7 @@ export class Chart extends HTMLDivElement {
     adjustParams() {
         this.maxTextWidthYLabels = Chart.getMaxTextWidth(this.yLabelValues, `${this.params.Y_AXIS_LABEL_FONT_SIZE}px Arial`, this._yLabelModifier);
         const maxWidth = Chart.getMaxTextWidth(this.data, `${this.params.X_AXIS_LABEL_FONT_SIZE}px Arial`, (x) => (this._xLabelModifier === null) ? x[0] : this._xLabelModifier(x[0]));
-        this.maxTextWidthXLabels =  Math.sin(Math.PI / 3) * maxWidth;
+        this.maxTextWidthXLabels = Math.sin(Math.PI / 3) * maxWidth;
         this.params.GRAPH_ADDITIONAL_RIGHT_PADDING = Math.cos(Math.PI / 3) * maxWidth;
     }
 
@@ -190,7 +194,9 @@ export class Chart extends HTMLDivElement {
         this.updateOrCreateXAxisAndYAxis();
         if (xAxisValueChanged) {
             this.updateOrCreateXAxisMarkerAndLabels();
+            this.initializeTooltipTriggers();
         }
+
         if (yAxisValueChanged) {
             this.updateOrCreateYAxisMarkerLabelsHelperlines();
         }
@@ -417,6 +423,18 @@ export class Chart extends HTMLDivElement {
     height: ${this.params.TITLE_HEIGHT}px;
     text-align: center;
    
+}
+
+.tooltip {
+    position: absolute;
+    right: 0;
+    top: ${this.params.TITLE_HEIGHT}px;
+    background-color: yellow;
+    display: initial;
+    font-size: 10px;
+    z-index: 5;
+    pointer-events: none;
+    width: 100px;
 }`;
 
     }
@@ -426,11 +444,54 @@ export class Chart extends HTMLDivElement {
         const xOffset = this.maxTextWidthYLabels + this.params.Y_AXIS_MARKER_LENGTH + this.params.Y_LABEL_RIGHT_PADDING +
             this.params.GRAPH_LEFT_PADDING;
         if (!this[isInitializedProperty]) {
+            // TOOLTIP //
+            this.tooltip = document.createElement("div");
+            this.tooltip.innerHTML = `
+<table>
+<tbody>
+<tr>
+<td>time</td>
+<td></td>
+</tr>
+<tr>
+<td>open</td>
+<td></td>
+</tr>
+<tr>
+<td>close</td>
+<td></td>
+</tr>
+<tr>
+<td>high</td>
+<td></td>
+</tr>
+<tr>
+<td>low</td>
+<td></td>
+</tr>
+<tr>
+<td>volume</td>
+<td></td>
+</tr>
+</tbody>
+</table>`;
+            const tooltipRows = this.tooltip.children[0].children[0].children;
+            this.tooltip.timeCell = tooltipRows[0].children[1];
+            this.tooltip.openCell = tooltipRows[1].children[1];
+            this.tooltip.closeCell = tooltipRows[2].children[1];
+            this.tooltip.highCell = tooltipRows[3].children[1];
+            this.tooltip.lowCell = tooltipRows[4].children[1];
+            this.tooltip.volumeCell = tooltipRows[5].children[1];
+            this.tooltip.classList.add("tooltip");
+            this.shadow.appendChild(this.tooltip);
+
+            // TITLE //
             this.titleDiv = document.createElement("div");
             this.titleDiv.classList.add("caption");
             this.titleDiv.innerText = this._title;
             this.shadow.appendChild(this.titleDiv);
 
+            // SVG GRAPH //
             this.svgYAxis = Chart.createSVGNode("svg", {"viewBox": `0 0 ${xOffset + this.params.AXIS_STROKE_WIDTH / 2} ${this._height}`});
             this.svgYAxis.classList.add("axis");
             this.svg = Chart.createSVGNode("svg", {"viewBox": `0 0 ${this._chartWidth} ${this._height}`});
@@ -444,6 +505,7 @@ export class Chart extends HTMLDivElement {
             this.svgYAxis.append(this.yAxisLabelsGroup);
             this.svg.append(this.yAxisHelperLines);
             this.svg.append(this.dataGroup);
+            this.svg.append(this.dataTooltipTriggers);
 
             let innerDiv = document.createElement("div");
             innerDiv.classList.add("dataThings");
@@ -543,6 +605,30 @@ export class Chart extends HTMLDivElement {
         }
     }
 
+    initializeTooltipTriggers() {
+        console.log("called initalizedTooltipTriggers");
+        const thisContext = this;
+        for (let i = 0; i < this.dataTooltipTriggers.childElementCount; i++) {
+            const tooltipTrigger = this.dataTooltipTriggers.children[i];
+
+            tooltipTrigger.addEventListener("mouseenter", (evt => {
+                thisContext.tooltip.timeCell.textContent = (this._xLabelModifier !== null) ? this._xLabelModifier(this.data[i][0]) : this.data[i][0];
+                thisContext.tooltip.openCell.textContent = this.data[i][1];
+                thisContext.tooltip.closeCell.textContent = this.data[i][2];
+                thisContext.tooltip.highCell.textContent = this.data[i][3];
+                thisContext.tooltip.lowCell.textContent = this.data[i][4];
+                thisContext.tooltip.volumeCell.textContent = this.data[i][5];
+
+                thisContext.tooltip.style.display = "initial";
+
+            }));
+            tooltipTrigger.addEventListener("mouseleave", (evt => {
+                thisContext.tooltip.style.display = "none";
+
+            }));
+        }
+    }
+
     calculateActualCoords() {
         this.calculateAxisLength();
         this.xTickWidth = this.xAxisWidth / this._dataCount;
@@ -618,11 +704,17 @@ export class Chart extends HTMLDivElement {
             text.setAttribute("y", this.yAxisHeight + yOffset);
             text.setAttribute("transform", `rotate(60,${xAxisMarkerX},${this.yAxisHeight + yOffset})`);
 
+            const tooltipTrigger = this.dataTooltipTriggers.children[i];
+            tooltipTrigger.setAttribute("x", xAxisMarkerX - this.xTickWidth * 0.45);
+            tooltipTrigger.setAttribute("y", this.yAxisMinCoordY);
+            tooltipTrigger.setAttribute("height", this.yAxisMaxCoordY - this.yAxisMinCoordY);
+            tooltipTrigger.setAttribute("width", this.xTickWidth * 0.9);
         }
         if (this._dataCount < currentCount) {
             for (let i = 0; i < currentCount - this._dataCount; i++) {
                 this.xAxisMarkersGroup.removeChild(this.xAxisMarkersGroup.lastChild);
                 this.xAxisLabelsGroup.removeChild(this.xAxisLabelsGroup.lastChild);
+                this.dataTooltipTriggers.removeChild(this.dataTooltipTriggers.lastChild);
             }
         } else {
             for (let i = currentCount; i < this._dataCount; i++) {
@@ -646,6 +738,16 @@ export class Chart extends HTMLDivElement {
                 });
                 text.textContent = "";
                 this.xAxisLabelsGroup.append(text);
+
+                let tooltipTrigger = Chart.createSVGNode("rect", {
+                    "x": xAxisMarkerX - this.xTickWidth * 0.5,
+                    "y": this.yAxisMinCoordY,
+                    "height": this.yAxisMaxCoordY - this.yAxisMinCoordY,
+                    "width": this.xTickWidth,
+                    "fill": "transparent",
+                });
+
+                this.dataTooltipTriggers.append(tooltipTrigger);
             }
         }
     }
