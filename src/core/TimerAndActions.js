@@ -4,7 +4,7 @@ import {requestUnsubscription} from "./SubscriptionManager.js";
 
 const config = {
     reconnect: {
-        timerInterval: 1000 * 10,
+        timerInterval: 1000 * 60,
         action: reconnect,
         runningTimer: null,
         queuedAction: null,

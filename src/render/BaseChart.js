@@ -430,7 +430,7 @@ export class Chart extends HTMLDivElement {
     right: 0;
     top: ${this.params.TITLE_HEIGHT}px;
     background-color: yellow;
-    display: initial;
+    display: none;
     font-size: 10px;
     z-index: 5;
     pointer-events: none;
@@ -451,27 +451,27 @@ export class Chart extends HTMLDivElement {
 <tbody>
 <tr>
 <td>time</td>
-<td></td>
+<td>-</td>
 </tr>
 <tr>
 <td>open</td>
-<td></td>
+<td>-</td>
 </tr>
 <tr>
 <td>close</td>
-<td></td>
+<td>-</td>
 </tr>
 <tr>
 <td>high</td>
-<td></td>
+<td>-</td>
 </tr>
 <tr>
 <td>low</td>
-<td></td>
+<td>-</td>
 </tr>
 <tr>
 <td>volume</td>
-<td></td>
+<td>-</td>
 </tr>
 </tbody>
 </table>`;
