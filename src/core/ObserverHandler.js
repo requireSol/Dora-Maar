@@ -1,8 +1,7 @@
-import {requestSubscription, subscriptionQueue} from "./SubscriptionManager.js";
+import {requestSubscription, subscriptionQueue, SubscriptionDescriptor} from "./SubscriptionManager.js";
 import {dataObjects} from "./DataHandler.js";
 import {CandlesRequest, OrderBookRequest, TickerRequest, TradesRequest} from "../model/requests.js";
-import {SubscriptionDescriptor} from "../common/collections/SubDescriptorQueue.js";
-import {channelConstants, eventConstants, orderBookTypeConstants, tradesTypeConstants} from "../common/Constants.js";
+import {orderBookTypeConstants, tradesTypeConstants} from "../common/Constants.js";
 
 /**
  * Maps channel ids to SubscriptionDescriptors

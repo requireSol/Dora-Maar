@@ -1,5 +1,5 @@
-import {onServerIsOperative, setPlatformStatus, setServerId, supportedVersion} from "./Connector.js";
-import {pendingQueue, getIdFromRequest, internalUnsubscribe, resubscribeAllChannels} from "./SubscriptionManager.js";
+import {setPlatformStatus, setServerId, supportedVersion} from "./Connector.js";
+import {pendingQueue, getIdFromRequest, internalUnsubscribe, onServerIsOperative} from "./SubscriptionManager.js";
 import {assignObserverToId, informObserver} from "./ObserverHandler.js";
 import {executeAction} from "./TimerAndActions.js";
 

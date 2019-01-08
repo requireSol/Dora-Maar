@@ -1,7 +1,7 @@
 import {send} from "./Connector.js";
-import {observer, assignObserverToId, informObserver} from "./ObserverHandler.js";
+import {assignObserverToId, informObserver, observer} from "./ObserverHandler.js";
 import {remove as removeDataObject} from "./DataHandler.js"
-import {SubDescriptorQueue} from "../common/collections/SubDescriptorQueue.js";
+import {SubDescriptorQueue, requestEqualsRequest} from "../common/collections/SubDescriptorQueue.js";
 import {eventConstants} from "../common/Constants.js";
 
 
@@ -125,21 +125,6 @@ export function requestUnsubscription(chanId) {
 }
 
 /**
- * Checks whether subscribeEventResponse is the response of the subscriptionRequest.
- * @param {Object} subscriptionEventResponse the response object
- * @param {APIRequest} subscriptionRequest the request object
- * @returns {boolean} whether subscribeEventResponse is the response of the subscriptionRequest
- */
-export function responseMatchesRequest(subscriptionEventResponse, subscriptionRequest) {
-    for (const key in subscriptionRequest) {
-        if (subscriptionRequest.hasOwnProperty(key) && key !== "event" && subscriptionEventResponse.hasOwnProperty(key) && subscriptionRequest[key] != subscriptionEventResponse[key]) { // not !== bc of integer and string conversion
-            return false
-        }
-    }
-    return true;
-}
-
-/**
  * Get the id's channel name.
  * @param {Number} channelID the channel's id
  * @returns {String} the id's channel name
@@ -150,30 +135,13 @@ export function getChannelOfId(channelID) {
 }
 
 /**
- * Check whether both requests are equal.
- * @param {APIRequest} request1 an api request
- * @param {APIRequest} request2 an api request
- * @returns {boolean} whether both requests are equal
- * @private
- */
-export function _requestEqualsRequest(request1, request2) {
-    for (const p in request1) {
-        if (request1.hasOwnProperty(p) && request2.hasOwnProperty(p) && request1[p] !== request2[p])
-            return false;
-        if (request1.hasOwnProperty(p) && !request2.hasOwnProperty(p))
-            return false;
-    }
-    return true;
-}
-
-/**
  * Get the channel's id if the channel is already subscribed
  * @param {APIRequest} subscriptionRequest an api request
  * @returns {Number|null} the channel's id or null if the channel is not subscribed
  */
 export function getIdFromRequest(subscriptionRequest) {
     for (const [id, request] of subscribedChannels.entries()) {
-        if (_requestEqualsRequest(request, subscriptionRequest))
+        if (requestEqualsRequest(request, subscriptionRequest))
             return id;
     }
     return null;
@@ -252,7 +220,46 @@ export function clearPendingUnsubscriptions() {
 }
 
 
+/**
+ * Transfers all previous subscription requests to the operative connection
+ */
+export function onServerIsOperative() {
+    clearPendingUnsubscriptions();
+    clearUnsubscriptionQueue();
+    moveAllPendingRequestsInQueue();
+    resubscribeAllChannels(false);
+    processAllQueuedRequests();
+}
 
+/**
+ * Transfer all previous requests that could not be completed or are in the queue to the restored connection
+ */
+export function onRestoredWebSocketConnection() {
+    moveAllPendingRequestsInQueue();
+    moveAllPendingUnsupscriptionsInQueue();
+    processAllQueuedUnsubscriptions();
+    processAllQueuedRequests();
+}
 
+/**
+ * An Object to describe a subscription.
+ */
+export class SubscriptionDescriptor {
+    /**
+     * Creates a SubscriptionDescriptor.
+     * @param {Observer|ObserverBaseElement} observer the origin of the request
+     * @param {ClientRequest} clientRequest the request of the observer
+     * @param {boolean} needInitialData has the observer not yet received data
+     * @param {APIRequest|null} apiRequest the request to be sent to the server
+     */
+    constructor(observer, clientRequest, needInitialData = true, apiRequest = null) {
+        this.observer = observer;
+        this.clientRequest = clientRequest;
+        this.apiRequest = apiRequest === null ? clientRequest.convertToApiRequest() : apiRequest;
+        this.needInitialData = needInitialData;
+    }
 
-
+    get channelId() {
+        return getIdFromRequest(this.apiRequest);
+    }
+}

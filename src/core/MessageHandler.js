@@ -1,9 +1,9 @@
-import {onRestoredWebSocketConnection} from "./Connector.js";
 import {handleConnectionInfoMessage, handleErrorMessage, handleInfoMessage} from "./ErrorAndInfoHandler.js";
-import {internalSubscribe, internalUnsubscribe} from "./SubscriptionManager.js";
+import {internalSubscribe, internalUnsubscribe, onRestoredWebSocketConnection, getChannelOfId} from "./SubscriptionManager.js";
 import {create as createDataObject, dataObjects, update as updateDataObject} from "./DataHandler.js";
 import {abortAction} from "./TimerAndActions.js";
 import {eventConstants} from "../common/Constants.js";
+import {updateAllObservers} from "./ObserverHandler.js";
 
 /**
  * Handles every message send by the server
@@ -20,10 +20,12 @@ export function handle(message) {
         } else {
             if (dataObjects.has(chanId)) {
                 //is update
-                updateDataObject(receivedData)
+                updateDataObject(receivedData);
+                updateAllObservers(chanId);
             } else {
                 //is snapshot
-                createDataObject(receivedData)
+                createDataObject(receivedData, getChannelOfId(chanId));
+                updateAllObservers(chanId);
             }
         }
 

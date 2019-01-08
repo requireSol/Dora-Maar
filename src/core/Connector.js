@@ -1,12 +1,3 @@
-import {
-    clearPendingUnsubscriptions,
-    clearUnsubscriptionQueue,
-    moveAllPendingRequestsInQueue,
-    moveAllPendingUnsupscriptionsInQueue,
-    processAllQueuedRequests, processAllQueuedUnsubscriptions,
-    resubscribeAllChannels
-} from "./SubscriptionManager.js";
-
 import {handle as handleMessage} from "./MessageHandler.js";
 import {informObserver} from "./ObserverHandler.js";
 import {executeAction, startTimer, stopTimer} from "./TimerAndActions.js";
@@ -140,27 +131,6 @@ export function reconnect() {
         webSocket.close();
     }
     connect();
-}
-
-/**
- * Transfers all previous subscription requests to the operative connection
- */
-export function onServerIsOperative() {
-    clearPendingUnsubscriptions();
-    clearUnsubscriptionQueue();
-    moveAllPendingRequestsInQueue();
-    resubscribeAllChannels(false);
-    processAllQueuedRequests();
-}
-
-/**
- * Transfer all previous requests that could not be completed or are in the queue to the restored connection
- */
-export function onRestoredWebSocketConnection() {
-    moveAllPendingRequestsInQueue();
-    moveAllPendingUnsupscriptionsInQueue();
-    processAllQueuedUnsubscriptions();
-    processAllQueuedRequests();
 }
 
 

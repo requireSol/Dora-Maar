@@ -1,6 +1,3 @@
-import {_requestEqualsRequest, responseMatchesRequest} from "../../core/SubscriptionManager.js";
-import {getIdFromRequest} from "../../core/SubscriptionManager.js";
-
 export class SubDescriptorQueue {
     constructor() {
         this.sourcePositionMapping = new Map();
@@ -89,7 +86,7 @@ export class SubDescriptorQueue {
      */
     isAlreadyInQueue(subDesc) {
         for (const queuedSubDesc of this.queue) {
-            if (_requestEqualsRequest(queuedSubDesc.apiRequest, subDesc.apiRequest)) {
+            if (requestEqualsRequest(queuedSubDesc.apiRequest, subDesc.apiRequest)) {
                 return true;
             }
         }
@@ -99,23 +96,33 @@ export class SubDescriptorQueue {
 }
 
 /**
- * An Object to describe a subscription.
+ * Checks whether subscribeEventResponse is the response of the subscriptionRequest.
+ * @param {Object} subscriptionEventResponse the response object
+ * @param {APIRequest} subscriptionRequest the request object
+ * @returns {boolean} whether subscribeEventResponse is the response of the subscriptionRequest
  */
-export class SubscriptionDescriptor {
-    /**
-     * Creates a SubscriptionDescriptor.
-     * @param {Observer|ObserverBaseElement} observer the origin of the request
-     * @param {ClientRequest} clientRequest the request of the observer
-     * @param {boolean} needInitialData has the observer not yet received data
-     * @param {APIRequest|null} apiRequest the request to be sent to the server
-     */
-    constructor(observer, clientRequest, needInitialData=true, apiRequest = null) {
-        this.observer = observer;
-        this.clientRequest = clientRequest;
-        this.apiRequest = apiRequest === null ? clientRequest.convertToApiRequest() : apiRequest;
-        this.needInitialData = needInitialData;
+function responseMatchesRequest(subscriptionEventResponse, subscriptionRequest) {
+    for (const key in subscriptionRequest) {
+        if (subscriptionRequest.hasOwnProperty(key) && key !== "event" && subscriptionEventResponse.hasOwnProperty(key) && subscriptionRequest[key] != subscriptionEventResponse[key]) { // not !== bc of integer and string conversion
+            return false
+        }
     }
-    get channelId() {
-        return getIdFromRequest(this.apiRequest);
+    return true;
+}
+
+/**
+ * Check whether both requests are equal.
+ * @param {APIRequest} request1 an api request
+ * @param {APIRequest} request2 an api request
+ * @returns {boolean} whether both requests are equal
+ * @private
+ */
+export function requestEqualsRequest(request1, request2) {
+    for (const p in request1) {
+        if (request1.hasOwnProperty(p) && request2.hasOwnProperty(p) && request1[p] !== request2[p])
+            return false;
+        if (request1.hasOwnProperty(p) && !request2.hasOwnProperty(p))
+            return false;
     }
+    return true;
 }

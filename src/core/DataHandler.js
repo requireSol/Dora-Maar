@@ -1,9 +1,8 @@
-import {updateAllObservers} from "./ObserverHandler.js";
-import {getChannelOfId} from "./SubscriptionManager.js";
 import {OrderBookData} from "../model/OrderBookData.js";
 import {TickerData} from "../model/TickerData.js";
 import {TradesData} from "../model/TradesData.js";
 import {CandlesData} from "../model/CandlesData.js";
+import {channelConstants} from "../common/Constants.js";
 
 export let dataObjects = new Map();
 
@@ -15,36 +14,33 @@ export let dataObjects = new Map();
 export function update(receivedFromServer) {
     const chanId = receivedFromServer[0];
     const updateData = receivedFromServer.splice(1, receivedFromServer.length);
-    dataObjects.get(chanId).update(updateData);
-    updateAllObservers(chanId);
-
+    const dataObject = dataObjects.get(chanId);
+    dataObject.update(updateData);
 }
 
 /**
  * Handles a snapshot message from the server
  * @param {Array} receivedFromServer the API snapshot message
+ * @param {String} channel the data's channel
  */
-export function create(receivedFromServer) {
+export function create(receivedFromServer, channel) {
 
     const chanId = receivedFromServer[0];
     const snapshotData = receivedFromServer[1];
-    const channel = getChannelOfId(chanId);
     switch (channel) {
-        case "book":
+        case channelConstants.ORDERBOOK:
             dataObjects.set(chanId, new OrderBookData(snapshotData));
             break;
-        case "ticker":
+        case channelConstants.TICKER:
             dataObjects.set(chanId, new TickerData(snapshotData));
             break;
-        case "trades":
+        case channelConstants.TRADES:
             dataObjects.set(chanId, new TradesData(snapshotData));
             break;
-        case "candles":
+        case channelConstants.CANDLES:
             dataObjects.set(chanId, new CandlesData(snapshotData));
             break;
     }
-    updateAllObservers(chanId);
-
 }
 
 /**
