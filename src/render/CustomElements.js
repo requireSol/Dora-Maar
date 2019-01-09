@@ -111,9 +111,14 @@ export class CandlesView extends ObserverBaseElement {
 
             this.shadow.appendChild(this.chart);
             this.shadow.appendChild(this.notificationBox);
+            this.applyAttributes(true);
+            this.chart.draw();
             this[isInitializedProperty] = true;
+
+        } else {
+            this.applyAttributes(true);
         }
-        this.applyAttributes(true);
+
     }
 
     applyAttributes(assumeEverythingChanged = false) {

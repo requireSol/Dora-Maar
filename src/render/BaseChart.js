@@ -101,6 +101,7 @@ export class Chart extends HTMLDivElement {
         this.xCoords = [];
         this.maxTextWidthYLabels = 35;
         this.maxTextWidthXLabels = 30;
+        this.data = [];
 
         this.params = {
             GRAPH_LEFT_PADDING: 5,
@@ -488,7 +489,7 @@ export class Chart extends HTMLDivElement {
             // TITLE //
             this.titleDiv = document.createElement("div");
             this.titleDiv.classList.add("caption");
-            this.titleDiv.innerText = this._title;
+            this.titleDiv.textContent = this._title;
             this.shadow.appendChild(this.titleDiv);
 
             // SVG GRAPH //
@@ -517,6 +518,7 @@ export class Chart extends HTMLDivElement {
         } else {
             this.svgYAxis.setAttribute("viewBox", `0 0 ${xOffset + this.params.AXIS_STROKE_WIDTH / 2} ${this._height}`);
             this.svg.setAttribute("viewBox", `0 0 ${this._chartWidth} ${this._height}`);
+            this.titleDiv.textContent = this._title;
         }
     }
 
