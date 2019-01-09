@@ -14,13 +14,13 @@ var fs = require('fs');
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '80');
+var port = normalizePort(process.env.PORT || '443');
 app.set('port', port);
-/*
+
 // Certificate
-const privateKey = fs.readFileSync('/etc/letsencrypt/live/rase.io/privkey.pem', 'utf8');
-const certificate = fs.readFileSync('/etc/letsencrypt/live/rase.io/cert.pem', 'utf8');
-const ca = fs.readFileSync('/etc/letsencrypt/live/rase.io/chain.pem', 'utf8');
+const privateKey = fs.readFileSync('/etc/letsencrypt/live/chat.enam.io/privkey.pem', 'utf8');
+const certificate = fs.readFileSync('/etc/letsencrypt/live/chat.enam.io/cert.pem', 'utf8');
+const ca = fs.readFileSync('/etc/letsencrypt/live/chat.enam.io/chain.pem', 'utf8');
 
 const credentials = {
 	key: privateKey,
@@ -28,16 +28,17 @@ const credentials = {
 	ca: ca
 };
 
-*/
+
+
 // Starting both http & https servers
 //var server = https.createServer(credentials, app);
+ 
+http.createServer(function (req, res) {
+    res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
+    res.end();
+}).listen(80);
 /*
- const server = http.createServer(function (req, res) {
-   // res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
-   // res.end();
-}).listen(80);*/
-/*
-server.listen(443, () => {
+const server = https.listen(443,() => {
 	console.log('HTTPS Server running on port 443');
 });
 */
@@ -45,9 +46,33 @@ server.listen(443, () => {
  * Listen on provided port, on all network interfaces.
  */
 
-var server = require('../app').server;
-
+var server = https.createServer(credentials, app);
 server.listen(port);
+
+var io = require('socket.io')(server);
+io.sockets.on('connection', function(socket){
+  //Connect
+   connections.push(socket)
+   console.log('socket connection %s', connections.length);
+   
+   //Listen to event "disconnect"
+   socket.on('disconnect',function(data){
+       //Disconnect
+       connections.splice(connections.indexOf(socket), 1);
+       console.log('socket disconnection %s' , connections.length);
+   });
+
+   //Listen to event telegram Message "contact"
+   socket.on('send message',function(data){
+       //emit Msg From from
+       io.sockets.emit('new message', { msg: data });
+   });
+
+});
+
+//var server = require('../app').server;
+
+
 console.log("Started on Port " + port);
 server.on('error', onError);
 server.on('listening', onListening);
@@ -111,3 +136,5 @@ function onListening() {
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
 }
+
+exports.server = server;
