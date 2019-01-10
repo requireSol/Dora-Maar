@@ -9,6 +9,7 @@ var debug = require('debug')('rase.io:server');
 var http = require('http');
 var https = require('https');
 var fs = require('fs');
+const request = require('request');
 
 /**
  * Get port from environment and store in Express.
@@ -66,10 +67,16 @@ io.sockets.on('connection', function(socket){
         console.log('socket disconnection %s' , connections.length);
     });
 
-    //Listen to event telegram Message "contact"
-    socket.on('send message',function(data){
-        //emit Msg From from
-        io.sockets.emit('new message', { msg: data });
+    //Send Telegramm Message
+    socket.on('telegrammMessage', function(data){
+      data = data.split(":");
+      request('https://api.telegram.org/bot719913903:AAF-WjF99Il1wV7bHwzKiCAVk-yUo6wDvs0/sendMessage?chat_id=305873350&text=Name:' +  data[0] + 'Email:' + data[1] + 'Comment: ' + data[2], { json: true }, (err, res, body) => {
+        if (err) { return console.log(err); }
+        //Uncomment for response handling
+        //console.log(body.url);
+        //console.log(body.explanation);
+      });
+      io.sockets.emit('newMessage', {msg: data[0]});
     });
 
 });

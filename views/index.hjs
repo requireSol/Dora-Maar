@@ -21,28 +21,7 @@
 <!--<script src="https://chat.enam.io/socket.io/socket.io.js"></script>
 <script src="https://chat.enam.io/socket.io/socket.io.js"></script>-->
 <script src="/socket.io/socket.io.js"></script>
-<script>
-    //Use socket.io document.socket
-      // var socket = io.connect();
-//var socket = require('socket.io-client')('http://localhost');
 
-  //var socket = io();
-
-var socket = io.connect('https://chat.enam.io');
-
-       var $name = $("name");
-       var $email = $("email");
-       var $comments = $("comments");
-
-       function loadDoc() {
-         /*   var xhttp = new XMLHttpRequest();
-                xhttp.open("GET","Testlink", true);
-                xhttp.send();*/
-            event.preventDefault();
-            console.log('Submitted');
-        }
-
-</script>
 <!-- Container (Navbar Section) -->
 <div id="navbar" style="background-color:white; color:black" class="container-fluid">
     <nav>
@@ -105,29 +84,6 @@ var socket = io.connect('https://chat.enam.io');
     </div>
 </div>
 
-<script>
-$(document).ready(function(){
-    $("#qwert").click(function(){
-        if ($('#succ').is(':empty')){
-                $("#succ").hide().append("Message send successfully<br>").fadeIn();
-  
-}else{
-    $("#succ").fadeOut().empty();
-            $("#succ").hide().append("Message send successfully<br>").fadeIn();
-
-}
-            document.getElementById('name').value = '';
-            document.getElementById('email').value = '';
-            document.getElementById('comments').value = '';
-            $("#qwert1").css("padding-top", "0px;");
-           
-    });
-});
-
-</script>
-
-
-
 <!-- Container (Contact Section) -->
 <div id="block3" class="container-fluid">
     <div class="row">
@@ -157,7 +113,38 @@ $(document).ready(function(){
         </div>
     </div>
 </div>
+<script>
+    //Use socket.io document.socket
+      // var socket = io.connect();
+//var socket = require('socket.io-client')('http://localhost');
 
+  //var socket = io();
+
+        var socket = io.connect('https://chat.enam.io');
+
+       function loadDoc() {
+           //get Input Variable
+            var name = document.getElementById('name').value
+            var email = document.getElementById('email').value
+            var comments = document.getElementById('comments').value
+            event.preventDefault();
+            console.log(name);
+            var data = "" + name + ":" + email + ":" + comments + "";
+            socket.emit('telegrammMessage', data);
+        }
+        /*Cant get variable name*/
+
+        socket.on('newMessage', function (data){
+             if ($('#succ').is(':empty')){
+                $("#succ").hide().append("Message send successfully<br>").fadeIn();
+            }else{
+                $("#succ").fadeOut().empty();
+                $("#succ").hide().append("Message send successfully<br>").fadeIn();
+            }
+            $("#qwert1").css("padding-top", "0px;");
+        });
+
+</script>
      
 
 <footer id = "footer" style="background-color: #65acc2; color: #ffffff" class="container-fluid text-center">
