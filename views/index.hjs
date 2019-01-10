@@ -18,14 +18,17 @@
 </head>
 <body id="myPage" data-spy="scroll" data-target=".navbar" data-offset="60">
    <!-- <script src="https://cdn.socket.io/socket.io-2.2.0.js"></script> -->
-<!--<script src="https://chat.enam.io/socket.io/socket.io.js"></script>-->
-<script src="https://chat.enam.io/socket.io/socket.io.js"></script>
-
+<!--<script src="https://chat.enam.io/socket.io/socket.io.js"></script>
+<script src="https://chat.enam.io/socket.io/socket.io.js"></script>-->
+<script src="/socket.io/socket.io.js"></script>
 <script>
     //Use socket.io document.socket
       // var socket = io.connect();
+//var socket = require('socket.io-client')('http://localhost');
 
-var socket = io.connect('https://chat.enam.io', {secure: true});
+  //var socket = io();
+
+var socket = io.connect('https://chat.enam.io');
 
        var $name = $("name");
        var $email = $("email");

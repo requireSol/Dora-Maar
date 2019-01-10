@@ -14,36 +14,13 @@ var app = express();
 
 //var server = require('https').Server(app);
 //Create Socket 
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
+//var server = require('http').Server(app);
+//var io = require('socket.io')(server);
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var cryptRouter = require('./routes/crypt');
 
-
-users = [];
-connections = [];
-
-io.sockets.on('connection', function(socket){
-   //Connect
-    connections.push(socket)
-    console.log('socket connection %s', connections.length);
-    
-    //Listen to event "disconnect"
-    socket.on('disconnect',function(data){
-        //Disconnect
-        connections.splice(connections.indexOf(socket), 1);
-        console.log('socket disconnection %s' , connections.length);
-    });
-
-    //Listen to event telegram Message "contact"
-    socket.on('send message',function(data){
-        //emit Msg From from
-        io.sockets.emit('new message', { msg: data });
-    });
-
-});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -76,4 +53,4 @@ app.use(function(err, req, res, next) {
 });
 
 //IO
-module.exports = {app: app, server: server};
+module.exports = {app: app};
