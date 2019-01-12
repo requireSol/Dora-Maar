@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>{{ title }}</title>
+    <title><%= title %></title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -29,7 +29,7 @@
         <div class="row">
             <div class="col-sm-1"></div>
             <div class="col-sm-2">
-                <h2 id="title" style="float:left;">{{ title }}</h2>
+                <h2 id="title" style="float:left;"><%= title %></h2>
             </div>
             <ul id="navul" style="float:right; margin-right:150px;" >
                 <li><div class="select"  href="#home">About</div></li>
@@ -86,41 +86,7 @@
          </div>
     </div>
 </div>
-
-<!-- Container (Contact Section) -->
-<div id="block3" class="container-fluid">
-    <div class="row">
-        <div class="col-sm-1"></div>
-        <div class="col-sm-4">
-            <h2 class="text-center">CONTACT</h2>
-            <p>Contact us and we'll get back to you within 24 hours.</p>
-            <p><span class="glyphicon glyphicon-map-marker"></span> Hessen, DE</p>
-            <p><span class="glyphicon glyphicon-phone"></span> +49 1522 4696704</p>
-            <p><span class="glyphicon glyphicon-envelope"></span> enamsolaimani@icloud.com</p>
-        </div>
-        <div class="col-sm-6 slideanim">
-            <form id="comment_form" action='/submit' method="post">
-                <h2 style="color:green;" id="succ"></h2>
-                <div id="qwert1" class="row" style="padding-top:50px;">
-                    <div class="col-sm-6 form-group">
-                        <input class="form-control" id="name" name="name" placeholder="Name" type="text" required>
-                    </div>
-                    <div class="col-sm-6 form-group">
-                        <input class="form-control" id="email" name="email" placeholder="Email" type="email" required>
-                    </div>
-                </div>
-                <textarea class="form-control" id="comments" name="comments" placeholder="Comment" rows="5"></textarea><br>
-                <div class="row">
-                    <div class="col-sm-12 form-group">
-                        <button id="qwert" class="btn btn-default pull-right" type="submit" value="Send">Send</button>
-                    </div>
-                </div>
-                <div class="g-recaptcha" data-sitekey="6LdTHocUAAAAABhCcbGkAuIAG5PGq3yYo0F449wR"></div>
-            </form>
-        </div>
-    </div>
-
-</div>
+ <%- include('contact.ejs') %>
 <script>
     //Use socket.io document.socket
       // var socket = io.connect();
@@ -178,7 +144,7 @@
 
 </script>
      
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/3.51/jquery.form.min.js"></script>
 <footer id = "footer" style="background-color: #65acc2; color: #ffffff" class="container-fluid text-center">
     <a href="#myPage" title="To Top">
@@ -192,5 +158,6 @@
     cookieStyle()
  </script>
 
+ 
 </body>
 </html>
