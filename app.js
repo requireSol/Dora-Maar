@@ -20,6 +20,7 @@ var app = express();
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var cryptRouter = require('./routes/crypt');
+var reCaptchaRouter = require('./routes/reCaptcha');
 
 
 // view engine setup
@@ -36,6 +37,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/', cryptRouter);
+app.use('/', reCaptchaRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
