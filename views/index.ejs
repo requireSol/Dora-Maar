@@ -1,163 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <title><%= title %></title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <link href="https://fonts.googleapis.com/css?family=Patua+One" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Thasadith" rel="stylesheet">
-    <link href="/stylesheets/style.css" rel="stylesheet">
-    <script src="/javascripts/navbar.js"></script>
-    <script src="/javascripts/changeDarkLight.js"></script>
-    <script src='https://www.google.com/recaptcha/api.js'></script>
+<%- include('header') -%>
  
-</head>
-<body id="myPage" data-spy="scroll" data-target=".navbar" data-offset="60">
-   <!-- <script src="https://cdn.socket.io/socket.io-2.2.0.js"></script> -->
-<!--<script src="https://chat.enam.io/socket.io/socket.io.js"></script>
-<script src="https://chat.enam.io/socket.io/socket.io.js"></script>-->
-<script src="/socket.io/socket.io.js"></script>
+<div id="result">
+        <%- include('main') -%>
+     </div>
 
-<!-- Container (Navbar Section) -->
-<div id="navbar" style="background-color:white; color:black" class="container-fluid">
-    <nav>
-        <div class="row">
-            <div class="col-sm-1"></div>
-            <div class="col-sm-2">
-                <h2 id="title" style="float:left;"><%= title %></h2>
-            </div>
-            <ul id="navul" style="float:right; margin-right:150px;" >
-                <li><div class="select"  href="#home">About</div></li>
-                <li><div class="select" href="#news">News</div></li>
-                <li><div class="select"  href="#contact">Contact</div></li>
-                <li><div class="select active" href="#about">LogIn</div></li>
-                <li><div class="select" onclick="changeStyle()"  id="changeStyle"><span class="glyphicon glyphicon-adjust"></span></div></li>
-            </ul>
-            <div class="dropdown" style="float:right;">
-                <span onclick="dropDownToogle()" class="dropbtn glyphicon glyphicon-menu-hamburger" style="color:black"></span>
-                <div id="myDropdown" class="dropdown-content">
-                    <div class="select2"  href="#home">About</div>
-                    <div class="select2" href="#news">News</div>
-                    <div class="select2"  href="#contact">Contact</div>
-                    <div class="select2 active" href="#about">LogIn</div>
-                    <div class="select2" onclick="changeStyle()"><span class="glyphicon glyphicon-adjust"></span></div>
-                </div>
-            </div>
-        </div>
-    </nav>
-</div>
-
-<!-- Container (About Section) -->
-<div id="block1" class="container-fluid">
-    <div  class="row">
-        <div class="col-sm-1"></div>
-        <div class="col-sm-6">
-            <h4>I'm a senior web developer with a passion for web development. My skills include Php, XML, Apache, Web Server Administration up to the runtime and socket applications with nodejs.
-                I will make a website for your company in 5 days or even less depends on what you want.
-                A backend apllication with many functions will take longer.
-                Follow me on twitter to check what new websites i created. #requireSol</h4><br>
-            <!--<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-            --><br><button onclick="happy()" class="btn btn-default btn-lg">Send socket message to server admin</button>
-        </div>
-        <div class="col-sm-4" style="text-align: center">
-            <span class="glyphicon glyphicon-globe logo"></span>
-        </div>
-    </div>
-</div>
-
-<!-- Container (Our Values) -->
-<div id="block2" style="background:#f1f1f1" class="container-fluid">
-    <div class="row">
-         <div class="col-sm-1"></div>
-        <div class="col-sm-4">
-            <span id="logo" class="glyphicon glyphicon-signal logo slideanim"></span>
-        </div>
-         <div class="col-sm-6">
-            <h2>My Values</h2><br>
-            <h4><strong>MISSION:</strong> My Mission is to change the world with better and faster WebApplication. Every website should also have a change from light mode to dark mode. </h4><br>
-            <p><strong>VISION:</strong> My Vision ist to have a WebApllication wich dont just look like the future but also have Perfomance. Because Performance is really important these days.
-            People dont should have a higher Ping than 30ms even in Webapplications. Runtime is the future !</p>
-        </div>
-         </div>
-    </div>
-</div>
- <%- include('contact.ejs') %>
-<script>
-    //Use socket.io document.socket
-      // var socket = io.connect();
-//var socket = require('socket.io-client')('http://localhost');
-
-  //var socket = io();
-
-        var socket = io.connect('https://chat.enam.io');
- $(document).ready(function() {
-      $('#comment_form').submit(function() {
-           //get Input Variable
-        $(this).ajaxSubmit({
-          error: function(xhr) {
-            status('Error: ' + xhr.status);
-          },
-         success: function(response) {
-            var name = document.getElementById('name').value
-            var email = document.getElementById('email').value
-            var comments = document.getElementById('comments').value
-            event.preventDefault();
-            var data = "" + name + ":" + email + ":" + comments + "";
-
-            if(response['responseCode'] == 1){
-                if ($('#succ').is(':empty')){
-                    $("#succ").hide().append("Failed reCaptcha<br>").fadeIn();
-                }else{
-                    $("#succ").fadeOut().empty();
-                    $("#succ").hide().append("Failed reCaptcha<br>").fadeIn();
+  <script>
+      var $result = $('#result'); 
+      //$(document).ready(function() {
+        var $result = $('#result'); 
+      function contact(){
+         $result.load('/contact' ,function (){
+            $(".slideanim").each(function(){
+                var pos = $(this).offset().top;
+                var winTop = $(window).scrollTop();
+                if (pos < winTop + 600) {
+                    $(this).addClass("slide");
                 }
-                
-                $("#qwert1").css("padding-top", "0px;");
-            }else{
-                socket.emit('telegrammMessage', data);
-                if ($('#succ').is(':empty')){
-                    $("#succ").hide().append("Message send successfully<br>").fadeIn();
-                }else{
-                $("#succ").fadeOut().empty();
-                $("#succ").hide().append("Message send successfully<br>").fadeIn();
-                }
-            $("#qwert1").css("padding-top", "0px;");
-            }
-    
-         }
+            });
         });
-        //Very important line, it disable the page refresh.
-        return false;
-      });
-    });
-     
-        /*Cant get variable name*/
-
-        socket.on('newMessage', function (data){
-            
-        });
-
-</script>
-     
-  
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/3.51/jquery.form.min.js"></script>
-<footer id = "footer" style="background-color: #65acc2; color: #ffffff" class="container-fluid text-center">
-    <a href="#myPage" title="To Top">
-        <span style="color: #ffffff" class="glyphicon glyphicon-chevron-up"></span>
-    </a>
-    <p>Runtime created by Enam Solaimani</p>
-</footer>
+      }
+    //});
+  </script>
 
 <script src="/javascripts/smooth.js"></script>
-<script>
-    cookieStyle()
- </script>
-
  
-</body>
-</html>
+<%- include('footer') -%>

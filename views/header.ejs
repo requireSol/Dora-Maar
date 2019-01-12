@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title><%= title %></title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Patua+One" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Thasadith" rel="stylesheet">
+    <link href="/stylesheets/style.css" rel="stylesheet">
+    <script src="/javascripts/navbar.js"></script>
+    <script src="/javascripts/changeDarkLight.js"></script>
+    <script src='https://www.google.com/recaptcha/api.js'></script>
+ 
+</head>
+<body id="myPage" data-spy="scroll" data-target=".navbar" data-offset="60">
+   <!-- <script src="https://cdn.socket.io/socket.io-2.2.0.js"></script> -->
+<!--<script src="https://chat.enam.io/socket.io/socket.io.js"></script>
+<script src="https://chat.enam.io/socket.io/socket.io.js"></script>-->
+<script src="/socket.io/socket.io.js"></script>
+
+<!-- Container (Navbar Section) -->
+<div id="navbar" style="background-color:white; color:black" class="container-fluid">
+    <nav>
+        <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-2">
+                <h2 id="title" style="float:left;"><%= title %></h2>
+            </div>
+            <ul id="navul" style="float:right; margin-right:150px;" >
+                <li><div class="select"  href="#home">About</div></li>
+                <li><div class="select" href="#news">News</div></li>
+                <li><div class="select"  onclick="contact()">Contact</div></li>
+                <li><div class="select active" href="#about">LogIn</div></li>
+                <li><div class="select" onclick="changeStyle()"  id="changeStyle"><span class="glyphicon glyphicon-adjust"></span></div></li>
+            </ul>
+            <div class="dropdown" style="float:right;">
+                <span onclick="dropDownToogle()" class="dropbtn glyphicon glyphicon-menu-hamburger" style="color:black"></span>
+                <div id="myDropdown" class="dropdown-content">
+                    <div class="select2"  href="#home">About</div>
+                    <div class="select2" href="#news">News</div>
+                    <div class="select2" onclick="contact()"+>Contact</div>
+                    <div class="select2 active" href="#about">LogIn</div>
+                    <div class="select2" onclick="changeStyle()"><span class="glyphicon glyphicon-adjust"></span></div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</div>
+<script>
+headerCookieStyle();
+</script>
