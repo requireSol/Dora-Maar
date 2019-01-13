@@ -2,8 +2,8 @@ var express = require('express');
 var router = express.Router();
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'enam' });
+router.get('/values', function(req, res, next) {
+  res.render('values', { title: 'Enam' });
 });
 
 module.exports = router;

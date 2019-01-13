@@ -1,27 +1,46 @@
 <%- include('header') -%>
  
-<div id="result">
+<div id="result" class="content">
         <%- include('main') -%>
-     </div>
+</div>
+
+<script> 
+    var socket = io.connect('https://chat.enam.io');   
+</script>
 
   <script>
-      var $result = $('#result'); 
-      //$(document).ready(function() {
-        var $result = $('#result'); 
-      function contact(){
-         $result.load('/contact' ,function (){
-            $(".slideanim").each(function(){
+      function slideanim(){
+        $(".slideanim").each(function(){
                 var pos = $(this).offset().top;
                 var winTop = $(window).scrollTop();
                 if (pos < winTop + 600) {
                     $(this).addClass("slide");
                 }
-            });
+            });    
+      }
+      function contact(){
+        var $result = $('#result'); 
+         $result.load('/contact' ,function (){
+           slideanim();
+            contactCookieStyle();
         });
       }
-    //});
+      function main(){
+        var $result = $('#result'); 
+         $result.load('/main' ,function (){
+            //slideanim();
+            cookieStyle();
+        });
+      }
+      function values(){
+        var $result = $('#result'); 
+         $result.load('/values' ,function (){
+            slideanim();
+            valuesCookieStyle();
+        });
+      }
   </script>
 
-<script src="/javascripts/smooth.js"></script>
- 
+
+
 <%- include('footer') -%>

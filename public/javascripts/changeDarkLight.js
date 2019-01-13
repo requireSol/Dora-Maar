@@ -30,42 +30,60 @@ function headerCookieStyle(){
     }
 }
 
+function contactCookieStyle(){
+    var block3 = document.getElementById("contact");
+    if(document.cookie == "style=black"){
+        block3.style.background ="#303851";
+        block3.style.color ="white";
+    }else{
+        block3.style.background ="white";
+        block3.style.color ="black";
+    }
+
+}
 
 function cookieStyle(){
     var logo = document.getElementById("logo");
-    var block1 = document.getElementById("block1"); 
+    var main = document.getElementById("main"); 
     var block2 = document.getElementById("block2"); 
-    var block3 = document.getElementById("block3");
+    //var block3 = document.getElementById("block3");
    
     if(document.cookie == "style=black"){
         
-        block1.style.background ="#303851";
-        block1.style.color ="white";
-        /*block3.style.background ="#303851";
-        block3.style.color ="white";
-
-        block2.style.background = "#363e55"
-        block2.style.color ="white";*/
-        //logo.style.background = "rgb(54, 62, 85)";
+        main.style.background ="#303851";
+        main.style.color ="white";
         
     }else{
         
-        block1.style.background ="white";
-        block1.style.color ="black";
-        /*block3.style.background ="white";
-        block3.style.color ="black";
-
-        block2.style.background ="#fcfcfc";
-        block2.style.color ="black";*/
-       // logo.style.background = "white";
+        main.style.background ="white";
+        main.style.color ="black";
 
     }
 }
 
+function valuesCookieStyle(){
+    var logo = document.getElementById("logo");
+    var values = document.getElementById("values"); 
+    var block2 = document.getElementById("block2"); 
+    //var block3 = document.getElementById("block3");
+   
+    if(document.cookie == "style=black"){
+        
+        values.style.background ="#303851";
+        values.style.color ="white";
+        
+    }else{
+        
+        values.style.background ="white";
+        values.style.color ="black";
+
+    }
+}
 
 function footerCookieStyle(){
     var footer = document.getElementById("footer");
     if(document.cookie == "style=black"){
+       
         footer.style.background = "#363e55";
         footer.style.color ="white";
     }else{
@@ -79,15 +97,28 @@ function changeStyle(){
     if(document.getElementById("navbar").style.backgroundColor == "white"){
         
         document.cookie = "style=black; expires=Thu, 18 Dec 2019 12:00:00 UTC";
-        headerCookieStyle();
-        console.log("WTF");
-        cookieStyle();
+        headerCookieStyle(); 
+        
+        //If else include for contactCookieStyle id content existing or not 
+        if(document.getElementById("contact") !== null){
+            contactCookieStyle();
+        }else if(document.getElementById("main") !== null){
+            cookieStyle();
+        }else if(document.getElementById("values") !== null){
+            valuesCookieStyle();
+        }
         footerCookieStyle();
     }else{
    
         document.cookie = "style=white; expires=Thu, 18 Dec 2019 12:00:00 UTC";
         headerCookieStyle();
-        cookieStyle();
+        if(document.getElementById("contact") !== null){
+            contactCookieStyle();
+        }else if(document.getElementById("main") !== null){
+            cookieStyle();
+        }else if(document.getElementById("values") !== null){
+            valuesCookieStyle();
+        }
         footerCookieStyle();
     }
 

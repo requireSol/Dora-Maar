@@ -1,34 +1,96 @@
+<script src="https://www.google.com/recaptcha/api.js"></script>
 <!-- Container (Contact Section) -->
-<div id="contact" class="container-fluid slideanim" style="height: 400px">
-    <div class="row">
-        <div class="col-sm-1"></div>
-        <div class="col-sm-4">
-            <h2 class="text-center">CONTACT</h2>
-            <p>Contact us and we'll get back to you within 24 hours.</p>
-            <p><span class="glyphicon glyphicon-map-marker"></span> Hessen, DE</p>
-            <p><span class="glyphicon glyphicon-phone"></span> +49 1522 4696704</p>
-            <p><span class="glyphicon glyphicon-envelope"></span> enamsolaimani@icloud.com</p>
+<div id="contact" class="container-fluid">
+        <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-4 slideanim">
+                <h2 id="status" class="text-center">CONTACT</h2>
+                <p>Contact us and we'll get back to you within 24 hours.</p>
+                <p><span class="glyphicon glyphicon-map-marker"></span> Hessen, DE</p>
+                <p><span class="glyphicon glyphicon-phone"></span> +49 1522 4696704</p>
+                <p><span class="glyphicon glyphicon-envelope"></span> enamsolaimani@icloud.com</p>
+            </div>
+            <div class="col-sm-6 slideanim">
+                <form id="comment_form" action='/submit' method="post">
+                    <h2 id="succ"></h2>
+                    <div id="qwert1" class="row">
+                        <div class="col-sm-6 form-group">
+                            <input class="form-control" id="name" name="name" placeholder="Name" type="text" required>
+                        </div>
+                        <div class="col-sm-6 form-group">
+                            <input class="form-control" id="email" name="email" placeholder="Email" type="email" required>
+                        </div>
+                    </div>
+                    <textarea class="form-control" id="comments" name="comments" placeholder="Comment" rows="5"></textarea><br>
+                    <div class="row">
+                        <div class="col-sm-12 form-group">
+                                <div id="recap" class="g-recaptcha pull-left" data-sitekey="6LdTHocUAAAAABhCcbGkAuIAG5PGq3yYo0F449wR"></div>
+                            <button id="qwert" class="btn btn-default pull-right" type="submit" value="Send">Send</button>
+                        </div>
+                        <div class="col-sm-12 form-group">
+                                
+                           </div>
+                       
+                    </div>
+                </form>
+            </div>    
         </div>
-        <div class="col-sm-6 slideanim">
-            <form id="comment_form" action='/submit' method="post">
-                <h2 style="color:green;" id="succ"></h2>
-                <div id="qwert1" class="row" style="padding-top:50px;">
-                    <div class="col-sm-6 form-group">
-                        <input class="form-control" id="name" name="name" placeholder="Name" type="text" required>
-                    </div>
-                    <div class="col-sm-6 form-group">
-                        <input class="form-control" id="email" name="email" placeholder="Email" type="email" required>
-                    </div>
-                </div>
-                <textarea class="form-control" id="comments" name="comments" placeholder="Comment" rows="5"></textarea><br>
-                <div class="row">
-                    <div class="col-sm-12 form-group">
-                        <button id="qwert" class="btn btn-default pull-right" type="submit" value="Send">Send</button>
-                    </div>
-                </div>
-                <div class="g-recaptcha" data-sitekey="6LdTHocUAAAAABhCcbGkAuIAG5PGq3yYo0F449wR"></div>
-            </form>
-        </div>
-    </div>
-
 </div>
+  <script>
+   $(document).ready(function() {
+          $('#comment_form').submit(function() {
+               //get Input Variable
+            $(this).ajaxSubmit({
+              error: function(xhr) {
+                status('Error: ' + xhr.status);
+              },
+             success: function(response) {
+                var name = document.getElementById('name').value
+                var email = document.getElementById('email').value
+                var comments = document.getElementById('comments').value
+                event.preventDefault();
+                var data = "" + name + ":" + email + ":" + comments + "";
+    
+                if(response['responseCode'] == 1){
+                    if ($('#succ').is(':empty')){
+                        $("#succ").hide().append("Failed reCaptcha<br>").fadeIn();
+                        document.getElementById('succ').style.color = "red";
+                    }else{
+                        $("#succ").fadeOut().empty();
+                        $("#succ").hide().append("Failed reCaptcha<br>").fadeIn();
+                        document.getElementById('succ').style.color = "red";
+                    }
+                    $("#qwert1").css("padding-top", "0px;");
+                }else{
+                    socket.emit('telegrammMessage', data);
+                    document.getElementById('name').value = "";
+                    document.getElementById('email').value = "";
+                    document.getElementById('comments').value = "";
+                    $("#recap").fadeOut();
+                    if ($('#succ').is(':empty')){
+                        document.getElementById('succ').style.color = "green";
+                        $("#succ").hide().append("Message send successfully<br>").fadeIn();
+                        
+                    }else{
+                        document.getElementById('succ').style.color = "green";
+                        $("#succ").fadeOut().empty();
+                    
+                        $("#succ").hide().append("Message send successfully<br>").fadeIn();
+                        
+                    }
+                
+                }
+        
+             }
+            });
+            //Very important line, it disable the page refresh.
+            return false;
+          });
+        });
+         
+            /*Cant get variable name*/
+    
+            socket.on('newMessage', function (data){
+                
+            });
+    </script>
