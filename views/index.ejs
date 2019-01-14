@@ -11,8 +11,8 @@
           else if(window.location.href.indexOf("main") > -1) {
             main();
           }
-          else if(window.location.href.indexOf("values") > -1) {
-            values();
+          else if(window.location.href.indexOf("chat") > -1) {
+            chat();
           }else{
             main();
           }
@@ -48,11 +48,11 @@
             cookieStyle();
         });
       }
-      function values(){
+      function chat(){
         var $result = $('#result'); 
-         $result.load('/values' ,function (){
+         $result.load('/chat' ,function (){
             slideanim();
-            valuesCookieStyle();
+            chatCookieStyle();
         });
       }
   </script>

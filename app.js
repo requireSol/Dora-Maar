@@ -23,7 +23,7 @@ var cryptRouter = require('./routes/crypt');
 var reCaptchaRouter = require('./routes/reCaptcha');
 var mainRouter = require('./routes/main');
 var contactRouter = require('./routes/contact');
-var valuesRouter = require('./routes/values');
+var chatRouter = require('./routes/chat');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -42,7 +42,7 @@ app.use('/', cryptRouter);
 app.use('/', reCaptchaRouter);
 app.use('/', contactRouter);
 app.use('/', mainRouter);
-app.use('/', valuesRouter);
+app.use('/', chatRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

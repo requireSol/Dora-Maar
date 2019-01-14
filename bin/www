@@ -76,7 +76,12 @@ connections = [];
       });	
       io.sockets.emit('newMessage', {msg: data[0]});	
     });	
-
+      //Send Telegramm Message	
+    socket.on('chatMessage', function(data){	
+      console.log("Message send: ");
+      console.log(data);
+      io.sockets.emit('showMessage', {msg: data});	
+      });	
  });	
 
 

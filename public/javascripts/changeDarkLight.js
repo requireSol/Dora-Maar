@@ -80,20 +80,22 @@ function cookieStyle(){
    
     if(document.cookie == "style=black"){
         
+        block2.style.background ="#303851";
+        block2.style.color ="white";
         main.style.background ="#303851";
         main.style.color ="white";
-        
     }else{
-        
+        block2.style.background ="white";
+        block2.style.color ="black";  
         main.style.background ="white";
         main.style.color ="black";
 
     }
 }
 
-function valuesCookieStyle(){
+function chatCookieStyle(){
     var logo = document.getElementById("logo");
-    var values = document.getElementById("values"); 
+    var values = document.getElementById("chat"); 
     var block2 = document.getElementById("block2"); 
     //var block3 = document.getElementById("block3");
    
@@ -134,8 +136,8 @@ function changeStyle(){
             contactCookieStyle();
         }else if(document.getElementById("main") !== null){
             cookieStyle();
-        }else if(document.getElementById("values") !== null){
-            valuesCookieStyle();
+        }else if(document.getElementById("chat") !== null){
+            chatCookieStyle();
         }
         footerCookieStyle();
     }else{
@@ -146,8 +148,8 @@ function changeStyle(){
             contactCookieStyle();
         }else if(document.getElementById("main") !== null){
             cookieStyle();
-        }else if(document.getElementById("values") !== null){
-            valuesCookieStyle();
+        }else if(document.getElementById("chat") !== null){
+            chatCookieStyle();
         }
         footerCookieStyle();
     }
