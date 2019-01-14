@@ -15,7 +15,8 @@
     <link href="/stylesheets/style.css" rel="stylesheet">
     <script src="/javascripts/navbar.js"></script>
     <script src="/javascripts/changeDarkLight.js"></script>
-    <script src="https://www.google.com/recaptcha/api.js"></script>
+    <script src="/javascripts/notify.js"></script>
+   
 </head>
 <body id="myPage" data-spy="scroll" data-target=".navbar" data-offset="60">
 <script src="/socket.io/socket.io.js"></script>
@@ -37,18 +38,18 @@ $("#start-loader").click(function() {
                 <h2 id="title" style="float:left;"><%= title %></h2>
             </div>
             <ul id="navul" style="float:right; margin-right:150px;" >
-                <li><div class="select" onclick="main()">About</div></li>
-                <li><div class="select" onclick="values()">Values</div></li>
-                <li><div class="select"  onclick="contact()">Contact</div></li>
+                <li><a id="id1" class="select" href="#main" onclick="main()">About</a></li>
+                <li><a id="id2" class="select" href="#values" onclick="values()">Values</a></li>
+                <li><a id="id3" class="select" href="#contact" onclick="contact()">Contact</a></li>
                 <!--<li><div class="select active" href="#about">LogIn</div></li>-->
                 <li><div class="select" onclick="changeStyle()"  id="changeStyle"><span class="glyphicon glyphicon-adjust"></span></div></li>
             </ul>
             <div class="dropdown" style="float:right;">
                 <span onclick="dropDownToogle()" class="dropbtn glyphicon glyphicon-menu-hamburger" style="color:black"></span>
                 <div id="myDropdown" class="dropdown-content">
-                    <div class="select2" onclick="main()">About</div>
-                    <div class="select2" onclick="values()">Values</div>
-                    <div class="select2" onclick="contact()">Contact</div>
+                    <a id="id4"class="select2" href="#main" onclick="main()">About</a>
+                    <a id="id5"class="select2" href="#values" onclick="values()">Values</a>
+                    <a id="id6"class="select2" href="#contact" onclick="contact()">Contact</a>
                     <!--<div class="select2 active" href="#about">LogIn</div>-->
                     <div class="select2" onclick="changeStyle()"><span class="glyphicon glyphicon-adjust"></span></div>
                 </div>

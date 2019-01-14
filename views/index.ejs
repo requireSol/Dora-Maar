@@ -1,9 +1,25 @@
 <%- include('header') -%>
- 
-<div id="result" class="content">
-        <%- include('main') -%>
-</div>
 
+
+    
+
+    <script type="text/javascript">
+      $(document).ready(function () {
+          if(window.location.href.indexOf("contact") > -1) {
+            contact();
+          }
+          else if(window.location.href.indexOf("main") > -1) {
+            main();
+          }
+          else if(window.location.href.indexOf("values") > -1) {
+            values();
+          }else{
+            main();
+          }
+      });
+      </script>
+      <div id="result" class="content"><!--Implement right loading for /#var-->
+      </div>
 <script> 
     var socket = io.connect('https://chat.enam.io');   
 </script>

@@ -1,4 +1,5 @@
 <script src="https://www.google.com/recaptcha/api.js"></script>
+
 <!-- Container (Contact Section) -->
 <div id="contact" class="container-fluid">
         <div class="row">
@@ -24,7 +25,7 @@
                     <textarea class="form-control" id="comments" name="comments" placeholder="Comment" rows="5"></textarea><br>
                     <div class="row">
                         <div class="col-sm-12 form-group">
-                                <div id="recap" class="g-recaptcha pull-left" data-sitekey="6LdTHocUAAAAABhCcbGkAuIAG5PGq3yYo0F449wR"></div>
+                                <div  id="recap" class="g-recaptcha pull-left" data-sitekey="6LdTHocUAAAAABhCcbGkAuIAG5PGq3yYo0F449wR"></div>
                             <button id="qwert" class="btn btn-default pull-right" type="submit" value="Send">Send</button>
                         </div>
                         <div class="col-sm-12 form-group">
@@ -53,11 +54,13 @@
     
                 if(response['responseCode'] == 1){
                     if ($('#succ').is(':empty')){
-                        $("#succ").hide().append("Failed reCaptcha<br>").fadeIn();
+                        $.notify("Failed reCaptcha !");
+                        $("#succ").hide().append("Failed reCaptcha").fadeIn();
                         document.getElementById('succ').style.color = "red";
                     }else{
+                        $.notify("Failed reCaptcha !");
                         $("#succ").fadeOut().empty();
-                        $("#succ").hide().append("Failed reCaptcha<br>").fadeIn();
+                        $("#succ").hide().append("Failed reCaptcha").fadeIn();
                         document.getElementById('succ').style.color = "red";
                     }
                     $("#qwert1").css("padding-top", "0px;");
@@ -68,10 +71,12 @@
                     document.getElementById('comments').value = "";
                     $("#recap").fadeOut();
                     if ($('#succ').is(':empty')){
+                        $.notify("Message send successfully", "success");
                         document.getElementById('succ').style.color = "green";
-                        $("#succ").hide().append("Message send successfully<br>").fadeIn();
+                        $("#succ").hide().append("Message send successfully").fadeIn();
                         
                     }else{
+                        $.notify("Message send successfully" , "success");
                         document.getElementById('succ').style.color = "green";
                         $("#succ").fadeOut().empty();
                     
