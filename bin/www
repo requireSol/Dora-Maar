@@ -2,7 +2,7 @@
  * Module dependencies.	
  */	
 
- var app = require('../app').app;	
+var app = require('../app').app;	
 var debug = require('debug')('rase.io:server');	
 var http = require('http');	
 var https = require('https');	
@@ -74,18 +74,23 @@ connections = [];
         //console.log(body.url);	
         //console.log(body.explanation);	
       });	
-      io.sockets.emit('newMessage', {msg: data[0]});	
+      io.sockets.emit('newMessage', {msg: data});	
     });	
       //Send Telegramm Message	
     socket.on('chatMessage', function(data){	
       console.log("Message send: ");
       console.log(data);
+      request('https://api.telegram.org/bot719913903:AAF-WjF99Il1wV7bHwzKiCAVk-yUo6wDvs0/sendMessage?chat_id=305873350&text=Chat Message:' +  data, { json: true }, (err, res, body) => {	
+        if (err) { return console.log(err); }	
+        //Uncomment for response handling	
+        //console.log(body.url);	
+        //console.log(body.explanation);	
+      });	
+
       io.sockets.emit('showMessage', {msg: data});	
       });	
- });	
 
-
-
+   });	
  //var server = require('../app').server;	
 
 
@@ -152,5 +157,4 @@ server.on('listening', onListening);
     : 'port ' + addr.port;	
   debug('Listening on ' + bind);	
 }	
-
  exports.server = server;	

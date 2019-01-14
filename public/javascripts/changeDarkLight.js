@@ -94,7 +94,7 @@ function cookieStyle(){
 }
 
 function chatCookieStyle(){
-    var logo = document.getElementById("logo");
+   /* var logo = document.getElementById("logo");
     var values = document.getElementById("chat"); 
     var block2 = document.getElementById("block2"); 
     //var block3 = document.getElementById("block3");
@@ -109,7 +109,7 @@ function chatCookieStyle(){
         values.style.background ="white";
         values.style.color ="black";
 
-    }
+    }*/
 }
 
 function footerCookieStyle(){
