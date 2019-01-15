@@ -52,7 +52,7 @@
       color: #999;
     }
 
-.send-message-form , input{
+.send-message-form {
     width: 100%;
     border: none;
     font-size: 16px;
@@ -95,7 +95,7 @@
               </div>
         </div>
         <form class="send-message-form">
-          <input style="color: black" type="text" placeholder="Your message" required>
+          <input  id="message" style="color: black" type="text" placeholder="Your message" required>
           <button type="submit">Send</button>
         </form>
 </div>
@@ -119,28 +119,11 @@ function slideanim(){
          });    
    }
    $(document).ready(function() {
- $('form').on('submit', function (event) {
-    event.preventDefault();
-    socket.emit('chatMessage' , $('input').val());
-    $('input').val('');
-});
-
-socket.on('showMessage', function (data){
-  //Remove all reloaded pages interruppt multiple messaging
-  io.removeAllListeners();
- var message = $('.message').last().clone();
- const heute = new Date();
-   //Find an rewrite text
-       message.find('.datetime').text(heute.getDate() + "." + heute.getUTCMonth() + "1." + heute.getFullYear() + " " + heute.getHours() + ":" + heute.getMinutes());
-       message.find('p').text(data.msg);
-       $('.chat-container').append(message);
-       //message.hide();
-       //message.fadeIn();
-       $(".chat-container").animate({ scrollTop: $('.chat-container').prop("scrollHeight")}, 0);
-       //setTimeout(function(){ console.log("time out") }, 3000);
-      message.addClass("w3-animate-right")
-       slideanim();
+		$('form').on('submit', function (event) {
+			event.preventDefault();
+			socket.emit('chatMessage' , $('#message').val());
+			$('#message').val('');
+		});
  });
-
- });
+ 
 </script>

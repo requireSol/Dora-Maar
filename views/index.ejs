@@ -58,16 +58,9 @@
     
   </script>
   <script>
-    $(document).ready(function() {
- $('form').on('submit', function (event) {
-    event.preventDefault();
-    socket.emit('chatMessage' , $('input').val());
-    $('input').val('');
-});
-
-socket.on('showMessage', function (data){
- var message = $('.message').last().clone();
- const heute = new Date();
+    socket.on('showMessage', function (data){
+  var message = $('.message').last().clone();
+      const heute = new Date();
    //Find an rewrite text
        message.find('.datetime').text(heute.getDate() + "." + heute.getUTCMonth() + "1." + heute.getFullYear() + " " + heute.getHours() + ":" + heute.getMinutes());
        message.find('p').text(data.msg);
@@ -78,8 +71,6 @@ socket.on('showMessage', function (data){
        //setTimeout(function(){ console.log("time out") }, 3000);
       message.addClass("w3-animate-right")
        slideanim();
- });
-
  });
 </script>
 
