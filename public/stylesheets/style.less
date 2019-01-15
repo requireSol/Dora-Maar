@@ -5,8 +5,8 @@ body {
 }
 h2 {
   font-size: 24px;
-  text-transform: uppercase;
-  font-weight: 600;
+  //text-transform: uppercase;
+ // font-weight: 600;
   margin-bottom: 30px;
 }
 h4 {
@@ -23,14 +23,14 @@ color: #ffffff;
 .btn:hover{
 background-color: #ffffff;
 }
-
+/*
 a { 
-  
   color: white;
 }
 a:hover , a:active { 
   font-weight: bold;
-}
+  decoration: none;
+}*/
 
 .jumbotron {
   background-color: #ffffff;
@@ -74,6 +74,7 @@ a:hover , a:active {
   background-color: #65acc2;
 }
 @media screen and (-webkit-min-device-pixel-ratio:0) { 
+  select2,
   select,
   textarea,
   input {
@@ -159,6 +160,21 @@ ul {
 }
 li {
   float: left;
+}
+
+.select2{
+  display: block;
+  text-align: left;
+  padding: 14px 16px;
+  text-decoration: none;
+  cursor: pointer;
+}
+.select2:hover{
+  display: block;
+  text-align: left;
+  padding: 14px 16px;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 li .select {
