@@ -15,6 +15,10 @@ function headerCookieStyle(){
     var id4 = document.getElementById("id4");
     var id5 = document.getElementById("id5");
     var id6 = document.getElementById("id6");
+    var id7 = document.getElementById("id7");
+    var id8 = document.getElementById("id8");
+    var id9 = document.getElementById("id9");
+    var id10 = document.getElementById("id10");
     if(document.cookie == "style=black"){
         document.cookie = "style=black; expires=Thu, 18 Dec 2019 12:00:00 UTC";
         nav.style.background = "#303851";
@@ -34,6 +38,14 @@ function headerCookieStyle(){
         id5.style.color = "white";
         id6.style.background = "#303851";
         id6.style.color = "white";
+        id7.style.background = "#303851";
+        id7.style.color = "white";
+        id8.style.background = "#303851";
+        id8.style.color = "white";
+        id9.style.background = "#303851";
+        id9.style.color = "white";
+        id10.style.background = "#303851";
+        id10.style.color = "white";
         myDropdown.style.background = "#303851";
         myDropdown.style.color = "white";
     }else{
@@ -53,6 +65,14 @@ function headerCookieStyle(){
         id5.style.color = "black";
         id6.style.background = "white";
         id6.style.color = "black";
+        id7.style.background = "white";
+        id7.style.color = "black";
+        id8.style.background = "white";
+        id8.style.color = "black";
+        id9.style.background = "white";
+        id9.style.color = "black";
+        id10.style.background = "white";
+        id10.style.color = "black";
         myDropdown.style.background = "white";
         myDropdown.style.color = "black";
         title.style.background = "white";
@@ -94,7 +114,7 @@ function cookieStyle(){
 }
 
 function chatCookieStyle(){
-   /* var logo = document.getElementById("logo");
+    var logo = document.getElementById("logo");
     var values = document.getElementById("chat"); 
     var block2 = document.getElementById("block2"); 
     //var block3 = document.getElementById("block3");
@@ -105,11 +125,10 @@ function chatCookieStyle(){
         values.style.color ="white";
         
     }else{
-        
         values.style.background ="white";
         values.style.color ="black";
 
-    }*/
+    }
 }
 
 function footerCookieStyle(){

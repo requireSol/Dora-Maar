@@ -29,28 +29,20 @@
 -->
 
 <style>
-    *
-  box-sizing border-box
-  
-.container{
-  width: 400px;
-  margin: 0 auto;
-  border: solid 1px #ccc;
-  border-radius: 5px;
-  overflow: hidden;
-}
 .chat-container{
   height: 400px;
-  overflow: auto;
-  transform: rotate(180deg);
-  direction: rtl;
+  overflow-y:auto;
+  overflow-x: hidden;
+  /*transform: rotate(180deg);*/
+  direction: inherit;
 }
   .message{
     border-bottom: solid 1px #ccc;
     padding: 20px;
-    transform: rotate(180deg);
+    /*transform: rotate(180deg);*/
     direction: ltr;
   }
+
     .avatar{
       float: left;
       margin-right: 5px;
@@ -65,80 +57,90 @@
     border: none;
     font-size: 16px;
     padding: 10px;
+    padding-right: 10px;
   }
   button{
     display: none;
   }
     
     </style>
-
-<div class="container">
+<div id="chat">
+<div  class="container slideanim">
+  <h2 style="padding-bottom: 20px">Troll Box</h2>
         <div class="chat-container">
           <div class="message">
             <img class="avatar" src="https://placeimg.com/50/50/people?1">
-            <div class="datetime">00/00/0000 00:00</div>
-            <p>I will be notified if you send a Message</p>
+            <div class="datetime"></div>
+            <p>Troll Box</p>
           </div>
           <div class="message">
             <img class="avatar" src="https://placeimg.com/50/50/people?2">
-            <div class="datetime">00/00/0000 00:00</div>
-            <p>Welcome to the the Trollbox</p>
+            <div class="datetime"></div>
+            <p>Chat Room</p>
           </div>
           <div class="message">
             <img class="avatar" src="https://placeimg.com/50/50/people?2">
-            <div class="datetime">00/00/0000 00:00</div>
+            <div class="datetime"></div>
             <p>Admin Message</p>
           </div>
+          <div class="message">
+              <img class="avatar" src="https://placeimg.com/50/50/people?2">
+              <div class="datetime"></div>
+              <p>Welcome to the Trollbox</p>
+            </div>
+            <div class="message">
+                <img class="avatar" src="https://placeimg.com/50/50/people?2">
+                <div class="datetime"></div>
+                <p>I will be notified if you send a Message</p>
+              </div>
         </div>
         <form class="send-message-form">
-          <input type="text" placeholder="Your message" required>
+          <input style="color: black" type="text" placeholder="Your message" required>
           <button type="submit">Send</button>
         </form>
-      </div>
+</div>
+
+</div>
 
 
 <script>
+</script>
 
-    
-$(document).ready(function() {
-    $('form').on('submit', function (event) {
+<script>
+function slideanim(){
+     $(".slideanim").each(function(){
+             var pos = $(this).offset().top;
+             var winTop = $(window).scrollTop();
+             if (pos < winTop + 600) {
+               //$("this").addClass("rotate");
+               $(this).addClass("slide");
+               
+             }
+         });    
+   }
+   $(document).ready(function() {
+ $('form').on('submit', function (event) {
     event.preventDefault();
     socket.emit('chatMessage' , $('input').val());
-   
-  });
-
-  socket.on('showMessage', function (data){
-    var message = $('.message').first().clone();
-           message.find('p').text(data.msg);
-           message.prependTo('.chat-container');
-           $('input').val('');
-    });
-
-    //var $messageForm = $("#messageForm");
-    //var $message = $("#message");
-    //var $chat = $("#chat_content");
-   /* event.preventDefault();
-    var message = $('.message').first().clone();
     $('input').val('');
-      $('#messageForm').submit(function() {
-           //get Input Variable
-        socket.emit('chatMessage', $message.val());
-        $message.val("");
+});
 
-        //Very important line, it disable the page refresh.
-        return false;
-      });
-      socket.on('showMessage', function (data){
-            //$chat.append(data.msg);
-            //$chat.append("<br>");
-           // document.getElementById("chat").innerHTML += "Paragraph changed!";
-           message.find('p').text($('input').val());
-            message.prependTo('.chat-container');
-        });
-             */
-    });
+socket.on('showMessage', function (data){
+  //Remove all reloaded pages interruppt multiple messaging
+  io.removeAllListeners();
+ var message = $('.message').last().clone();
+ const heute = new Date();
+   //Find an rewrite text
+       message.find('.datetime').text(heute.getDate() + "." + heute.getUTCMonth() + "1." + heute.getFullYear() + " " + heute.getHours() + ":" + heute.getMinutes());
+       message.find('p').text(data.msg);
+       $('.chat-container').append(message);
+       //message.hide();
+       //message.fadeIn();
+       $(".chat-container").animate({ scrollTop: $('.chat-container').prop("scrollHeight")}, 0);
+       //setTimeout(function(){ console.log("time out") }, 3000);
+      message.addClass("w3-animate-right")
+       slideanim();
+ });
 
-        /*Cant get variable name*/
-
-    
+ });
 </script>
