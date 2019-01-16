@@ -33,7 +33,7 @@
               </div>
             </div>
 
-        <form class="send-message-form">
+        <form id="chatform" class="send-message-form">
           <input  id="message" style="color: black" type="text" placeholder="Your message" required>
           <button id ="messageButton" type="submit">Send</button>
         </form>
@@ -57,10 +57,10 @@ function slideanim(){
          });    
    }
    $(document).ready(function() {
-		$('form').on('submit', function (event) {
+		$('#chatform').on('submit', function (event) {
 			event.preventDefault();
 			socket.emit('chatMessage' , $('#message').val());
-			$('#message').val('');
+      $('#message').val('');
 		});
  });
  
