@@ -19,7 +19,9 @@ function headerCookieStyle(){
     var id8 = document.getElementById("id8");
     var id9 = document.getElementById("id9");
     var signin = document.getElementById("formsignin");
-    var signin2 = document.getElementById("formsignin2");
+    var signin2 = document.getElementById("formsignin2");  
+    var signup = document.getElementById("formsignup");
+    var signup2 = document.getElementById("formsignup2");
     if(document.cookie == "style=black"){
         document.cookie = "style=black; expires=Thu, 18 Dec 2019 12:00:00 UTC";
         nav.style.background = "#303851";
@@ -51,6 +53,10 @@ function headerCookieStyle(){
         signin.style.color = "white";
         signin2.style.background = "rgb(54, 62, 85)";
         signin2.style.color = "white";
+        signup.style.background = "#303851";
+        signup.style.color = "white";
+        signup2.style.background = "rgb(54, 62, 85)";
+        signup2.style.color = "white";
         myDropdown.style.background = "#303851";
         myDropdown.style.color = "white";
     }else{
@@ -82,6 +88,10 @@ function headerCookieStyle(){
         signin2.style.color = "black";
         signin.style.background = "white";
         signin.style.color = "black";
+        signup.style.background = "white";
+        signup.style.color = "black";
+        signup2.style.background = "white";
+        signup2.style.color = "black";
         myDropdown.style.background = "white";
         myDropdown.style.color = "black";
         title.style.background = "white";

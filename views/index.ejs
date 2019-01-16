@@ -1,47 +1,24 @@
 <%- include('header') -%>
-    <script type="text/javascript">
-              
-      $(document).ready(function () {
-       
-           /* 
-              var contact = document.getElementById("id3");
-              var contact = document.getElementById("id6");*/
-          if(window.location.href.indexOf("#contact") > -1) {
-            contact();
-          }
-          else if(window.location.href.indexOf("#main") > -1) {
-            main();
-          }else if(window.location.href.indexOf("#chat") > -1) {
-            chat();
-          }else{
-              main();
-          }   
-      });
-      </script>
-      
+    <script type="text/javascript" src="javascripts/checkUrl.js"></script>
+     
       <!--Loade Content Page-->
       <div id="result" class="content"><!--Implement right loading for /#var-->
       </div>
+      <!--Implement loading screen here-->
+      <script>
+        $("#start-loader").click(function() {
+            $("#loader-gif").show();
+            setTimeout(function() {
+              $("#loader-gif").hide();
+            }, 5000);
+          });
+        </script>
       <script src="/javascripts/loadContent.js"></script>
       <script> 
         var socket = io.connect('https://chat.enam.io');   
     </script>
  
-  <script>
-    socket.on('showMessage', function (data){
-  var message = $('.message').last().clone();
-      const heute = new Date();
-   //Find an rewrite text
-       message.find('.datetime').text(heute.getDate() + "." + heute.getUTCMonth() + "1." + heute.getFullYear() + " " + heute.getHours() + ":" + heute.getMinutes());
-       message.find('p').text(data.msg);
-       $('.chat-container').append(message);
-       //message.hide();
-       //message.fadeIn();
-       $(".chat-container").animate({ scrollTop: $('.chat-container').prop("scrollHeight")}, 0);
-       //setTimeout(function(){ console.log("time out") }, 3000);
-      message.addClass("w3-animate-right")
-       slideanim();
- });
+  <script src="javascripts/socket/chatSocket.js">
+    
 </script>
-
 <%- include('footer') -%>
