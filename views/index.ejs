@@ -1,6 +1,11 @@
 <%- include('header') -%>
     <script type="text/javascript">
+              
       $(document).ready(function () {
+       
+           /* 
+              var contact = document.getElementById("id3");
+              var contact = document.getElementById("id6");*/
           if(window.location.href.indexOf("#contact") > -1) {
             contact();
           }
@@ -9,55 +14,19 @@
           }else if(window.location.href.indexOf("#chat") > -1) {
             chat();
           }else{
-            main();
-          }
+              main();
+          }   
       });
       </script>
       
       <!--Loade Content Page-->
       <div id="result" class="content"><!--Implement right loading for /#var-->
       </div>
-
+      <script src="/javascripts/loadContent.js"></script>
       <script> 
         var socket = io.connect('https://chat.enam.io');   
     </script>
-  <script>
-    function slideanim(){
-      $(".slideanim").each(function(){
-              var pos = $(this).offset().top;
-              var winTop = $(window).scrollTop();
-              if (pos < winTop + 600) {
-                  $(this).addClass("slide");
-              }
-          });    
-    }
-
-    function contact(){
-      //$('.dropdown-content').hide();
-      var $result = $('#result'); 
-       $result.load('/contact' ,function (){
-         slideanim();
-          contactCookieStyle();
-      });
-    }
-    function main(){
-      //$('.dropdown-content').hide();
-      var $result = $('#result'); 
-       $result.load('/main' ,function (){
-          //slideanim();
-          cookieStyle();
-      });
-    }
-    function chat(){
-     // $('.dropdown-content').hide();
-      var $result = $('#result'); 
-       $result.load('/chat' ,function (){
-          slideanim();
-          chatCookieStyle();
-      });
-    }
-    
-  </script>
+ 
   <script>
     socket.on('showMessage', function (data){
   var message = $('.message').last().clone();

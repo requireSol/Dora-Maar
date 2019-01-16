@@ -1,7 +1,9 @@
 
+<div class="">
 <!-- Container (About Section) -->
 <div id="main" class="container-fluid">
-    <div  class="row slideanim">
+	<div class="slideanim">
+    <div  class="row">
         <div class="col-sm-1"></div>
         <div class="col-sm-6">
             <h4>I'm a senior web developer with a passion for web development. My skills include Php, XML, Apache, Web Server Administration up to the runtime and socket applications with nodejs.
@@ -15,19 +17,7 @@
             <span class="glyphicon glyphicon-globe logo"></span>
         </div>
     </div>
-</div>
-<script>
-$(".slideanim").each(function(){
-    var pos = $(this).offset().top;
-    var winTop = $(window).scrollTop();
-    if (pos < winTop + 600) {
-        $(this).addClass("slide");
-    }
-});   
-</script> 
 
-<!-- Container (Our Values)--> 
-<div id="block2" style="background:#f1f1f1" class="container-fluid">
     <div class="row">
          <div class="col-sm-1"></div>
         <div class="col-sm-4">
@@ -41,8 +31,13 @@ $(".slideanim").each(function(){
         </div>
          </div>
     </div>
+	</div>
+</div>
+</div>
 </div>
 
+
 <script>
+slideanim();
         cookieStyle();
 </script>
