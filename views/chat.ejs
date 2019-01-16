@@ -1,72 +1,4 @@
-<!--
- <style>
-     div.ex3 {
-    background-color: lightblue;
-  width: 310px;
-  height: 210px;
-  overflow: auto;
-}
-     </style>
-<div id="chat" class="container-fluid">
-    <div class="row">
-            <div class="col-sm-1 slideanim"></div>
-        <div class="col-sm-4 slideanim">
-                <h3>Online Users</h3>
-                <ul id="users"></ul>
-        </div>
-        <div class="col-sm-6 slideanim">
-                <div class="ex3"><div id="chat_content"></div></div>
-                    <form id="messageForm">    
-                    <div class="form-group">
-                        <label>Enter Message</label>
-                        <textarea class="form-control" id="message"></textarea>
-                    </div>
-                    <input id="qwert" class="btn btn-default pull-right" type="submit" value="Send"></input>
-                </form>
-        </div>    
-    </div>
-</div>
--->
-
-<style>
-.chat-container{
-  height: 400px;
-  overflow-y:auto;
-  overflow-x: hidden;
-  /*transform: rotate(180deg);*/
-  direction: inherit;
-}
-  .message{
-    border-bottom: solid 1px #ccc;
-    padding: 20px;
-    /*transform: rotate(180deg);*/
-    direction: ltr;
-  }
-
-    .avatar{
-      float: left;
-      margin-right: 5px;
-    }
-    .datetime{
-      float: right;
-      color: #999;
-    }
-
-.send-message-form {
-    width: 100%;
-    border: none;
-    font-size: 16px;
-    padding: 10px;
-    padding-right: 10px;
-  }
-  button{
-    display: none;
-  }
-    
-    </style>
-
-
-
+<link rel="stylesheet" href="/stylesheets/chat.css">
 
 <div id="chat">
   <div  class="container slideanim">
@@ -106,7 +38,7 @@
 
         <form class="send-message-form">
           <input  id="message" style="color: black" type="text" placeholder="Your message" required>
-          <button type="submit">Send</button>
+          <button id ="messageButton" type="submit">Send</button>
         </form>
 </div>
 </div>

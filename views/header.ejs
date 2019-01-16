@@ -21,7 +21,7 @@
   
 </head>
 
-<body id="myPage" data-spy="scroll" data-target=".navbar" data-offset="60">
+<body  id="myPage" data-spy="scroll" data-target=".navbar" data-offset="60">
 <script src="/socket.io/socket.io.js"></script>
 <script>
 $("#start-loader").click(function() {
@@ -32,21 +32,30 @@ $("#start-loader").click(function() {
   });
 </script>
 
-<div id="signin" class="modal" >
-  <form class="modal-content animate" style="max-width:400px">
-    <div class="imgcontainer">
-      <span onclick="document.getElementById('signin').style.display='none'" class="close" title="Close Modal">&times;</span>
-    </div>
-    <div class="containerr">
-      <label for="uname"><b>Username</b></label>
-      <input type="text" placeholder="Enter Username" name="uname" required><br>
-      <label for="psw"><b>Password</b></label>
-      <input type="password" placeholder="Enter Password" name="psw" required>
-      <div type="submit">Login</div>
-      <div type="button" onclick="document.getElementById('signin').style.display='none'" class="cancelbtn">Cancel</div>
-    </div>
-      <span class="psw">Forgot <a href="#">password?</a></span>
-  </form>
+<div id="signin" class="modal">
+    <form id="formsignin" class="modal-content animate" action="/action_page.php">
+      <div class="imgcontainer">
+        <span onclick="document.getElementById('signin').style.display='none'" class="close" title="Close Modal">&times;</span>
+      </div>
+  
+      <div class="containerr">
+        <label for="uname"><b>Username</b></label>
+        <input id="txt" type="text" placeholder="Enter Username" name="uname" required>
+  
+        <label for="psw"><b>Password</b></label>
+        <input id="pw"  type="password" placeholder="Enter Password" name="psw" required>
+          
+        <button type="submit">Login</button>
+        <label>
+          <input type="checkbox" checked="checked" name="remember"> Remember me
+        </label>
+      </div>
+  
+      <div id="formsignin2" class="containerr" style="background-color:#f1f1f1">
+        <button type="button" onclick="document.getElementById('signin').style.display='none'" class="cancelbtn">Cancel</button>
+        <span class="psw">Forgot <a href="#">password?</a></span>
+      </div>
+    </form>
 </div>  
 
 <div id="signup" class="modal" >
@@ -65,8 +74,8 @@ $("#start-loader").click(function() {
       <label for="psw"><b>Repeat Password</b></label>
       <input type="password" placeholder="Enter Password" name="psw" required>
         
-      <div type="submit">Sign Up</div>
-      <div type="button" onclick="document.getElementById('signup').style.display='none'" class="cancelbtn">Cancel</div>
+      <div type="submit" class=".btn-success">Sign Up</div>
+      <div type="button" onclick="document.getElementById('signup').style.display='none'" class="cancelbtn .btn-warning">Cancdel</div>
     </div>
   </form>
 </div>
@@ -83,7 +92,7 @@ $("#start-loader").click(function() {
                 <li><a id="id1" class="select" href="#main" onclick="main()">About</a></li>
                 <li><a id="id2" class="select" href="#chat" onclick="chat()">Chat</a></li>
                 <li><a id="id3" class="select" href="#contact" onclick="contact()">Contact</a></li>
-                <li><a id="id7" class="select" onclick="document.getElementById('signin').style.display='block'" style="width:auto;">Sign In</a></li>
+                <li><a id="id7" class="select" onclick="modalSignIn()" style="width:auto;">Sign In</a></li>
                 <li><a id="id9" class="select" onclick="document.getElementById('signup').style.display='block'" style="width:auto;">Sign Up</a></li>
                 <li><div class="select" onclick="changeStyle()"  id="changeStyle"><span class="glyphicon glyphicon-adjust"></span></div></li>
             </ul>
@@ -98,13 +107,23 @@ $("#start-loader").click(function() {
                       <a id="id4"class="select2" href="#main" onclick="main()">About</a>
                       <a id="id5"class="select2" href="#chat" onclick="chat()">Chat</a>
                       <a id="id6"class="select2" href="#contact" onclick="contact()">Contact</a>
-                      <a id="id8" class="select2" onclick="document.getElementById('signin').style.display='block'" style="width:auto;">Sign In</a>
+                      <a id="id8" class="select2" onclick="modalSignIn()" style="width:auto;">Sign In</a>
                       <a id="id10" class="select2" onclick="document.getElementById('signup').style.display='block'" style="width:auto;">Sign Up</a>
                       <div class="select2" onclick="changeStyle()">ChangeStyle</div>
                   </div>
         </div>
     </nav>
 </div>
+
+<script>
+ function modalSignIn(){
+    document.getElementById('signin').style.display='block';
+   // $("body").css("filter", "blur(3px)");
+   // $("#signin").css("filter", "blur(0px)");
+   headerCookieStyle();
+  }
+</script>
+
 <script src="/javascripts/navbar.js"></script>
 <script>
 headerCookieStyle();

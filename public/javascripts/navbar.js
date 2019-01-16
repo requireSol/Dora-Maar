@@ -1,7 +1,8 @@
 var count = 0;
+//count added for ignoring first click
+
 
 function toogleDropdown(){
-  console.log("sdfsdf");
   document.getElementById("myDropdown").classList.toggle("show");
   $('#nav-icon1,#nav-icon2,#nav-icon3,#nav-icon4').toggleClass('open');
   count = 0;
