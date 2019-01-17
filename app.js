@@ -24,6 +24,8 @@ var reCaptchaRouter = require('./routes/reCaptcha');
 var mainRouter = require('./routes/main');
 var contactRouter = require('./routes/contact');
 var chatRouter = require('./routes/chat');
+var profileRouter = require('./routes/profile');
+var logoutRouter = require('./routes/logout');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -37,12 +39,14 @@ app.use(lessMiddleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/', usersRouter);
 app.use('/', cryptRouter);
 app.use('/', reCaptchaRouter);
 app.use('/', contactRouter);
 app.use('/', mainRouter);
 app.use('/', chatRouter);
+app.use('/', profileRouter);
+app.use('/', logoutRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

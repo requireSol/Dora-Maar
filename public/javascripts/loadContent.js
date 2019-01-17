@@ -76,7 +76,6 @@
       var contact = document.getElementById("id3");
       var contact2 = document.getElementById("id6");
       if(!(chat.classList.contains("active"))){
-        console.log("klappt");
         var $result = $('#result'); 
         $result.load('/chat' ,function (){
           slideanim();
