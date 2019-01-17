@@ -22,7 +22,8 @@ function headerCookieStyle(){
     var signin2 = document.getElementById("formsignin2");  
     var signup = document.getElementById("formsignup");
     var signup2 = document.getElementById("formsignup2");
-    if(document.cookie == "style=black"){
+ 
+    if(document.cookie.includes("style=black")){
         document.cookie = "style=black; expires=Thu, 18 Dec 2019 12:00:00 UTC";
         nav.style.background = "#303851";
         title.style.background = "#303851";
@@ -101,7 +102,7 @@ function headerCookieStyle(){
 
 function contactCookieStyle(){
     var block3 = document.getElementById("contact");
-    if(document.cookie == "style=black"){
+    if(document.cookie.includes("style=black")){
         block3.style.background ="#303851";
         block3.style.color ="white";
     }else{
@@ -117,7 +118,7 @@ function cookieStyle(){
     //var block2 = document.getElementById("block2"); 
     //var block3 = document.getElementById("block3");
    
-    if(document.cookie == "style=black"){
+    if(document.cookie.includes("style=black")){
         
         //block2.style.background ="#303851";
         //block2.style.color ="white";
@@ -138,7 +139,7 @@ function chatCookieStyle(){
     var block2 = document.getElementById("block2"); 
     //var block3 = document.getElementById("block3");
    
-    if(document.cookie == "style=black"){
+    if(document.cookie.includes("style=black")){
         
         values.style.background ="#303851";
         values.style.color ="white";
@@ -152,7 +153,7 @@ function chatCookieStyle(){
 
 function footerCookieStyle(){
     var footer = document.getElementById("footer");
-    if(document.cookie == "style=black"){
+    if(document.cookie.includes("style=black")){
        
         footer.style.background = "#363e55";
         footer.style.color ="white";
