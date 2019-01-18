@@ -74,22 +74,55 @@
     </div>
     <div class="containerr">
       <label for="uname"><b>Email</b></label>
-      <input class="txt" type="text" placeholder="Enter Email" name="uname" required><br>
+      <input class="txt" type="text" placeholder="Enter Email" name="email" required><br>
       <label for="uname"><b>Username</b></label>
-      <input class="txt" type="text" placeholder="Enter Username" name="uname" required><br>
-
+      <input class="txt" type="text" placeholder="Enter Username" name="username" required><br>
       <label for="psw"><b>Password</b></label>
-      <input class="txt" type="password" placeholder="Enter Password" name="psw" required>
+      <input class="txt" type="password" placeholder="Enter Password" name="password" required>
       <label for="psw"><b>Repeat Password</b></label>
-      <input class="txt" type="password" placeholder="Enter Password" name="psw" required>
-        
-      <button>SignUp</button>
+      <input class="txt" type="password" placeholder="Confirm Password" name="passwordConf" required>
+      <button onclick="signIn" type="submit">SignUp</button>
       <div id="formsignup2" class="containerr" style="background-color:#f1f1f1">
         <button type="button" onclick="document.getElementById('signup').style.display='none'" class="cancelbtn">Cancel</button>
       </div>
     </div>
   </form>
 </div>
+<script>
+
+    var signin = document.getElementById('signDiv');
+        var signDivUsername = document.getElementById('signDiv-username');
+        var signDivSignIn = document.getElementById('signDiv-signIn');
+        var signDivSignUp = document.getElementById('signDiv-signUp');
+        var signDivPassword = document.getElementById('signDiv-password');
+       
+        signin.onclick = function(){
+            socket.emit('signIn',{username:signDivUsername.value,password:signDivPassword.value});
+        }
+        signDivSignUp.onclick = function(){
+            socket.emit('signUp',{username:signDivUsername.value,password:signDivPassword.value});
+        }
+        socket.on('signInResponse',function(data){
+            if(data.success){
+                signDiv.style.display = 'none';
+                gameDiv.style.display = 'inline-block';
+            } else
+                alert("Sign in unsuccessul.");
+        });
+        socket.on('signUpResponse',function(data){
+            if(data.success){
+                alert("Sign up successul.");
+            } else
+                alert("Sign up unsuccessul.");
+        });
+    
+     function modalSignIn(){
+        document.getElementById('signin').style.display='block';
+       // $("body").css("filter", "blur(3px)");
+       // $("#signin").css("filter", "blur(0px)");
+       headerCookieStyle();
+      }
+    </script>
 
  <!--Container (Navbar Section) -->
 <div id="navbar" style="background-color:white; color:black" class="container-fluid">
@@ -103,8 +136,8 @@
                 <li><a id="id1" class="select" href="#main" onclick="main(event)">About</a></li>
                 <li><a id="id2" class="select" href="#chat" onclick="chat(event)">Chat</a></li>
                 <li><a id="id3" class="select" href="#contact" onclick="contact(event)">Contact</a></li>
-                <!--<li><a id="id7" class="select" onclick="modalSignIn()" style="width:auto;">SignIn</a></li>
-                <li><a id="id9" class="select" onclick="document.getElementById('signup').style.display='block'" style="width:auto;">SignUp</a></li>-->
+                <li><a id="id7" class="select" onclick="modalSignIn()" style="width:auto;">SignIn</a></li>
+                <li><a id="id9" class="select" onclick="document.getElementById('signup').style.display='block'" style="width:auto;">SignUp</a></li>
                 <li><div class="select" onclick="changeStyle()"  id="changeStyle"><span class="glyphicon glyphicon-adjust"></span></div></li>
             </ul>
             <div class="dropdown" style="float:right;" >
@@ -118,8 +151,8 @@
                       <a id="id4"class="select2" href="#main" onclick="main(event)">About</a>
                       <a id="id5"class="select2" href="#chat" onclick="chat(event)">Chat</a>
                       <a id="id6"class="select2" href="#contact" onclick="contact(event)">Contact</a>
-                    <!-- <a id="id8" class="select2" onclick="modalSignIn()" style="width:auto;">SignIn</a>
-                      <a id="id10" class="select2" onclick="document.getElementById('signup').style.display='block'" style="width:auto;">SignUp</a>-->
+                      <a id="id8" class="select2" onclick="modalSignIn()" style="width:auto;">SignIn</a>
+                      <a id="id10" class="select2" onclick="document.getElementById('signup').style.display='block'" style="width:auto;">SignUp</a>
                       <div class="select2" onclick="changeStyle()"><span class="glyphicon glyphicon-adjust"></span></div>
                   </div>
         </div>
