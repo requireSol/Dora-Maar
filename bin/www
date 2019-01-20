@@ -3,12 +3,14 @@
  */	
 
 var app = require('../app').app;	
+var session = require('../app').session;	
 var debug = require('debug')('rase.io:server');	
 var http = require('http');	
 var https = require('https');	
 var fs = require('fs');	
 const request = require('request');	
 var crypto = require('crypto');
+var sharedsession = require("express-socket.io-session");
 
 //var MongoClient = require('mongodb').MongoClient;
 //var url = "mongodb://localhost:27017/myGame";
@@ -128,6 +130,9 @@ var addUser = function(data,cb){
  var io = require('socket.io')(server,{});	
 
 user = [];	
+io.use(sharedsession(session, {
+    autoSave:true
+}));
 
  io.sockets.on('connection', function(socket){	
 
@@ -166,6 +171,9 @@ user = [];
     socket.on('signIn',function(data){
         isValidPassword(data,function(res){
             if(res){
+                socket.handshake.session.userdata = data;
+                console.log( socket.handshake.session.userdata);
+                socket.handshake.session.save();
                 socket.emit('signInResponse',{success:true});
             } else {
                 socket.emit('signInResponse',{success:false});         
@@ -181,6 +189,7 @@ user = [];
                 socket.emit('signUpResponse',{success:false});     
             } else {
                 addUser(data,function(){
+                   
                     socket.emit('signUpResponse',{success:true});                  
                 });
             }}else{

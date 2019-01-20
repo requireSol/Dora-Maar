@@ -24,10 +24,11 @@
         socket.on('signInResponse',function(data){
               if(data.success){
                  // alert("Sign in successul.");
-                 var $result = $('#result'); 
+                /* var $result = $('#result'); 
                  $result.load('/profile' ,function (){
                     slideanim();
-                });
+                });*/
+                window.location = "https://www.chat.enam.io/profile";
               } else
                   alert("Sign in unsuccessul.");
           });
