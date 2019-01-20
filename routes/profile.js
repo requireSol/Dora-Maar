@@ -1,21 +1,12 @@
 var express = require('express');
 var router = express.Router();
-var User = require('../models/user');
+//var User = require('../models/user');
 
 
 // GET for logout logout
 router.get('/profile', function (req, res, next) {
-    User.findById(req.session.userId)
-      .exec(function (error, user) {
-        if (error) {
-          res.render('index', { title: 'Error'} );
-        } else {
-          if (user === null) {
-            res.render('index', { title: 'Not auth'} );
-          } else {
-            res.render('index', { title: 'Internal'} );
-          }
-        }
-      });
+    
+            res.render('profile', { title: 'Welcome'} );
+        
   });
 module.exports = router;

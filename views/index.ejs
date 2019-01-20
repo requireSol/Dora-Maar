@@ -23,8 +23,11 @@
 
         socket.on('signInResponse',function(data){
               if(data.success){
-                  signDiv.style.display = 'none';
-                  gameDiv.style.display = 'inline-block';
+                 // alert("Sign in successul.");
+                 var $result = $('#result'); 
+                 $result.load('/profile' ,function (){
+                    slideanim();
+                });
               } else
                   alert("Sign in unsuccessul.");
           });

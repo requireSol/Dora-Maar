@@ -21,16 +21,16 @@
     <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css" />
     <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js"></script>
     <script>
-    window.addEventListener("load", function(){
-    window.cookieconsent.initialise({
-      "palette": {
-        "popup": {
-          "background": "#000"
-        },
-        "button": {
-          "background": "#f1d600"
+      window.addEventListener("load", function(){
+      window.cookieconsent.initialise({
+        "palette": {
+          "popup": {
+            "background": "#000"
+          },
+          "button": {
+            "background": "#f1d600"
+          }
         }
-      }
     })});
     </script>
     
@@ -42,7 +42,7 @@
 
 
 <div id="signin" class="modal">
-    <form id="formsignin" class="modal-content animate">
+    <div id="formsignin" class="modal-content animate">
       <div class="imgcontainer">
         <span onclick="document.getElementById('signin').style.display='none'" class="close" title="Close Modal">&times;</span>
       </div>
@@ -64,7 +64,7 @@
         <button type="button" onclick="document.getElementById('signin').style.display='none'" class="cancelbtn">Cancel</button>
         <span class="psw">Forgot <a href="#">password?</a></span>
       </div>
-    </form>
+    </div>
 </div>  
 
 <div id="signup" class="modal" >
@@ -73,15 +73,15 @@
       <span onclick="document.getElementById('signup').style.display='none'" class="close" title="Close Modal">&times;</span>
     </div>
     <div class="containerr">
-      <!--<label for="uname"><b>Email</b></label>
-      <input class="txt" type="text" placeholder="Enter Email" name="email" required><br>
-      --><label for="uname"><b>Username</b></label>
+      <label for="uname"><b>Email</b></label>
+      <input id="emailSignUp" class="txt" type="text" placeholder="Enter Email" name="email" required><br>
+      <label for="uname"><b>Username</b></label>
       <input id="nameSignUp" class="txt" type="text" placeholder="Enter Username" name="username" required><br>
       <label for="psw"><b>Password</b></label>
       <input id="passwordSignUp" class="txt" type="password" placeholder="Enter Password" name="password" required>
-      <!--label for="psw"><b>Repeat Password</b></label>
-      <input class="txt" type="password" placeholder="Confirm Password" name="passwordConf" required>
-      --><button id="signUp">SignUp</button>
+      <label for="psw"><b>Repeat Password</b></label>
+      <input id ="passwordConfSignUp" class="txt" type="password" placeholder="Confirm Password" name="passwordConf" required>
+      <button id="signUp">SignUp</button>
       <div id="formsignup2" class="containerr" style="background-color:#f1f1f1">
         <button type="button" onclick="document.getElementById('signup').style.display='none'" class="cancelbtn">Cancel</button>
       </div>
@@ -91,7 +91,7 @@
 <script>
 
 var signIn = document.getElementById("signIn");
-var signIn = document.getElementById("signUp");
+var sigUp = document.getElementById("signUp");
 
         signIn.onclick = function(){
             var nameSignIn = document.getElementById("nameSignIn");
@@ -101,12 +101,12 @@ var signIn = document.getElementById("signUp");
             socket.emit('signIn',{username:name,password:pw});
         }
         signUp.onclick = function(){
+          var emailSignUp = document.getElementById("emailSignUp");
             var nameSignUp = document.getElementById("nameSignUp");
-            var passwordSignUp = document.getElementById("passwordSignUp");  
-            var name = nameSignUp.value;
-            var pw = passwordSignUp.value;
-            console.log("Schickt");
-            socket.emit('signUp',{username:name,password:pw});
+            var passwordSignUp = document.getElementById("passwordSignUp");
+            var passwordConfSignUp = document.getElementById("passwordConfSignUp");  
+
+            socket.emit('signUp',{email:emailSignUp.value,username:nameSignUp.value,password:passwordSignUp.value,conf:passwordConfSignUp.value});
         }
 
        

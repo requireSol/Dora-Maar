@@ -5,8 +5,7 @@ var cookieParser = require('cookie-parser');
 var lessMiddleware = require('less-middleware');
 var logger = require('morgan');
 
-var mongojs = require("mongojs");
-var db = mongojs('localhost:27017/myGame', ['account','progress']);
+
 // get a reference to your required module
 //var server = require('./server');
 
@@ -71,4 +70,4 @@ app.use(function(err, req, res, next) {
 });
 
 //IO
-module.exports = {app: app, db: db};
+module.exports = {app: app};

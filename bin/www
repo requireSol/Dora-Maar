@@ -8,13 +8,18 @@ var http = require('http');
 var https = require('https');	
 var fs = require('fs');	
 const request = require('request');	
+var crypto = require('crypto');
 
+//var MongoClient = require('mongodb').MongoClient;
+//var url = "mongodb://localhost:27017/myGame";
+var mongojs = require("mongojs");
+var db = mongojs('localhost:27017/myGame', ['account','progress']);
 
  /**	
  * Get port from environment and store in Express.	
  */	
 
- var port = normalizePort(process.env.PORT || '443');	
+var port = normalizePort(process.env.PORT || '443');	
 app.set('port', port);	
 
  // Certificate	
@@ -52,30 +57,72 @@ server.listen(port);
 var SOCKET_LIST = {};
 
 var DEBUG = true;
- 
+
+/**
+ * generates random string of characters i.e salt
+ * @function
+ * @param {number} length - Length of the random string.
+ */
+var genRandomString = function(length){
+    return crypto.randomBytes(Math.ceil(length/2))
+            .toString('hex') /** convert to hexadecimal format */
+            .slice(0,length);   /** return required number of characters */
+};
+var sha512 = function(password, salt){
+    var hash = crypto.createHmac('sha512', salt); /** Hashing algorithm sha512 */
+    hash.update(password);
+    var value = hash.digest('hex');
+    return {
+        salt:salt,
+        passwordHash:value
+    };
+};
+
+function saltHashPassword(userpassword , salt) {
+    var passwordData = sha512(userpassword, salt);
+    //console.log('UserPassword = '+userpassword);
+    //console.log('Passwordhash = '+passwordData.passwordHash);
+    //console.log('nSalt = '+passwordData.salt);
+
+    return [userpassword, passwordData.passwordHash, passwordData.salt];
+}
+
+
 var isValidPassword = function(data,cb){
-    db.account.find({username:data.username,password:data.password},function(err,res){
+    db.account.findOne({username:data.username}, function(err, res) {
+        if (err) throw cb(false);
+        if(res != null){
+            var salt = res.salt;
+            var hash = saltHashPassword(data.password, salt)[1];
+                if(res.password === hash){
+                    cb(true);
+                }else{
+                    cb(false);
+                }
+        }else{
+            cb(false);
+        }
+    });
+}
+var isEmailTaken = function(data,cb){
+      db.account.find({username:data.email},function(err,res){
         if(res.length > 0)
             cb(true);
         else
             cb(false);
-    });
+        });
 }
-var isUsernameTaken = function(data,cb){
-    db.account.find({username:data.username},function(err,res){
-        if(res.length > 0)
-            cb(true);
-        else
-            cb(false);
-    });
-}
+
 var addUser = function(data,cb){
-    console.log(data.username);
-    db.account.insert({username:data.username,password:data.password},function(err){
+    var salting = genRandomString(16);
+    var hash = saltHashPassword(data.password, salting)[1];
+    db.account.insert({email:data.email,username:data.username,password:hash,salt:salting},function(err){
         cb();
     });
 }
  
+
+
 
 
  var io = require('socket.io')(server,{});	
@@ -119,7 +166,6 @@ user = [];
     socket.on('signIn',function(data){
         isValidPassword(data,function(res){
             if(res){
-            //    Player.onConnect(socket);
                 socket.emit('signInResponse',{success:true});
             } else {
                 socket.emit('signInResponse',{success:false});         
@@ -129,14 +175,16 @@ user = [];
     socket.on('signUp',function(data){
         //connections.push(socket)	
          //console.log('socket connection %s', connections.length);
-    
-        isUsernameTaken(data,function(res){
+        isEmailTaken(data,function(res){
+            if(data.conf === data.password){
             if(res){
                 socket.emit('signUpResponse',{success:false});     
             } else {
                 addUser(data,function(){
                     socket.emit('signUpResponse',{success:true});                  
                 });
+            }}else{
+                socket.emit('signUpResponse',{success:false});     
             }
         });  
    });	
