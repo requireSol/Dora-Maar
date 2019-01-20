@@ -18,6 +18,24 @@
       <script> 
         var socket = io.connect('https://chat.enam.io');   
     </script>
+
+<script>
+
+        socket.on('signInResponse',function(data){
+              if(data.success){
+                  signDiv.style.display = 'none';
+                  gameDiv.style.display = 'inline-block';
+              } else
+                  alert("Sign in unsuccessul.");
+          });
+          socket.on('signUpResponse',function(data){
+              if(data.success){
+                  alert("Sign up successul.");
+              } else
+                  alert("Sign up unsuccessul.");
+          });
+      
+      </script>
  
   <script src="javascripts/socket/chatSocket.js">
     

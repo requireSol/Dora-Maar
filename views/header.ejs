@@ -49,12 +49,12 @@
   
       <div class="containerr">
         <label for="uname"><b>Username</b></label>
-        <input class="txt" type="text" placeholder="Enter Username" name="uname" required>
+        <input id="nameSignIn" class="txt" type="text" placeholder="Enter Username" name="uname" required>
   
         <label for="psw"><b>Password</b></label>
-        <input class="txt"  type="password" placeholder="Enter Password" name="psw" required>
+        <input id="passwordSignIn" class="txt"  type="password" placeholder="Enter Password" name="psw" required>
           
-        <button>SignIn</button>
+        <button id="signIn">SignIn</button>
         <label>
           <input type="checkbox" checked="checked" name="remember">Remember me
         </label>
@@ -68,60 +68,49 @@
 </div>  
 
 <div id="signup" class="modal" >
-  <form id="formsignup" class="modal-content animate" style="max-width:400px">
+  <div id="formsignup" class="modal-content animate" style="max-width:400px">
     <div class="imgcontainer">
       <span onclick="document.getElementById('signup').style.display='none'" class="close" title="Close Modal">&times;</span>
     </div>
     <div class="containerr">
-      <label for="uname"><b>Email</b></label>
+      <!--<label for="uname"><b>Email</b></label>
       <input class="txt" type="text" placeholder="Enter Email" name="email" required><br>
-      <label for="uname"><b>Username</b></label>
-      <input class="txt" type="text" placeholder="Enter Username" name="username" required><br>
+      --><label for="uname"><b>Username</b></label>
+      <input id="nameSignUp" class="txt" type="text" placeholder="Enter Username" name="username" required><br>
       <label for="psw"><b>Password</b></label>
-      <input class="txt" type="password" placeholder="Enter Password" name="password" required>
-      <label for="psw"><b>Repeat Password</b></label>
+      <input id="passwordSignUp" class="txt" type="password" placeholder="Enter Password" name="password" required>
+      <!--label for="psw"><b>Repeat Password</b></label>
       <input class="txt" type="password" placeholder="Confirm Password" name="passwordConf" required>
-      <button onclick="signIn" type="submit">SignUp</button>
+      --><button id="signUp">SignUp</button>
       <div id="formsignup2" class="containerr" style="background-color:#f1f1f1">
         <button type="button" onclick="document.getElementById('signup').style.display='none'" class="cancelbtn">Cancel</button>
       </div>
     </div>
-  </form>
+</div>
 </div>
 <script>
 
-    var signin = document.getElementById('signDiv');
-        var signDivUsername = document.getElementById('signDiv-username');
-        var signDivSignIn = document.getElementById('signDiv-signIn');
-        var signDivSignUp = document.getElementById('signDiv-signUp');
-        var signDivPassword = document.getElementById('signDiv-password');
+var signIn = document.getElementById("signIn");
+var signIn = document.getElementById("signUp");
+
+        signIn.onclick = function(){
+            var nameSignIn = document.getElementById("nameSignIn");
+            var passwordSignIn = document.getElementById("passwordSignIn");   
+            var name = nameSignIn.value;
+            var pw = passwordSignIn.value;
+            socket.emit('signIn',{username:name,password:pw});
+        }
+        signUp.onclick = function(){
+            var nameSignUp = document.getElementById("nameSignUp");
+            var passwordSignUp = document.getElementById("passwordSignUp");  
+            var name = nameSignUp.value;
+            var pw = passwordSignUp.value;
+            console.log("Schickt");
+            socket.emit('signUp',{username:name,password:pw});
+        }
+
        
-        signin.onclick = function(){
-            socket.emit('signIn',{username:signDivUsername.value,password:signDivPassword.value});
-        }
-        signDivSignUp.onclick = function(){
-            socket.emit('signUp',{username:signDivUsername.value,password:signDivPassword.value});
-        }
-        socket.on('signInResponse',function(data){
-            if(data.success){
-                signDiv.style.display = 'none';
-                gameDiv.style.display = 'inline-block';
-            } else
-                alert("Sign in unsuccessul.");
-        });
-        socket.on('signUpResponse',function(data){
-            if(data.success){
-                alert("Sign up successul.");
-            } else
-                alert("Sign up unsuccessul.");
-        });
     
-     function modalSignIn(){
-        document.getElementById('signin').style.display='block';
-       // $("body").css("filter", "blur(3px)");
-       // $("#signin").css("filter", "blur(0px)");
-       headerCookieStyle();
-      }
     </script>
 
  <!--Container (Navbar Section) -->
