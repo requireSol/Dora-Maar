@@ -5,14 +5,11 @@ var router = express.Router();
 
 // GET for logout logout
 router.get('/profile', function (req, res, next) {
-    if(req.session.page_views){
-      req.session.page_views++;
-      res.render('profile', { title: req.session.page_views} );
-   } else {
-      req.session.page_views = 1;
-     res.render('profile', { title: "Welcome"} );
-   }
-            
-        
+    if(req.session.userdata){
+      res.render('profile', { title: req.session.userdata.username} );
+    }else{
+      res.send("Nicht Berechtigt");
+    }
+    
   });
 module.exports = router;

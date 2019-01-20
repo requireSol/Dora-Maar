@@ -172,7 +172,7 @@ io.use(sharedsession(session, {
         isValidPassword(data,function(res){
             if(res){
                 socket.handshake.session.userdata = data;
-                console.log( socket.handshake.session.userdata);
+                //console.log(socket.handshake.session.userdata);
                 socket.handshake.session.save();
                 socket.emit('signInResponse',{success:true});
             } else {
