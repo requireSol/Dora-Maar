@@ -172,7 +172,6 @@ io.use(sharedsession(session, {
         isValidPassword(data,function(res){
             if(res){
                 socket.handshake.session.userdata = data;
-                //console.log(socket.handshake.session.userdata);
                 socket.handshake.session.save();
                 socket.emit('signInResponse',{success:true});
             } else {
@@ -185,13 +184,15 @@ io.use(sharedsession(session, {
          //console.log('socket connection %s', connections.length);
         isEmailTaken(data,function(res){
             if(data.conf === data.password){
-            if(res){
-                socket.emit('signUpResponse',{success:false});     
-            } else {
-                addUser(data,function(){
-                   
-                    socket.emit('signUpResponse',{success:true});                  
-                });
+                if(res){
+                    socket.emit('signUpResponse',{success:false});     
+                } else {
+                    socket.handshake.session.userdata = data;
+                    socket.handshake.session.save();
+                    //console.log(socket.handshake.session.userdata);
+                    addUser(data,function(){
+                        socket.emit('signUpResponse',{success:true});                  
+                    });
             }}else{
                 socket.emit('signUpResponse',{success:false});     
             }

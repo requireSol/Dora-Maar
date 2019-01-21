@@ -23,18 +23,19 @@
 
         socket.on('signInResponse',function(data){
               if(data.success){
-                 // alert("Sign in successul.");
+               /*  // alert("Sign in successul.");
                 var $result = $('#result'); 
                  $result.load('/profile' ,function (){
                     slideanim();
-                });
+                });*/
+                window.location.replace("https://chat.enam.io/profile");
             
               } else
                   alert("Sign in unsuccessul.");
           });
           socket.on('signUpResponse',function(data){
               if(data.success){
-                  alert("Sign up successul.");
+                window.location.replace("https://chat.enam.io/profile");
               } else
                   alert("Sign up unsuccessul.");
           });

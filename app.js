@@ -7,8 +7,10 @@ var logger = require('morgan');
 var session = require("express-session")({
   secret: "my-secret",
   resave: true,
-  saveUninitialized: true
+  saveUninitialized: true,
+  maxAge: 24 * 60 * 60 * 1000 // 24 hours
 });
+//var session = require('cookie-session');
 
 
 
@@ -48,8 +50,13 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.set('trust proxy', 1)
 // Use express-session middleware for express
-app.use(session);
-
+//app.use(session);
+app.use(session({
+  genid: function(req) {
+    return genuuid() // use UUIDs for session IDs
+  },
+  secret: 'keyboard cat'
+}))
 app.use(lessMiddleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 
