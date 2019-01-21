@@ -1,4 +1,4 @@
- /**	
+/**	
  * Module dependencies.	
  */	
 
@@ -123,11 +123,7 @@ var addUser = function(data,cb){
     });
 }
  
-
-
-
-
- var io = require('socket.io')(server,{});	
+var io = require('socket.io')(server,{});	
 
 user = [];	
 io.use(sharedsession(session, {

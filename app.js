@@ -8,7 +8,6 @@ var session = require("express-session")({
   secret: "my-secret",
   resave: true,
   saveUninitialized: true,
-  maxAge: 24 * 60 * 60 * 1000 // 24 hours
 });
 //var session = require('cookie-session');
 
@@ -41,6 +40,7 @@ var logoutRouter = require('./routes/logout');
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+app.set('trust proxy', 1)
 
 
 
@@ -48,15 +48,15 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.set('trust proxy', 1)
+
 // Use express-session middleware for express
-//app.use(session);
-app.use(session({
+app.use(session);
+/*app.use(session({
   genid: function(req) {
     return genuuid() // use UUIDs for session IDs
   },
   secret: 'keyboard cat'
-}))
+}))*/
 app.use(lessMiddleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 

@@ -5,9 +5,9 @@ var router = express.Router();
 
 // GET for logout logout
 router.get('/profile', function (req, res, next) {
-  var hour = 3600000
-req.session.cookie.expires = new Date(Date.now() + hour)
-req.session.cookie.maxAge = hour
+  
+console.log(req.session.userdata);
+
     if(req.session.userdata){
       res.render('profile', { title: req.session.userdata.username} );
     }else{
