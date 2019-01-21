@@ -4,12 +4,11 @@
     <title><%= title %></title>
     <meta charset="utf-8"><!--Dont allow to zoom in with maximum scale=1 -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link href="/stylesheets/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/3.51/jquery.form.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Patua+One" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Thasadith" rel="stylesheet">
     <link href="/stylesheets/style.css" rel="stylesheet">
@@ -20,6 +19,7 @@
     <link rel="stylesheet" href="/stylesheets/w3.css">
     <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css" />
     <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js"></script>
+  <script src="/javascripts/bootstrap.min.js"></script>
     <script>
       window.addEventListener("load", function(){
       window.cookieconsent.initialise({
@@ -39,19 +39,69 @@
 <body  id="myPage" data-spy="scroll" data-target=".navbar" data-offset="60">
 <script src="/socket.io/socket.io.js"></script>
 
+
+<div id="header">
+<div id="signin" class="modal">
+    <div id="formsignin" class="modal-content animate">
+      <div class="imgcontainer">
+        <span onclick="document.getElementById('signin').style.display='none'" class="close" title="Close Modal">&times;</span>
+      </div>
+  
+      <div class="containerr">
+        <label for="uname"><b>Username</b></label>
+        <input id="nameSignIn" class="txt" type="text" placeholder="Enter Username" name="uname" required>
+  
+        <label for="psw"><b>Password</b></label>
+        <input id="passwordSignIn" class="txt"  type="password" placeholder="Enter Password" name="psw" required>
+          
+        <button id="signIn">SignIn</button>
+        <label>
+          <input type="checkbox" checked="checked" name="remember">Remember me
+        </label>
+      </div>
+  
+      <div id="formsignin2" class="containerr">
+        <button type="button" onclick="document.getElementById('signin').style.display='none'" class="cancelbtn">Cancel</button>
+        <span class="psw">Forgot <a href="#">password?</a></span>
+      </div>
+    </div>
+</div>  
+
+<div id="signup" class="modal" >
+  <div id="formsignup" class="modal-content animate" style="max-width:400px">
+    <div class="imgcontainer">
+      <span onclick="document.getElementById('signup').style.display='none'" class="close" title="Close Modal">&times;</span>
+    </div>
+    <div class="containerr">
+      <label for="uname"><b>Email</b></label>
+      <input id="emailSignUp" class="txt" type="text" placeholder="Enter Email" name="email" required><br>
+      <label for="uname"><b>Username</b></label>
+      <input id="nameSignUp" class="txt" type="text" placeholder="Enter Username" name="username" required><br>
+      <label for="psw"><b>Password</b></label>
+      <input id="passwordSignUp" class="txt" type="password" placeholder="Enter Password" name="password" required>
+      <label for="psw"><b>Repeat Password</b></label>
+      <input id ="passwordConfSignUp" class="txt" type="password" placeholder="Confirm Password" name="passwordConf" required>
+      <button id="signUp">SignUp</button>
+      <div id="formsignup2" class="containerr">
+        <button type="button" onclick="document.getElementById('signup').style.display='none'" class="cancelbtn">Cancel</button>
+      </div>
+    </div>
+</div>
+</div>
+
  <!--Container (Navbar Section) -->
-<div id="navbar" style="background-color:white; color:black" class="container-fluid">
+<div id="navbar" class="container-fluid">
     <nav>
         <div class="row">
             <div class="col-sm-1"></div>
             <div class="col-sm-2">
-                <h2 id="title" style="float:left;">Enam</h2>
+                <h2 id="title" style="float:left; margin-top: 0px;">Enam</h2>
             </div>
             <ul id="navul" style="float:right; margin-right:150px;" >
-                <li><a id="id1" class="select" href="#main" onclick="main(event)">About</a></li>
-                <li><a id="id2" class="select" href="#chat" onclick="chat(event)">Chat</a></li>
-                <li><a id="id3" class="select" href="#contact" onclick="contact(event)">Contact</a></li>
-                <li><a id="id7" class="select" href="#profile" onclick="profil(event)">Profile</a></li>
+                <li><div id="id1" class="select" onclick="profile(event)">Profile</div></li>
+                <li><div id="id1" class="select" onclick="main(event)">About</div></li>
+                <li><div id="id2" class="select" onclick="chat(event)">Chat</div></li>
+                <li><div id="id3" class="select" onclick="contact(event)">Contact</div></li>
                 <li><div class="select" onclick="changeStyle()"  id="changeStyle"><span class="glyphicon glyphicon-adjust"></span></div></li>
             </ul>
             <div class="dropdown" style="float:right;" >
@@ -62,16 +112,17 @@
                   <span></span>
               </div>
                   <div id="myDropdown" class="dropdown-content" style="margin-top: 50px">
-                      <a id="id4"class="select2" href="#main" onclick="main(event)">About</a>
-                      <a id="id5"class="select2" href="#chat" onclick="chat(event)">Chat</a>
-                      <a id="id6"class="select2" href="#contact" onclick="contact(event)">Contact</a>
-                      <a id="id8" class="select2" href="#profile" onclick="profil(event)">Profile</a>
+                    <li><div id="id1" class="select" onclick="profile(event)">Profile</div></li>
+                      <a id="id4"class="select2" onclick="main(event)">About</a>
+                      <a id="id5"class="select2" onclick="chat(event)">Chat</a>
+                      <a id="id6"class="select2" onclick="contact(event)">Contact</a>
                       <div class="select2" onclick="changeStyle()"><span class="glyphicon glyphicon-adjust"></span></div>
                   </div>
+                  
         </div>
     </nav>
 </div>
-<div id="logged"></div>
+</div>
 
 
 <script src="/javascripts/navbar.js"></script>
