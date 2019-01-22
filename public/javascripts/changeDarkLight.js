@@ -116,7 +116,6 @@ function changeStyle(){
         if(document.getElementById("logged") !== null){
             headerProfileCookieStyle(); 
         }else{
-            console.log("Klick");
             headerCookieStyle(); 
         }
         //If else include for contactCookieStyle id content existing or not 

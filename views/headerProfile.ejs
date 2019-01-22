@@ -44,7 +44,7 @@
 
 
 <div id="header">
-
+<div id="logged"></div>
  <!--Container (Navbar Section) -->
 <div id="navbar" class="container-fluid">
     <nav>
@@ -82,9 +82,17 @@
 </div>
 </div>
 <script>
+    function wait(ms){
+   var start = new Date().getTime();
+   var end = start;
+   while(end < start + ms) {
+     end = new Date().getTime();
+  }
+}
     function logout(){
         socket.emit('logout',"data");
         $.notify("You Will be Logged out", "success");
+        wait(500);
         location.reload();
     }
 </script>
