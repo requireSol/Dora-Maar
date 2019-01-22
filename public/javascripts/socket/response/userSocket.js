@@ -26,6 +26,8 @@ socket.on('signUpResponse',function(data){
     }
     else if (data.response === "required"){
       $.notify("All fields required!", "warn");
+    }else if (data.respons = "emailWrong"){
+      $.notify("Pls type a valid Email!", "warn");
     }
 });
       
