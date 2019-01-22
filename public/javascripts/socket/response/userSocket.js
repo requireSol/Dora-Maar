@@ -18,16 +18,17 @@ socket.on('signUpResponse',function(data){
     window.location.href = "https://chat.enam.io/#profile"; 
     location.reload();
     } 
-    else if (data.response === "pwDontMatch"){
-      $.notify("Passwords dont match!", "warn");
+    else if (data.response === "required"){
+      $.notify("All fields required!", "warn");
     }
     else if (data.response === "emailTaken"){
       $.notify("Email adress alrdy registred!", "warn");
     }
-    else if (data.response === "required"){
-      $.notify("All fields required!", "warn");
-    }else if (data.respons = "emailWrong"){
-      $.notify("Pls type a valid Email!", "warn");
+    else if (data.respons = "emailWrong"){
+      $.notify("Pls use a valid Email!", "warn");
+    }
+    else if (data.response === "pwDontMatch"){
+      $.notify("Passwords dont match!", "warn");
     }
 });
       
