@@ -41,53 +41,6 @@
 
 
 <div id="header">
-<div id="signin" class="modal">
-    <div id="formsignin" class="modal-content animate">
-      <div class="imgcontainer">
-        <span onclick="document.getElementById('signin').style.display='none'" class="close" title="Close Modal">&times;</span>
-      </div>
-  
-      <div class="containerr">
-        <label for="uname"><b>Username</b></label>
-        <input id="nameSignIn" class="txt" type="text" placeholder="Enter Username" name="uname" required>
-  
-        <label for="psw"><b>Password</b></label>
-        <input id="passwordSignIn" class="txt"  type="password" placeholder="Enter Password" name="psw" required>
-          
-        <button id="signIn">SignIn</button>
-        <label>
-          <input type="checkbox" checked="checked" name="remember">Remember me
-        </label>
-      </div>
-  
-      <div id="formsignin2" class="containerr">
-        <button type="button" onclick="document.getElementById('signin').style.display='none'" class="cancelbtn">Cancel</button>
-        <span class="psw">Forgot <a href="#">password?</a></span>
-      </div>
-    </div>
-</div>  
-
-<div id="signup" class="modal" >
-  <div id="formsignup" class="modal-content animate" style="max-width:400px">
-    <div class="imgcontainer">
-      <span onclick="document.getElementById('signup').style.display='none'" class="close" title="Close Modal">&times;</span>
-    </div>
-    <div class="containerr">
-      <label for="uname"><b>Email</b></label>
-      <input id="emailSignUp" class="txt" type="text" placeholder="Enter Email" name="email" required><br>
-      <label for="uname"><b>Username</b></label>
-      <input id="nameSignUp" class="txt" type="text" placeholder="Enter Username" name="username" required><br>
-      <label for="psw"><b>Password</b></label>
-      <input id="passwordSignUp" class="txt" type="password" placeholder="Enter Password" name="password" required>
-      <label for="psw"><b>Repeat Password</b></label>
-      <input id ="passwordConfSignUp" class="txt" type="password" placeholder="Confirm Password" name="passwordConf" required>
-      <button id="signUp">SignUp</button>
-      <div id="formsignup2" class="containerr">
-        <button type="button" onclick="document.getElementById('signup').style.display='none'" class="cancelbtn">Cancel</button>
-      </div>
-    </div>
-</div>
-</div>
 
  <!--Container (Navbar Section) -->
 <div id="navbar" class="container-fluid">
@@ -98,10 +51,11 @@
                 <h2 id="title" style="float:left; margin-top: 0px;">Enam</h2>
             </div>
             <ul id="navul" style="float:right; margin-right:150px;" >
-                <li><div id="id1" class="select" onclick="profile(event)">Profile</div></li>
-                <li><div id="id1" class="select" onclick="main(event)">About</div></li>
-                <li><div id="id2" class="select" onclick="chat(event)">Chat</div></li>
-                <li><div id="id3" class="select" onclick="contact(event)">Contact</div></li>
+                <li><div id="idProfile" class="select" onclick="profile(event)">Profile</div></li>
+                <li><div id="idAbout" class="select" onclick="main(event)">About</div></li>
+                <li><div id="idChat" class="select" onclick="chat(event)">Chat</div></li>
+                <li><div id="idContact" class="select" onclick="contact(event)">Contact</div></li>
+                <li><div id="idLogout" class="select" onclick="logout(event)">Logout</div></li>
                 <li><div class="select" onclick="changeStyle()"  id="changeStyle"><span class="glyphicon glyphicon-adjust"></span></div></li>
             </ul>
             <div class="dropdown" style="float:right;" >
@@ -112,10 +66,11 @@
                   <span></span>
               </div>
                   <div id="myDropdown" class="dropdown-content" style="margin-top: 50px">
-                    <li><div id="id1" class="select" onclick="profile(event)">Profile</div></li>
-                      <a id="id4"class="select2" onclick="main(event)">About</a>
-                      <a id="id5"class="select2" onclick="chat(event)">Chat</a>
-                      <a id="id6"class="select2" onclick="contact(event)">Contact</a>
+                    <a id="idProfile"class="select2" onclick="profile(event)">Profile</a>
+                      <a id="idAbout"class="select2" onclick="main(event)">About</a>
+                      <a id="idChat"class="select2" onclick="chat(event)">Chat</a>
+                      <a id="idContact"class="select2" onclick="contact(event)">Contact</a>
+                      <a id="idLogout"class="select2" onclick="contact(event)">Logout</a>
                       <div class="select2" onclick="changeStyle()"><span class="glyphicon glyphicon-adjust"></span></div>
                   </div>
                   

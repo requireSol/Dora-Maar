@@ -60,11 +60,11 @@ function headerProfileCookieStyle(){
 function contactCookieStyle(){
     var contact = document.getElementById("contact");
     if(document.cookie.includes("style=black")){
-        contact.style.background ="#303851";
-        contact.style.color ="white";
+        contact.style.background =colorDark;
+        contact.style.color =colorWhite;
     }else{
-        contact.style.background ="white";
-        contact.style.color ="black";
+        contact.style.background =colorWhite;
+        contact.style.color =colorBlack;
     }
 
 }
@@ -73,11 +73,11 @@ function cookieStyle(){
     var main = document.getElementById("main"); 
    
     if(document.cookie.includes("style=black")){
-        main.style.background ="#303851";
-        main.style.color ="white";
+        main.style.background =colorDark;
+        main.style.color =colorWhite;
     }else{
-        main.style.background ="white";
-        main.style.color ="black";
+        main.style.background =colorWhite;
+        main.style.color =colorBlack;
 
     }
 }
@@ -86,11 +86,11 @@ function chatCookieStyle(){
     var values = document.getElementById("chat"); 
 
     if(document.cookie.includes("style=black")){
-        values.style.background ="#303851";
-        values.style.color ="white";
+        values.style.background =colorDark;
+        values.style.color =colorWhite;
     }else{
-        values.style.background ="white";
-        values.style.color ="black";
+        values.style.background =colorWhite;
+        values.style.color =colorBlack;
 
     }
 }
@@ -100,17 +100,17 @@ function footerCookieStyle(){
     if(document.cookie.includes("style=black")){
        
         footer.style.background = "#363e55";
-        footer.style.color ="white";
+        footer.style.color =colorWhite;
     }else{
         footer.style.background = "#65acc2";
-        footer.style.color ="white";
+        footer.style.color =colorWhite;
     }
 }
 
 
 function changeStyle(){
     
-    if(document.getElementById("header").style.backgroundColor == "white"){
+    if(document.getElementById("header").style.backgroundColor == colorWhite){
         
         document.cookie = "style=black; expires=Thu, 18 Dec 2019 12:00:00 UTC";
         if(document.getElementById("logged") !== null){
