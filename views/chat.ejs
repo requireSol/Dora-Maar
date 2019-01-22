@@ -1,10 +1,7 @@
-<link rel="stylesheet" href="/stylesheets/chat.css">
 
 <div id="chat">
   <div  class="container slideanim">
-     
               <h2 style="padding: 20px 35px; margin-right: auto; margin-left: auto;">Troll Box</h2>
-         
         <div class="chat-container">
           <div class="message">
             <img class="avatar" src="https://placeimg.com/50/50/people?1">
@@ -40,28 +37,4 @@
 </div>
 </div>
 
-
-<script>
-</script>
-
-<script>
-function slideanim(){
-     $(".slideanim").each(function(){
-             var pos = $(this).offset().top;
-             var winTop = $(window).scrollTop();
-             if (pos < winTop + 600) {
-               //$("this").addClass("rotate");
-               $(this).addClass("slide");
-               
-             }
-         });    
-   }
-   $(document).ready(function() {
-		$('#chatform').on('submit', function (event) {
-			event.preventDefault();
-			socket.emit('chatMessage' , $('#message').val());
-      $('#message').val('');
-		});
- });
- 
-</script>
+<script src="/javascripts/socket/chatRequest.js"></script>

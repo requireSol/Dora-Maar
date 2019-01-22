@@ -1,59 +1,29 @@
 <% if (!logged) { %>
-  <%- include('header') -%>
+<%- include('header') -%>
 <% } else { %>
-  <%- include('headerProfile') -%>
-  <% } %>
+<%- include('headerProfile') -%>
+<% } %>
 
-  <% if (!logged) { %>
-    <script type="text/javascript" src="javascripts/checkUrl.js"></script>
-  <% } else { %>
-    <script type="text/javascript" src="javascripts/checkUrlIntern.js"></script>
-    <% } %>
-
-      <!--Loade Content Page-->
-      <div id="result" class="content"><!--Implement right loading for /#var-->
-      </div>
-        <% if (!logged) { %>
-          <script src="/javascripts/loadContent.js"></script>
-        <% } else { %>
-          <script src="/javascripts/loadContentIntern.js"></script>
-          <% } %>
-    
-      <script> 
-        var socket = io.connect('https://chat.enam.io');   
-    </script>
 <% if (!logged) { %>
-<script>
-function wait(ms){
-   var start = new Date().getTime();
-   var end = start;
-   while(end < start + ms) {
-     end = new Date().getTime();
-  }
-}
-        socket.on('signInResponse',function(data){
-              if(data.success){
-                $.notify("Successfully Logged in!", "success");
-                window.location.href = "https://chat.enam.io/#profile";
-                //wait(1000); 
-                location.reload();
-              } else{
-                $.notify("Password or Username wrong !!!", "error");
-              }
-          });
-          socket.on('signUpResponse',function(data){
-              if(data.success){
-                $.notify("Successfully Registered! You will be Logged in", "success");
-                window.location.href = "https://chat.enam.io/#profile";
-                //wait(1000); 
-                location.reload();
-              } else
-                $.notify("Sign Up Failed!", "error");
-          });
-      
-      </script>
-   <% }  %>
-  <script src="javascripts/socket/chatSocket.js">
-    
-</script>
+  <script type="text/javascript" src="javascripts/checkUrl.js"></script>
+<% } else { %>
+  <script type="text/javascript" src="javascripts/checkUrlIntern.js"></script>
+<% } %>
+
+<!--Loade Content Page-->
+<div id="result" class="content"><!--Implement right loading for /#var--></div>
+        
+<% if (!logged) { %>
+<script src="/javascripts/loadContent.js"></script>
+<% } else { %>
+<script src="/javascripts/loadContentIntern.js"></script>
+<% } %>
+
+<script>var socket = io.connect('https://chat.enam.io');</script>
+
+<% if (!logged) { %>
+<script src="/javascripts/socket/response/userSocket.js"></script>
+<% }  %>
+<script src="javascripts/socket/response/chatSocket.js"></script>
+
 <%- include('footer') -%>
