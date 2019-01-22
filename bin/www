@@ -106,13 +106,14 @@ var isValidPassword = function(data,cb){
         }
     });
 }
+
 var isEmailTaken = function(data,cb){
-      db.account.find({username:data.email},function(err,res){
-        if(res.length > 0)
-            cb(true);
-        else
-            cb(false);
-        });
+    db.account.find({email:data.email},function(err,res){
+      if(res.length > 0)
+          cb(true);
+      else
+          cb(false);
+      });
 }
 
 var addUser = function(data,cb){
@@ -169,9 +170,9 @@ io.use(sharedsession(session, {
             if(res){
                 socket.handshake.session.userdata = data;
                 socket.handshake.session.save();
-                socket.emit('signInResponse',{success:true});
+                socket.emit('signInResponse',{response:true});
             } else {
-                socket.emit('signInResponse',{success:false});         
+                socket.emit('signInResponse',{response:false});         
             }
         });
     });
@@ -179,19 +180,20 @@ io.use(sharedsession(session, {
         //connections.push(socket)	
          //console.log('socket connection %s', connections.length);
         isEmailTaken(data,function(res){
-            if(data.conf === data.password){
-                if(res){
-                    socket.emit('signUpResponse',{success:false});     
-                } else {
-                    socket.handshake.session.userdata = data;
-                    socket.handshake.session.save();
-                    //console.log(socket.handshake.session.userdata);
-                    addUser(data,function(){
-                        socket.emit('signUpResponse',{success:true});                  
-                    });
-            }}else{
-                socket.emit('signUpResponse',{success:false});     
+            if(res){
+                socket.emit('signUpResponse',{response:"emailTaken"});     
+            } else if (data.conf != data.password){
+                socket.emit('signUpResponse',{response:"pwDontMatch"});  
+            } else if (data.username === "" || data.password === "" ) {
+                socket.emit('signUpResponse',{response:"required"});  
+            }else{
+                socket.handshake.session.userdata = data;
+                socket.handshake.session.save();
+                addUser(data,function(){
+                    socket.emit('signUpResponse', {response:"true"});                
+                });   
             }
+        
         });  
    });	
    socket.on("logout", function(userdata) {

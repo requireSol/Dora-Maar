@@ -19,7 +19,7 @@
     <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css" />
     <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js"></script>
   <script src="/javascripts/bootstrap.min.js"></script>
-  <script src="/javascripts/include/function.js"></script>
+  <script src="/javascripts/include/functions.js"></script>
   
   <script src="/javascripts/cookies.js"></script>
   <script src="/javascripts/changeDarkLight.js"></script>
@@ -36,7 +36,7 @@
       <div class="imgcontainer">
         <span onclick="document.getElementById('signin').style.display='none'" class="close" title="Close Modal">&times;</span>
       </div>
-  
+
       <div class="containerr">
         <label for="uname"><b>Username</b></label>
         <input id="nameSignIn" class="txt" type="text" placeholder="Enter Username" name="uname" required>
@@ -45,17 +45,17 @@
         <input id="passwordSignIn" class="txt"  type="password" placeholder="Enter Password" name="psw" required>
           
         <button id="signIn">SignIn</button>
-        <label>
-          <input type="checkbox" checked="checked" name="remember">Remember me
-        </label>
       </div>
+
   
       <div id="formsignin2" class="containerr">
         <button type="button" onclick="document.getElementById('signin').style.display='none'" class="cancelbtn">Cancel</button>
-        <span class="psw">Forgot <a href="#">password?</a></span>
+        <span class="psw">Forgot <div class="select" onclick="">password?</div></span>
       </div>
     </div>
 </div>  
+
+    
 
 <div id="signup" class="modal" >
   <div id="formsignup" class="modal-content animate" style="max-width:400px">
@@ -91,12 +91,12 @@
                 <h2 id="title" style="float:left; margin-top: 0px;">Enam</h2>
             </div>
             <ul id="navul" style="float:right; margin-right:150px;" >
-                <li><a id="idAbout" class="select2" onclick="main(event)">About</a></li>
-                <li><a id="idChat" class="select2" onclick="chat(event)">Chat</a></li>
-                <li><a id="idContact" class="select2" onclick="contact(event)">Contact</a></li>
-                <li><div class="select2" onclick="modalSignIn()">SignIn</div></li>
-                <li><div class="select2" onclick="modalSignUp()" style="width:auto;">SignUp</a></li>
-                <li><div class="select2" onclick="changeStyle()"  id="changeStyle"><span class="glyphicon glyphicon-adjust"></span></div></li>
+                <li><a id="idAbout" class="select" onclick="main(event)">About</a></li>
+                <li><a id="idChat" class="select" onclick="chat(event)">Chat</a></li>
+                <li><a id="idContact" class="select" onclick="contact(event)">Contact</a></li>
+                <li><div class="select" onclick="modalSignIn()">SignIn</div></li>
+                <li><div class="select" onclick="modalSignUp()" style="width:auto;">SignUp</a></li>
+                <li><div class="select" onclick="changeStyle()"  id="changeStyle"><span class="glyphicon glyphicon-adjust"></span></div></li>
             </ul>
             <div class="dropdown" style="float:right;" >
               <div id="nav-icon3" onclick="toogleDropdown()">
