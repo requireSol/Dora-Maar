@@ -120,12 +120,12 @@ var sigUp = document.getElementById("signUp");
                 <h2 id="title" style="float:left; margin-top: 0px;">Enam</h2>
             </div>
             <ul id="navul" style="float:right; margin-right:150px;" >
-                <li><div id="idAbout" class="select" onclick="main(event)">About</div></li>
-                <li><div id="idChat" class="select" onclick="chat(event)">Chat</div></li>
-                <li><div id="idContact" class="select" onclick="contact(event)">Contact</div></li>
-                <li><div class="select" onclick="modalSignIn()">SignIn</div></li>
-                <li><div class="select" onclick="modalSignUp()" style="width:auto;">SignUp</a></li>
-                <li><div class="select" onclick="changeStyle()"  id="changeStyle"><span class="glyphicon glyphicon-adjust"></span></div></li>
+                <li><a id="idAbout" class="select2" onclick="main(event)">About</a></li>
+                <li><a id="idChat" class="select2" onclick="chat(event)">Chat</a></li>
+                <li><a id="idContact" class="select2" onclick="contact(event)">Contact</a></li>
+                <li><div class="select2" onclick="modalSignIn()">SignIn</div></li>
+                <li><div class="select2" onclick="modalSignUp()" style="width:auto;">SignUp</a></li>
+                <li><div class="select2" onclick="changeStyle()"  id="changeStyle"><span class="glyphicon glyphicon-adjust"></span></div></li>
             </ul>
             <div class="dropdown" style="float:right;" >
               <div id="nav-icon3" onclick="toogleDropdown()">
@@ -135,9 +135,9 @@ var sigUp = document.getElementById("signUp");
                   <span></span>
               </div>
                   <div id="myDropdown" class="dropdown-content" style="margin-top: 50px">
-                      <a id="idAbout"class="select2" onclick="main(event)">About</a>
-                      <a id="idChat"class="select2" onclick="chat(event)">Chat</a>
-                      <a id="idContact"class="select2" onclick="contact(event)">Contact</a>
+                      <a id="idAbout2" class="select2" onclick="main(event)">About</a>
+                      <a id="idChat2" class="select2" onclick="chat(event)">Chat</a>
+                      <a id="idContact2"class="select2" onclick="contact(event)">Contact</a>
                       <a class="select2" onclick="modalSignIn()" style="width:auto;">SignIn</a>
                       <a class="select2" onclick="modalSignUp()" style="width:auto;">SignUp</a>
                       <div class="select2" onclick="changeStyle()"><span class="glyphicon glyphicon-adjust"></span></div>
@@ -150,10 +150,12 @@ var sigUp = document.getElementById("signUp");
 <script>
 function modalSignIn(){
   document.getElementById('signin').style.display='block';
+
   headerCookieStyle();
 }
 function modalSignUp(){
   document.getElementById('signup').style.display='block'
+
   headerCookieStyle();
 }
 </script>

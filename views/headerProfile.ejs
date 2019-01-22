@@ -66,11 +66,11 @@
                   <span></span>
               </div>
                   <div id="myDropdown" class="dropdown-content" style="margin-top: 50px">
-                    <a id="idProfile"class="select2" onclick="profile(event)">Profile</a>
-                      <a id="idAbout"class="select2" onclick="main(event)">About</a>
-                      <a id="idChat"class="select2" onclick="chat(event)">Chat</a>
-                      <a id="idContact"class="select2" onclick="contact(event)">Contact</a>
-                      <a id="idLogout"class="select2" onclick="contact(event)">Logout</a>
+                    <a id="idProfile2"class="select2" onclick="profile(event)">Profile</a>
+                      <a id="idAbout2"class="select2" onclick="main(event)">About</a>
+                      <a id="idChat2"class="select2" onclick="chat(event)">Chat</a>
+                      <a id="idContact2"class="select2" onclick="contact(event)">Contact</a>
+                      <a id="idLogout2"class="select2" onclick="logout(event)">Logout</a>
                       <div class="select2" onclick="changeStyle()"><span class="glyphicon glyphicon-adjust"></span></div>
                   </div>
                   
@@ -78,7 +78,12 @@
     </nav>
 </div>
 </div>
-
+<script>
+    function logout(){
+        socket.emit('logout',"data");
+        location.reload();
+    }
+</script>
 
 <script src="/javascripts/navbar.js"></script>
 <script>

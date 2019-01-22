@@ -3,8 +3,12 @@
 <% } else { %>
   <%- include('headerProfile') -%>
   <% } %>
-    <script type="text/javascript" src="javascripts/checkUrl.js"></script>
 
+  <% if (!logged) { %>
+    <script type="text/javascript" src="javascripts/checkUrl.js"></script>
+  <% } else { %>
+    <script type="text/javascript" src="javascripts/checkUrlIntern.js"></script>
+    <% } %>
 
       <!--Loade Content Page-->
       <div id="result" class="content"><!--Implement right loading for /#var-->
@@ -18,36 +22,35 @@
             }, 5000);
           });
         </script>
-      <script src="/javascripts/loadContent.js"></script>
+        <% if (!logged) { %>
+          <script src="/javascripts/loadContent.js"></script>
+        <% } else { %>
+          <script src="/javascripts/loadContentIntern.js"></script>
+          <% } %>
+    
       <script> 
         var socket = io.connect('https://chat.enam.io');   
     </script>
-
+<% if (!logged) { %>
 <script>
 
         socket.on('signInResponse',function(data){
               if(data.success){
-              // alert("Sign in successul.");
-                var $result = $('#result'); 
-                 $result.load('/profile' ,function (){
-                    slideanim();
-                });
+                window.location.href = "https://chat.enam.io/#profile";
                 location.reload();
-                //window.location.replace("https://chat.enam.io/profile");
-            
               } else
                   alert("Sign in unsuccessul.");
           });
           socket.on('signUpResponse',function(data){
               if(data.success){
-                //window.location.replace("https://chat.enam.io/profile");
+                window.location.href = "https://chat.enam.io/#profile";
                 location.reload();
               } else
                   alert("Sign up unsuccessul.");
           });
       
       </script>
- 
+   <% }  %>
   <script src="javascripts/socket/chatSocket.js">
     
 </script>
