@@ -36,17 +36,20 @@
 
         socket.on('signInResponse',function(data){
               if(data.success){
+                $.notify("Successfully Logged in!", "success");
                 window.location.href = "https://chat.enam.io/#profile";
                 location.reload();
-              } else
-                  alert("Sign in unsuccessul.");
+              } else{
+                $.notify("Password or Username wrong !!!", "error");
+              }
           });
           socket.on('signUpResponse',function(data){
               if(data.success){
+                $.notify("Successfully Registered! You will be Logged in", "success");
                 window.location.href = "https://chat.enam.io/#profile";
                 location.reload();
               } else
-                  alert("Sign up unsuccessul.");
+                $.notify("Sign Up Failed!", "error");
           });
       
       </script>

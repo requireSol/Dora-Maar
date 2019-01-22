@@ -9,7 +9,6 @@
       }else if(window.location.href.indexOf("#chat") > -1) {
             chat();
  	    }else if(window.location.href.indexOf("#profile") > -1) {
-         console.log("geht");
             profile();
       }else{
               profile();
