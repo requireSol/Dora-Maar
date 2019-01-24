@@ -13,7 +13,7 @@ var signUp = document.getElementById("signUp");
             $.notify("All fields Required !", "warn");
         }
         signUp.onclick = function(){
-          var emailSignUp = document.getElementById("emailSignUp");
+            var emailSignUp = document.getElementById("emailSignUp");
             var nameSignUp = document.getElementById("nameSignUp");
             var passwordSignUp = document.getElementById("passwordSignUp");
             var passwordConfSignUp = document.getElementById("passwordConfSignUp");  

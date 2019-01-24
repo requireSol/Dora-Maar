@@ -65,10 +65,58 @@ var addUser = function(data,cb){
     });
 }
 
+
+
 module.exports = function(io , session) {
 
+    var Ressourcen_Entity = function(){
+        var self = {
+            metal:0,
+            kristall:0,
+            deuterium:0,
+            hStandartModel:0,
+            id:"",
+        }
+        self.update = function(){
+            self.updateRessourcen();
+        }
+        self.updateRessourcen = function(){
+            self.metal += 5;
+            self.kristall += 2;
+            self.deuterium += 1;
+            console.log("GGGGG");
+        }
+        return self;
+    }
+     
+    var Ressourcen = function(){
+        var self = Ressourcen_Entity();
+        self.id = Math.random();
+    
+        self.update();
+           
+        return self;
+    }
+    Ressourcen.list = {};
+     
+    Ressourcen.update = function(){
+        var pack = [];
+        for(var i in Ressourcen.list){
+            var ressourcen = Ressourcen.list[i];
+            ressourcen.update();
+    
+            pack.push({
+                metal:ressourcen.metal,
+                kristall:ressourcen.kristall,
+                deuterium:ressourcen.deuterium,
+            });    
+        }
+        return pack;
+    }
+     
    
 var SOCKET_LIST = {};
+var USER_LIST = {}
 
 var DEBUG = true;
 user = [];	
@@ -76,14 +124,14 @@ io.use(sharedsession(session, {
     autoSave:true
 }));
 
-var connections = [];
 
  io.sockets.on('connection', function(socket){	
 
     socket.id = Math.random();
     SOCKET_LIST[socket.id] = socket;
-    connections.push(socket)	
-    console.log('Sockets connected %s', connections.length);	
+    console.log('Sockets connected %s', SOCKET_LIST.length);	
+    socket.handshake.session.id = socket.id;
+    socket.handshake.session.save();
   
      //Send Telegramm Message	
     socket.on('telegrammMessage', function(data){	
@@ -95,8 +143,7 @@ var connections = [];
     });	
       //Send Telegramm Message	
     socket.on('chatMessage', function(data){	
-      console.log("Message send: ");
-      console.log(data);
+      console.log("Message send: " + data);
       request('https://api.telegram.org/bot719913903:AAF-WjF99Il1wV7bHwzKiCAVk-yUo6wDvs0/sendMessage?chat_id=305873350&text=Chat Message:' +  data, { json: true }, (err, res, body) => {	
         if (err) { return console.log(err); }		
         });	
@@ -108,24 +155,31 @@ var connections = [];
             if(res){
                 socket.handshake.session.userdata = data;
                 socket.handshake.session.save();
+                setInterval(function(){
+                    var pack = {
+                        ressourcen:Ressourcen.update(),
+                    }
+                    console.log(pack);
+                   //var socket = SOCKET_LIST[req.session.id];
+                   socket.emit('updateRessourcen',pack);
+                  },1000/25);
                 socket.emit('signInResponse',{response:true});
             } else {
                 socket.emit('signInResponse',{response:false});         
             }
         });
     });
+
     socket.on('signUp',function(data){
-        //connections.push(socket)	
-         //console.log('socket connection %s', connections.length);
-         validator.validate("test@email.com"); // true
         isEmailTaken(data,function(res){
+            if (data.username === "" || data.password === "" || data.password === "" || data.conf === "" ) {
+                socket.emit('signUpResponse',{response:"required"});   
+            }else{
             if(res){
                 socket.emit('signUpResponse',{response:"emailTaken"});     
             } else if (data.conf != data.password){
-                socket.emit('signUpResponse',{response:"pwDontMatch"});  
-            } else if (data.username === "" || data.password === "" ) {
-                socket.emit('signUpResponse',{response:"required"});   
-            }else if(!(validator.validate(data.email))){
+                socket.emit('signUpResponse',{response:"pwDontMatch"});
+            } else if(!(validator.validate(data.email))){
                 socket.emit('signUpResponse',{response:"emailWrong"}); 
             }else{
                 socket.handshake.session.userdata = data;
@@ -133,7 +187,7 @@ var connections = [];
                 addUser(data,function(){
                     socket.emit('signUpResponse', {response:"true"});                
                 });   
-            }
+            }}
         
         });  
    });
@@ -144,11 +198,8 @@ var connections = [];
     }
 });        
    socket.on('disconnect',function(){
-    connections.splice(connections.indexOf(socket), 1);	
-    console.log('socket disconnection %s' , connections.length);
     delete SOCKET_LIST[socket.id];
-       // Player.onDisconnect(socket);
-
+    console.log('socket disconnection %s' , SOCKET_LIST.length);
     });
 
     socket.on('evalServer',function(data){
@@ -157,7 +208,12 @@ var connections = [];
         var res = eval(data);
         socket.emit('evalAnswer',res);     
     });
+   
 });
 
+
+
 };
+
+
 

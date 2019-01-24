@@ -1,4 +1,4 @@
-
+/** Hier Ganz Normal document ready submit machen*/
 
  socket.on('signInResponse',function(data){
   if(data.response){
@@ -9,10 +9,11 @@
   } else{
     $.notify("Password or Username wrong !", "error");
   }
+  
 });
 socket.on('signUpResponse',function(data){
 
-  if(data.response === "true"){
+    if(data.response === "true"){
     $.notify("Successfully Registered! You will be Logged in", "success");
     wait(1000);
     window.location.href = "https://chat.enam.io/#profile"; 
@@ -29,6 +30,8 @@ socket.on('signUpResponse',function(data){
     }
     else if (data.response === "pwDontMatch"){
       $.notify("Passwords dont match!", "warn");
+    }else{
+      $.notify("Something went wrong !", "error");
     }
 });
       

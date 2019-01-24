@@ -6,13 +6,17 @@ var router = express.Router();
 // GET for logout logout
 router.get('/profile', function (req, res, next) {
   
-console.log(req.session.userdata);
+//console.log(req.session.userdata);
+
 
     if(req.session.userdata){
       res.render('profile', { title: req.session.userdata.username} );
+      
     }else{
       res.send("Nicht Berechtigt");
     }
+
+   
     
   });
 module.exports = router;
