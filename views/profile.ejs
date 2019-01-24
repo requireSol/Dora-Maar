@@ -9,11 +9,14 @@
 </div>
 
 <script>
-socket.on('newPositions',function(data){
-
-    document.getElementById("metal").value = data.metal;
-
+    $(document).ready(function(){ if(window.location.href  == "https://chat.enam.io/#profile"){
+socket.on('updateRessourcen',function(data){
+    if(window.location.href  == "https://chat.enam.io/#profile"){
+    document.getElementById("metal").textContent = data;}
     //data.kristall,
     //data.deuterium
 });
+}
+    });
+       
 </script>

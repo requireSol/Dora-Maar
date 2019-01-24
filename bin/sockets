@@ -92,6 +92,7 @@ module.exports = function(io , session) {
     var Ressourcen = function(){
         var self = Ressourcen_Entity();
         self.id = Math.random();
+        console.log("GG");
     
         self.update();
            
@@ -104,7 +105,6 @@ module.exports = function(io , session) {
         for(var i in Ressourcen.list){
             var ressourcen = Ressourcen.list[i];
             ressourcen.update();
-    
             pack.push({
                 metal:ressourcen.metal,
                 kristall:ressourcen.kristall,
@@ -113,8 +113,7 @@ module.exports = function(io , session) {
         }
         return pack;
     }
-     
-   
+
 var SOCKET_LIST = {};
 var USER_LIST = {}
 
@@ -155,14 +154,7 @@ io.use(sharedsession(session, {
             if(res){
                 socket.handshake.session.userdata = data;
                 socket.handshake.session.save();
-                setInterval(function(){
-                    var pack = {
-                        ressourcen:Ressourcen.update(),
-                    }
-                    console.log(pack);
-                   //var socket = SOCKET_LIST[req.session.id];
-                   socket.emit('updateRessourcen',pack);
-                  },1000/25);
+               
                 socket.emit('signInResponse',{response:true});
             } else {
                 socket.emit('signInResponse',{response:false});         
@@ -210,8 +202,22 @@ io.use(sharedsession(session, {
     });
    
 });
+var z = 0;
 
-
+setInterval(function(){
+    var pack = {
+        ressourcen:Ressourcen.update(),
+    }
+     
+    //console.log(pack);
+    for(var i in SOCKET_LIST){
+        console.log(z)
+        var socket = SOCKET_LIST[i];
+        z += 0.01;
+        socket.emit('updateRessourcen',z.toFixed(2));
+    }
+  // socket.emit('updateRessourcen',pack);
+  },1000/25);
 
 };
 
