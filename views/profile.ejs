@@ -1,5 +1,3 @@
-
-
 <!-- Container (About Section) -->
 
 <div id="profile" class="jumbotron text-center">
@@ -9,14 +7,11 @@
 </div>
 
 <script>
-    $(document).ready(function(){ if(window.location.href  == "https://chat.enam.io/#profile"){
-socket.on('updateRessourcen',function(data){
-    if(window.location.href  == "https://chat.enam.io/#profile"){
-    document.getElementById("metal").textContent = data;}
-    //data.kristall,
-    //data.deuterium
-});
-}
+    $(document).ready(function(){
+            socket.on('updateRessourcen',function(data){
+                if(document.getElementById("profile") != null){
+                    document.getElementById("metal").textContent = data;
+                }
+            });  
     });
-       
 </script>
