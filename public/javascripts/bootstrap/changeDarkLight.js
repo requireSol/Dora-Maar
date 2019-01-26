@@ -70,14 +70,14 @@ function contactCookieStyle(){
 }
 
 function cookieStyle(){
-    var main = document.getElementById("main"); 
+    var about = document.getElementById("about");
    
     if(document.cookie.includes("style=black")){
-        main.style.background =colorDark;
-        main.style.color =colorWhite;
+        about.style.background =colorDark;
+        about.style.color =colorWhite;
     }else{
-        main.style.background =colorWhite;
-        main.style.color =colorBlack;
+        about.style.background =colorWhite;
+        about.style.color =colorBlack;
 
     }
 }
@@ -121,7 +121,7 @@ function changeStyle(){
         //If else include for contactCookieStyle id content existing or not 
         if(document.getElementById("contact") !== null){
             contactCookieStyle();
-        }else if(document.getElementById("main") !== null){
+        }else if(document.getElementById("about") !== null){
             cookieStyle();
         }else if(document.getElementById("chat") !== null){
             chatCookieStyle();
@@ -137,7 +137,7 @@ function changeStyle(){
         }
         if(document.getElementById("contact") !== null){
             contactCookieStyle();
-        }else if(document.getElementById("main") !== null){
+        }else if(document.getElementById("about") !== null){
             cookieStyle();
         }else if(document.getElementById("chat") !== null){
             chatCookieStyle();

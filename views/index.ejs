@@ -1,22 +1,22 @@
 <% if (!logged) { %>
-<%- include('header') -%>
+<%- include('external/header') -%>
 <% } else { %>
-<%- include('headerProfile') -%>
+<%- include('internal/headerProfile') -%>
 <% } %>
 
 <% if (!logged) { %>
-  <script type="text/javascript" src="javascripts/checkUrl.js"></script>
+  <script type="text/javascript" src="javascripts/external/checkUrl.js"></script>
 <% } else { %>
-  <script type="text/javascript" src="javascripts/checkUrlIntern.js"></script>
+  <script type="text/javascript" src="javascripts/internal/checkUrlIntern.js"></script>
 <% } %>
 
 <!--Loade Content Page-->
 <div id="result" class="content"><!--Implement right loading for /#var--></div>
         
 <% if (!logged) { %>
-<script src="/javascripts/loadContent.js"></script>
+<script src="/javascripts/external/loadContent.js"></script>
 <% } else { %>
-<script src="/javascripts/loadContentIntern.js"></script>
+<script src="/javascripts/internal/loadContentIntern.js"></script>
 <% } %>
 
 <script>var socket = io.connect('https://chat.enam.io');</script>

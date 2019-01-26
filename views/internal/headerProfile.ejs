@@ -14,13 +14,13 @@
     <link href="/stylesheets/style.css" rel="stylesheet">
     <link href="/stylesheets/navbar.css" rel="stylesheet">
     <link href="/stylesheets/modal.css" rel="stylesheet">
-    <script src="/javascripts/changeDarkLight.js"></script>
-    <script src="/javascripts/notify.js"></script>
+    <script src="/javascripts/bootstrap/changeDarkLight.js"></script>
+    <script src="/javascripts/bootstrap/notify.js"></script>
     <link rel="stylesheet" href="/stylesheets/chat.css">
     <link rel="stylesheet" href="/stylesheets/w3.css">
     <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css" />
     <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js"></script>
-    <script src="/javascripts/bootstrap.min.js"></script>
+    <script src="/javascripts/bootstrap/bootstrap.min.js"></script>
     <script src="/javascripts/cookies.js"></script>
     <script src="/javascripts/include/functions.js"></script>
     
@@ -42,7 +42,7 @@
             </div>
             <ul id="navul" style="float:right; margin-right:150px;" >
                 <li><div id="idProfile" class="select" onclick="profile(event)">Profile</div></li>
-                <li><div id="idAbout" class="select" onclick="main(event)">About</div></li>
+                <li><div id="idAbout" class="select" onclick="about(event)">About</div></li>
                 <li><div id="idChat" class="select" onclick="chat(event)">Chat</div></li>
                 <li><div id="idContact" class="select" onclick="contact(event)">Contact</div></li>
                 <li><div id="idLogout" class="select" onclick="logout(event)">Logout</div></li>
@@ -57,13 +57,13 @@
                 </div>
                   <div id="myDropdown" class="dropdown-content">
                     <a id="idProfile2"class="select2" onclick="profile(event)">Profile</a>
-                      <a id="idAbout2"class="select2" onclick="main(event)">About</a>
+                      <a id="idAbout2"class="select2" onclick="about(event)">About</a>
                       <a id="idChat2"class="select2" onclick="chat(event)">Chat</a>
                       <a id="idContact2"class="select2" onclick="contact(event)">Contact</a>
                       <a id="idLogout2"class="select2" onclick="logout(event)">Logout</a>
                       <div class="select2" onclick="changeStyle()"><span class="glyphicon glyphicon-adjust"></span></div>
                   </div>
-                  
+            </div>
         </div>
     </nav>
 </div>
@@ -77,7 +77,7 @@
     }
 </script>
 
-<script src="/javascripts/navbar.js"></script>
+<script src="/javascripts/bootstrap/navbar.js"></script>
 <script>
 headerProfileCookieStyle();
 </script>

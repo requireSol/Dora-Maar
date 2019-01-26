@@ -14,19 +14,18 @@
     <link href="/stylesheets/style.css" rel="stylesheet">
     <link href="/stylesheets/navbar.css" rel="stylesheet">
     <link href="/stylesheets/modal.css" rel="stylesheet">
+    <script src="/javascripts/bootstrap/changeDarkLight.js"></script>
+    <script src="/javascripts/bootstrap/notify.js"></script>
     <link rel="stylesheet" href="/stylesheets/chat.css">
     <link rel="stylesheet" href="/stylesheets/w3.css">
     <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css" />
     <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js"></script>
-  <script src="/javascripts/bootstrap.min.js"></script>
-  <script src="/javascripts/include/functions.js"></script>
-  <script src="/javascripts/loader.js"></script>
-  <script src="/javascripts/cookies.js"></script>
-  <script src="/javascripts/changeDarkLight.js"></script>
-    <script src="/javascripts/notify.js"></script>
+    <script src="/javascripts/bootstrap/bootstrap.min.js"></script>
+    <script src="/javascripts/cookies.js"></script>
+    <script src="/javascripts/include/functions.js"></script>
 </head>
 
-<body  id="myPage" data-spy="scroll" data-target=".navbar" data-offset="60">
+<div  id="myPage" data-spy="scroll" data-target=".navbar" data-offset="60">
 <script src="/socket.io/socket.io.js"></script>
 
 
@@ -90,11 +89,11 @@
                 <h2 id="title" style="float:left; margin-top: 0px;">Enam</h2>
             </div>
             <ul id="navul" style="float:right; margin-right:150px;" >
-                <li><a id="idAbout" class="select" onclick="main(event)">About</a></li>
+                <li><a id="idAbout" class="select" onclick="about(event)">About</a></li>
                 <li><a id="idChat" class="select" onclick="chat(event)">Chat</a></li>
                 <li><a id="idContact" class="select" onclick="contact(event)">Contact</a></li>
                 <li><div class="select" onclick="modalSignIn()">SignIn</div></li>
-                <li><div class="select" onclick="modalSignUp()" style="width:auto;">SignUp</a></li>
+                <li><div class="select" onclick="modalSignUp()" style="width:auto;">SignUp</div></li>
                 <li><div class="select" onclick="changeStyle()"  id="changeStyle"><span class="glyphicon glyphicon-adjust"></span></div></li>
             </ul>
             <div class="dropdown" style="float:right; margin:20px;" >
@@ -105,16 +104,17 @@
                   <span style="height: 3px"></span>
               </div>
                   <div id="myDropdown" class="dropdown-content" style="margin-top: 0px">
-                      <a id="idAbout2" class="select2" onclick="main(event)">About</a>
+                      <a id="idAbout2" class="select2" onclick="about(event)">About</a>
                       <a id="idChat2" class="select2" onclick="chat(event)">Chat</a>
                       <a id="idContact2"class="select2" onclick="contact(event)">Contact</a>
                       <a class="select2" onclick="modalSignIn()" style="width:auto;">SignIn</a>
                       <a class="select2" onclick="modalSignUp()" style="width:auto;">SignUp</a>
                       <div class="select2" onclick="changeStyle()"><span class="glyphicon glyphicon-adjust"></span></div>
                   </div>
-                  
+            </div>
         </div>
     </nav>
+</div>
 </div>
 </div>
 <script>
@@ -130,7 +130,7 @@ function modalSignUp(){
 }
 </script>
 
-<script src="/javascripts/navbar.js"></script>
+<script src="/javascripts/bootstrap/navbar.js"></script>
 <script>
 headerCookieStyle();
 </script>

@@ -46,7 +46,7 @@
       //$('.dropdown-content').hide();
     
     }
-    function main(){
+    function about(){
       window.location.href = "https://chat.enam.io/#about";
       var chat = document.getElementById("idChat");
       var main = document.getElementById("idAbout");
@@ -57,7 +57,7 @@
       //$('.dropdown-content').hide();
      if(!(main.classList.contains("active"))){
         var $result = $('#result'); 
-       $result.load('/main' ,function (){
+       $result.load('/about' ,function (){
           slideanim();
           cookieStyle();
       });

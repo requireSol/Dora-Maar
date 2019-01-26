@@ -10,7 +10,7 @@ router.get('/profile', function (req, res, next) {
 
 
     if(req.session.userdata){
-      res.render('profile', { title: req.session.userdata.username} );
+      res.render('internal/profile', { title: req.session.userdata.username} );
       
     }else{
       res.send("Nicht Berechtigt");

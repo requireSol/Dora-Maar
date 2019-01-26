@@ -211,7 +211,7 @@ setInterval(function(){
      
     //console.log(pack);
     for(var i in SOCKET_LIST){
-        console.log(z)
+        //console.log(z)
         var socket = SOCKET_LIST[i];
         z += 0.01;
         socket.emit('updateRessourcen',z.toFixed(2));

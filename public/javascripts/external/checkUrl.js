@@ -5,11 +5,11 @@
             contact();
           }
           else if(window.location.href.indexOf("#about") > -1) {
-            main();
+            about();
           }else if(window.location.href.indexOf("#chat") > -1) {
             chat();
           }else{
-              main();
+              about();
           }
         
       });

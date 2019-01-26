@@ -27,15 +27,14 @@ var app = express();
 //var server = require('http').Server(app);
 //var io = require('socket.io')(server);
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var indexRouter = require('./routes');
 var cryptRouter = require('./routes/crypt');
 var reCaptchaRouter = require('./routes/reCaptcha');
-var mainRouter = require('./routes/main');
-var contactRouter = require('./routes/contact');
-var chatRouter = require('./routes/chat');
-var profileRouter = require('./routes/profile');
-var logoutRouter = require('./routes/logout');
+var aboutRouter = require('./routes/external/about');
+var contactRouter = require('./routes/external/contact');
+var chatRouter = require('./routes/external/chat');
+var profileRouter = require('./routes/internal/profile');
+var logoutRouter = require('./routes/internal/logout');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -61,11 +60,10 @@ app.use(lessMiddleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/', usersRouter);
 app.use('/', cryptRouter);
 app.use('/', reCaptchaRouter);
 app.use('/', contactRouter);
-app.use('/', mainRouter);
+app.use('/', aboutRouter);
 app.use('/', chatRouter);
 app.use('/', profileRouter);
 app.use('/', logoutRouter);
