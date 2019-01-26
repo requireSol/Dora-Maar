@@ -9,6 +9,7 @@
     }
 
     function contact(event){
+
       window.location.href = "https://chat.enam.io/#contact";
       var chat = document.getElementById("idChat");
       var main = document.getElementById("idAbout");

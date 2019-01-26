@@ -1,5 +1,7 @@
+<div id="loader"></div>
 
-<div class="">
+
+<div id="myDiv">
 <!-- Container (About Section) -->
 <div id="main" class="container-fluid">
 	<div class="slideanim">
@@ -34,11 +36,18 @@
     </div>
 	</div>
 </div>
-</div>
-</div>
 
 
 <script>
-slideanim();
-        cookieStyle();
+
+        var myVar;
+
+    myVar = setTimeout(showPage, 3000);
+
+
+    function showPage() {
+        document.getElementById("loader").style.display = "none";
+        document.getElementById("myDiv").style.display = "block";
+    }
+
 </script>
