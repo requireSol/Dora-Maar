@@ -68,70 +68,50 @@ var addUser = function(data,cb){
 
 
 module.exports = function(io , session) {
+    var connections = [];
+    var DEBUG = true;
+    var test =null;
 
-    var Ressourcen_Entity = function(){
-        var self = {
-            metal:0,
-            kristall:0,
-            deuterium:0,
-            hStandartModel:0,
-            id:"",
-        }
-        self.update = function(){
-            self.updateRessourcen();
-        }
-        self.updateRessourcen = function(){
-            self.metal += 5;
-            self.kristall += 2;
-            self.deuterium += 1;
-            console.log("GGGGG");
-        }
-        return self;
+    function Ressourcen(id, metall, kristall, deuterium, hParticle) {
+        this.id = id;
+        this.metall = metall;
+        this.kristall = kristall;
+        this.deuterium = deuterium;
+        this.hParticle = hParticle;
+        this.update = function () {
+            this.metall += 2;
+            this.kristall += 1;
+            this.deuterium += 0.5;
+        };
     }
-     
-    var Ressourcen = function(){
-        var self = Ressourcen_Entity();
-        self.id = Math.random();
-        console.log("GG");
     
-        self.update();
-           
-        return self;
-    }
-    Ressourcen.list = {};
-     
-    Ressourcen.update = function(){
-        var pack = [];
-        for(var i in Ressourcen.list){
-            var ressourcen = Ressourcen.list[i];
-            ressourcen.update();
-            pack.push({
-                metal:ressourcen.metal,
-                kristall:ressourcen.kristall,
-                deuterium:ressourcen.deuterium,
-            });    
-        }
-        return pack;
-    }
 
-var SOCKET_LIST = {};
-var USER_LIST = {}
-
-var DEBUG = true;
-user = [];	
 io.use(sharedsession(session, {
     autoSave:true
 }));
+    var userConnections = [];
 
+ io.sockets.on('connection', function(socket){
 
- io.sockets.on('connection', function(socket){	
+     var username = socket.handshake.session.id;
 
-    socket.id = Math.random();
-    SOCKET_LIST[socket.id] = socket;
-    console.log('Sockets connected %s', SOCKET_LIST.length);	
-    socket.handshake.session.id = socket.id;
-    socket.handshake.session.save();
-  
+     var existingUser = userConnections.find(function(userConnection){
+         return userConnection.username === username;
+     });
+
+     if (!existingUser){
+         existingUser = {
+             username: username,
+             sockets: []
+         }
+         userConnections.push(existingUser);
+     }
+
+     existingUser.sockets.push(socket);
+
+     //connections.push(socket)
+     console.log('User connected: Online %s', userConnections.length);
+
      //Send Telegramm Message	
     socket.on('telegrammMessage', function(data){	
       data = data.split(":");	
@@ -154,7 +134,7 @@ io.use(sharedsession(session, {
             if(res){
                 socket.handshake.session.userdata = data;
                 socket.handshake.session.save();
-               
+                test = new Ressourcen(0,0,0,0,0);
                 socket.emit('signInResponse',{response:true});
             } else {
                 socket.emit('signInResponse',{response:false});         
@@ -179,20 +159,45 @@ io.use(sharedsession(session, {
                 addUser(data,function(){
                     socket.emit('signUpResponse', {response:"true"});                
                 });   
+                
             }}
         
         });  
    });
-   socket.on("logout", function(userdata) {
+   socket.on("logout", function() {
     if (socket.handshake.session.userdata) {
         delete socket.handshake.session.userdata;
         socket.handshake.session.save();
+        test = null;
     }
 });        
+
+ 
+
    socket.on('disconnect',function(){
-    delete SOCKET_LIST[socket.id];
-    console.log('socket disconnection %s' , SOCKET_LIST.length);
-    });
+        existingUser.sockets.splice(existingUser.sockets.indexOf(socket), 1);
+       if (existingUser.sockets.length === 0){
+            if(socket.handshake.session.userdata){
+                if(firstLogin === 0){
+                    firstLogin++;
+                }else{
+                    if(userConnections){
+                        userConnections.splice(userConnections.indexOf(existingUser.username), 1);
+                        delete socket.handshake.session.userdata;
+                        socket.handshake.session.save();
+                        test = null;
+                        console.log('User disconnected: Online %s', userConnections.length);
+                    }
+                  
+                }
+            }else{
+                if(userConnections){
+                    userConnections.splice(userConnections.indexOf(existingUser.username), 1);
+                    console.log('User disconnected: Online %s', userConnections.length);
+                }
+            }
+        }
+   });
 
     socket.on('evalServer',function(data){
         if(!DEBUG)
@@ -202,22 +207,24 @@ io.use(sharedsession(session, {
     });
    
 });
-var z = 0;
+
+//Variable is to check if user connected in session first time with his account
+//finde better way to save it maby it overwrites other peoples firstLogin maby with session.firstLogin
+var firstLogin = 0;
 
 setInterval(function(){
-    var pack = {
-        ressourcen:Ressourcen.update(),
+        //  var z = 0;
+        //  var socket = SOCKET_LIST[i];
+        //  socket.emit('updateRessourcen',z.toFixed(2))
+        //   socket.emit('updateRessourcen',pack);
+    if(userConnections.length != 0){
+        console.log(userConnections);
     }
-     
-    //console.log(pack);
-    for(var i in SOCKET_LIST){
-        //console.log(z)
-        var socket = SOCKET_LIST[i];
-        z += 0.01;
-        socket.emit('updateRessourcen',z.toFixed(2));
+    if(test != null) {
+        test.update();
+        console.log(test.metall + "/////" + test.kristall + "////"  + test.deuterium + "/////" + test.hParticle);
     }
-  // socket.emit('updateRessourcen',pack);
-  },1000/25);
+},1000/1);
 
 };
 

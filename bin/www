@@ -53,7 +53,7 @@ server.listen(port);
 
 var io = require('socket.io')(server,{});	
 
-require('./sockets')(io, session);
+require('./sockets.js')(io, session);
 
 console.log("Started on Port " + port);	
 server.on('error', onError);	
