@@ -68,12 +68,10 @@ var addUser = function(data,cb){
 
 
 module.exports = function(io , session) {
-    var connections = [];
     var DEBUG = true;
     var test =null;
 
-    function Ressourcen(id, metall, kristall, deuterium, hParticle) {
-        this.id = id;
+    function Ressourcen(metall, kristall, deuterium, hParticle) {
         this.metall = metall;
         this.kristall = kristall;
         this.deuterium = deuterium;
@@ -84,7 +82,6 @@ module.exports = function(io , session) {
             this.deuterium += 0.5;
         };
     }
-    
 
 io.use(sharedsession(session, {
     autoSave:true
@@ -159,7 +156,7 @@ io.use(sharedsession(session, {
                 addUser(data,function(){
                     socket.emit('signUpResponse', {response:"true"});                
                 });   
-                
+                test = new Ressourcen(0,0,0,0,0);
             }}
         
         });  
@@ -187,6 +184,7 @@ io.use(sharedsession(session, {
                         socket.handshake.session.save();
                         test = null;
                         console.log('User disconnected: Online %s', userConnections.length);
+                        firstLogin = 0;
                     }
                   
                 }
