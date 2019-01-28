@@ -1,3 +1,7 @@
+/*If you use socket.emit it will change this->socket if you do io.sockets.emit everyone get the message
+as example
+ io.sockets.emit('newMessage', {msg: data});	
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
 var validator = require("email-validator");
 var sharedsession = require("express-socket.io-session");
 const request = require('request');	
