@@ -735,14 +735,16 @@ export class Chart extends HTMLDivElement {
                 this.dataTooltipTriggers.append(tooltipTrigger);
                 const thisContext = this;
                 tooltipTrigger.addEventListener("mouseenter", (evt => {
-                    thisContext.tooltip.timeCell.textContent = (this._xLabelModifier !== null) ? this._xLabelModifier(this.data[i][0]) : this.data[i][0];
-                    thisContext.tooltip.openCell.textContent = (this._valueModifier !== null) ? this._valueModifier(this.data[i][1]) : this.data[i][1];
-                    thisContext.tooltip.closeCell.textContent = (this._valueModifier !== null) ? this._valueModifier(this.data[i][2]) : this.data[i][2];
-                    thisContext.tooltip.highCell.textContent = (this._valueModifier !== null) ? this._valueModifier(this.data[i][3]) : this.data[i][3];
-                    thisContext.tooltip.lowCell.textContent = (this._valueModifier !== null) ? this._valueModifier(this.data[i][4]) : this.data[i][4];
-                    thisContext.tooltip.volumeCell.textContent = (this._valueModifier !== null) ? this._valueModifier(this.data[i][5]) : this.data[i][5];
+                    if (i < this.data.length) {
+                        thisContext.tooltip.timeCell.textContent = (this._xLabelModifier !== null) ? this._xLabelModifier(this.data[i][0]) : this.data[i][0];
+                        thisContext.tooltip.openCell.textContent = (this._valueModifier !== null) ? this._valueModifier(this.data[i][1]) : this.data[i][1];
+                        thisContext.tooltip.closeCell.textContent = (this._valueModifier !== null) ? this._valueModifier(this.data[i][2]) : this.data[i][2];
+                        thisContext.tooltip.highCell.textContent = (this._valueModifier !== null) ? this._valueModifier(this.data[i][3]) : this.data[i][3];
+                        thisContext.tooltip.lowCell.textContent = (this._valueModifier !== null) ? this._valueModifier(this.data[i][4]) : this.data[i][4];
+                        thisContext.tooltip.volumeCell.textContent = (this._valueModifier !== null) ? this._valueModifier(this.data[i][5]) : this.data[i][5];
 
-                    thisContext.tooltip.style.display = "initial";
+                        thisContext.tooltip.style.display = "initial";
+                    }
 
                 }));
                 tooltipTrigger.addEventListener("mouseleave", (evt => {
