@@ -59,6 +59,10 @@ export class Chart extends HTMLDivElement {
         }
     }
 
+    set valueModifier(valueModifier) {
+        this._valueModifier = valueModifier;
+    }
+
     get width() {
         return this._width;
     }
@@ -96,6 +100,7 @@ export class Chart extends HTMLDivElement {
 
         this._xLabelModifier = mtsToLocaleTimeString;
         this._yLabelModifier = null;
+        this._valueModifier = x => round(x, 2);
 
         this.yLabelValues = [];
         this.xCoords = [];
@@ -615,11 +620,11 @@ export class Chart extends HTMLDivElement {
 
             tooltipTrigger.addEventListener("mouseenter", (evt => {
                 thisContext.tooltip.timeCell.textContent = (this._xLabelModifier !== null) ? this._xLabelModifier(this.data[i][0]) : this.data[i][0];
-                thisContext.tooltip.openCell.textContent = this.data[i][1];
-                thisContext.tooltip.closeCell.textContent = this.data[i][2];
-                thisContext.tooltip.highCell.textContent = this.data[i][3];
-                thisContext.tooltip.lowCell.textContent = this.data[i][4];
-                thisContext.tooltip.volumeCell.textContent = this.data[i][5];
+                thisContext.tooltip.openCell.textContent = (this._valueModifier !== null) ? this._valueModifier(this.data[i][1]) : this.data[i][1];
+                thisContext.tooltip.closeCell.textContent = (this._valueModifier !== null) ? this._valueModifier(this.data[i][2]) : this.data[i][2];
+                thisContext.tooltip.highCell.textContent = (this._valueModifier !== null) ? this._valueModifier(this.data[i][3]) : this.data[i][3];
+                thisContext.tooltip.lowCell.textContent = (this._valueModifier !== null) ? this._valueModifier(this.data[i][4]) : this.data[i][4];
+                thisContext.tooltip.volumeCell.textContent = (this._valueModifier !== null) ? this._valueModifier(this.data[i][5]) : this.data[i][5];
 
                 thisContext.tooltip.style.display = "initial";
 
@@ -707,11 +712,12 @@ export class Chart extends HTMLDivElement {
             text.setAttribute("transform", `rotate(60,${xAxisMarkerX},${this.yAxisHeight + yOffset})`);
 
             const tooltipTrigger = this.dataTooltipTriggers.children[i];
-            tooltipTrigger.setAttribute("x", xAxisMarkerX - this.xTickWidth * 0.45);
+            tooltipTrigger.setAttribute("x", xAxisMarkerX - this.xTickWidth * 0.5);
             tooltipTrigger.setAttribute("y", this.yAxisMinCoordY);
             tooltipTrigger.setAttribute("height", this.yAxisMaxCoordY - this.yAxisMinCoordY);
-            tooltipTrigger.setAttribute("width", this.xTickWidth * 0.9);
+            tooltipTrigger.setAttribute("width", this.xTickWidth);
         }
+
         if (this._dataCount < currentCount) {
             for (let i = 0; i < currentCount - this._dataCount; i++) {
                 this.xAxisMarkersGroup.removeChild(this.xAxisMarkersGroup.lastChild);
