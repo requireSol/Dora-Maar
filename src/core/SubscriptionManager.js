@@ -2,7 +2,7 @@ import {send} from "./Connector.js";
 import {assignObserverToId, informObserver, observer} from "./ObserverHandler.js";
 import {remove as removeDataObject} from "./DataHandler.js"
 import {SubDescriptorQueue, requestEqualsRequest} from "../common/collections/SubDescriptorQueue.js";
-import {eventConstants} from "../common/Constants.js";
+import {eventConstants, sentStatusConstants} from "../common/Constants.js";
 
 
 let subscribedChannels = new Map();
@@ -92,11 +92,30 @@ export function requestSubscription(subDesc) {
             pendingQueue.add(subDesc);
         } else {
             const hasBeenSent = send(JSON.stringify(subDesc.apiRequest));
-            if (hasBeenSent) {
+            switch (hasBeenSent) {
+                case sentStatusConstants.SENT:
+                    pendingQueue.add(subDesc);
+                    break;
+                case sentStatusConstants.OFFLINE:
+                    informObserver({
+                        "level": "warn",
+                        "title": "no internet connection",
+                        "msg": "the request will be sent when connection is available"
+                    }, [subDesc]);
+                default:
+                    subscriptionQueue.add(subDesc);
+
+            }
+            /*if (hasBeenSent) {
                 pendingQueue.add(subDesc);
             } else {
+                informObserver({
+                    "level": "warn",
+                    "title": "no internet connection",
+                    "msg": "the request will be sent when connection is available"
+                }, [subDesc]);
                 subscriptionQueue.add(subDesc);
-            }
+            }*/
         }
     } else {
         if (unsubscriptionQueue.delete(channelId)) {
@@ -117,7 +136,7 @@ export function requestUnsubscription(chanId) {
         "event": eventConstants.UNSUBSCRIBE,
         "chanId": chanId
     };
-    if (!send(JSON.stringify(action))) {
+    if (send(JSON.stringify(action)) !== sentStatusConstants.SENT) {
         unsubscriptionQueue.add(chanId);
     } else {
         pendingUnsubscriptions.add(chanId);

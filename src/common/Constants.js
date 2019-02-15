@@ -54,3 +54,12 @@ export const timeFrameConstants = {
     FOURTEEN_DAYS: "14D",
     ONE_MONTH: "1M"
 };
+
+export const sentStatusConstants = {
+    SENT: 0,
+    OFFLINE: 1,
+    NO_WEBSOCKET: 2,
+    WEBSOCKET_NOT_OPEN: 3,
+    PLATFORM_NOT_OPERATIVE : 4,
+
+};

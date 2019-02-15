@@ -1,7 +1,7 @@
 import {handle as handleMessage} from "./MessageHandler.js";
 import {informObserver} from "./ObserverHandler.js";
 import {executeAction, startTimer, stopTimer} from "./TimerAndActions.js";
-import {eventConstants, platformConstants} from "../common/Constants.js";
+import {eventConstants, platformConstants, sentStatusConstants} from "../common/Constants.js";
 
 const url = "wss://api.bitfinex.com/ws/2";
 
@@ -31,8 +31,12 @@ export function initialize() {
             "title": "connection restored",
             "msg": "connected to the internet"
         });
-        executeAction("waitForPong", 1000);
-        executeAction("pingWebSocket");
+        if (webSocket === null) {
+            connect();
+        } else {
+            executeAction("waitForPong", 1000);
+            executeAction("pingWebSocket");
+        }
 
     });
     window.addEventListener('offline', function (e) {
@@ -60,15 +64,27 @@ export function initialize() {
 /**
  * Sends data to the connected server if possible.
  * @param {String} data the data to be sent
- * @returns {boolean} whether the data could be sent to the server.
+ * @returns {Number} a code indicating success or error (see sentStatusConstants).
  */
 export function send(data) {
-    if (navigator.onLine && webSocket instanceof WebSocket && webSocket.readyState === WebSocket.OPEN
-        && platformStatus === platformConstants.OPERATIVE) {
-        webSocket.send(data);
-        return true;
+    if (navigator.onLine) {
+        if (webSocket instanceof WebSocket) {
+            if (webSocket.readyState === WebSocket.OPEN) {
+                if (platformStatus === platformConstants.OPERATIVE) {
+                    webSocket.send(data);
+                } else {
+                    return sentStatusConstants.PLATFORM_NOT_OPERATIVE;
+                }
+            } else {
+                return sentStatusConstants.WEBSOCKET_NOT_OPEN;
+            }
+        } else {
+            return sentStatusConstants.NO_WEBSOCKET;
+        }
+    } else {
+        return sentStatusConstants.OFFLINE;
     }
-    return false;
+    return sentStatusConstants.SENT;
 }
 
 /**
