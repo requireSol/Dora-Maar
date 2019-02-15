@@ -200,7 +200,6 @@ export class Chart extends HTMLDivElement {
         this.updateOrCreateXAxisAndYAxis();
         if (xAxisValueChanged) {
             this.updateOrCreateXAxisMarkerAndLabels();
-            this.initializeTooltipTriggers();
         }
 
         if (yAxisValueChanged) {
@@ -222,7 +221,7 @@ export class Chart extends HTMLDivElement {
     updateOrInitData(data) {
         let dataIndex;
         const oldCount = this.dataGroup.childElementCount;
-        for (let i = 0; i < data.length && i < oldCount; i++) {
+        for (let i = 0; i < data.length && i < oldCount && i < this._dataCount; i++) {
             dataIndex = i;
             if (!this.isXAxisDescending) {
                 dataIndex = data.length - 1 - i;
@@ -230,8 +229,8 @@ export class Chart extends HTMLDivElement {
             this.replaceCandle(i + 1, data[dataIndex][1], data[dataIndex][2], data[dataIndex][3], data[dataIndex][4], data[dataIndex][0]);
         }
 
-        if (oldCount < data.length) {
-            for (let i = oldCount; i < data.length; i++) {
+        if (oldCount < this._dataCount) {
+            for (let i = oldCount; i < data.length && i < this._dataCount; i++) {
                 dataIndex = i;
                 if (!this.isXAxisDescending) {
                     dataIndex = data.length - 1 - i;
@@ -239,7 +238,7 @@ export class Chart extends HTMLDivElement {
                 this.addCandle(i + 1, data[dataIndex][1], data[dataIndex][2], data[dataIndex][3], data[dataIndex][4], data[dataIndex][0]);
             }
         } else {
-            for (let i = data.length; i < oldCount; i++) {
+            for (let i = this._dataCount; i < oldCount; i++) {
                 this.dataGroup.removeChild(this.dataGroup.lastChild);
             }
         }
@@ -612,31 +611,9 @@ export class Chart extends HTMLDivElement {
         }
     }
 
-    initializeTooltipTriggers() {
-        console.log("called initalizedTooltipTriggers");
-        const thisContext = this;
-        for (let i = 0; i < this.dataTooltipTriggers.childElementCount; i++) {
-            const tooltipTrigger = this.dataTooltipTriggers.children[i];
-
-            tooltipTrigger.addEventListener("mouseenter", (evt => {
-                thisContext.tooltip.timeCell.textContent = (this._xLabelModifier !== null) ? this._xLabelModifier(this.data[i][0]) : this.data[i][0];
-                thisContext.tooltip.openCell.textContent = (this._valueModifier !== null) ? this._valueModifier(this.data[i][1]) : this.data[i][1];
-                thisContext.tooltip.closeCell.textContent = (this._valueModifier !== null) ? this._valueModifier(this.data[i][2]) : this.data[i][2];
-                thisContext.tooltip.highCell.textContent = (this._valueModifier !== null) ? this._valueModifier(this.data[i][3]) : this.data[i][3];
-                thisContext.tooltip.lowCell.textContent = (this._valueModifier !== null) ? this._valueModifier(this.data[i][4]) : this.data[i][4];
-                thisContext.tooltip.volumeCell.textContent = (this._valueModifier !== null) ? this._valueModifier(this.data[i][5]) : this.data[i][5];
-
-                thisContext.tooltip.style.display = "initial";
-
-            }));
-            tooltipTrigger.addEventListener("mouseleave", (evt => {
-                thisContext.tooltip.style.display = "none";
-
-            }));
-        }
-    }
-
     calculateActualCoords() {
+        this._chartWidth = this._width;
+
         this.calculateAxisLength();
         this.xTickWidth = this.xAxisWidth / this._dataCount;
         if (this.xTickWidth < this.params.MIN_X_TICK_SPACING) {
@@ -694,7 +671,7 @@ export class Chart extends HTMLDivElement {
 
     updateOrCreateXAxisMarkerAndLabels() {
         const currentCount = this.xAxisMarkersGroup.childElementCount;
-        for (let i = 0; i < this._dataCount && currentCount; i++) {
+        for (let i = 0; i < this._dataCount && i < currentCount; i++) {
             let xAxisMarkerX = this.xAxisMinCoordX + i * this.xTickWidth;
             this.xCoords[i] = (xAxisMarkerX);
 
@@ -756,6 +733,22 @@ export class Chart extends HTMLDivElement {
                 });
 
                 this.dataTooltipTriggers.append(tooltipTrigger);
+                const thisContext = this;
+                tooltipTrigger.addEventListener("mouseenter", (evt => {
+                    thisContext.tooltip.timeCell.textContent = (this._xLabelModifier !== null) ? this._xLabelModifier(this.data[i][0]) : this.data[i][0];
+                    thisContext.tooltip.openCell.textContent = (this._valueModifier !== null) ? this._valueModifier(this.data[i][1]) : this.data[i][1];
+                    thisContext.tooltip.closeCell.textContent = (this._valueModifier !== null) ? this._valueModifier(this.data[i][2]) : this.data[i][2];
+                    thisContext.tooltip.highCell.textContent = (this._valueModifier !== null) ? this._valueModifier(this.data[i][3]) : this.data[i][3];
+                    thisContext.tooltip.lowCell.textContent = (this._valueModifier !== null) ? this._valueModifier(this.data[i][4]) : this.data[i][4];
+                    thisContext.tooltip.volumeCell.textContent = (this._valueModifier !== null) ? this._valueModifier(this.data[i][5]) : this.data[i][5];
+
+                    thisContext.tooltip.style.display = "initial";
+
+                }));
+                tooltipTrigger.addEventListener("mouseleave", (evt => {
+                    thisContext.tooltip.style.display = "none";
+
+                }));
             }
         }
     }
