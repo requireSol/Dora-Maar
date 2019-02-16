@@ -2,16 +2,13 @@ import {requestSubscription, subscriptionQueue, SubscriptionDescriptor} from "./
 import {dataObjects} from "./DataHandler.js";
 import {CandlesRequest, OrderBookRequest, TickerRequest, TradesRequest} from "../model/requests.js";
 import {orderBookTypeConstants, tradesTypeConstants} from "../common/Constants.js";
+import {ChannelObserverMap} from "../common/collections/ChannelObserverMap.js";
 
 /**
- * Maps channel ids to SubscriptionDescriptors
+ * Structure to manage observer and channels
+ * @type {ChannelObserverMap}
  */
-export let observer = new Map();
-
-/**
- * Maps observers to channel ids
- */
-let observerChanIdMapping = new Map();
+export let channelObserverMapping = new ChannelObserverMap();
 
 /**
  * Registers an observer for specific data updates.
@@ -37,14 +34,7 @@ export function requestData(observer, clientRequest) {
  * @private
  */
 export function assignObserverToId(chanId, subDesc) {
-    let obs = [];
-    if (observer.has(chanId)) {
-        obs = observer.get(chanId);
-    }
-    obs.push(subDesc);
-
-    observerChanIdMapping.set(subDesc.observer, chanId);
-    observer.set(chanId, obs);
+    channelObserverMapping.mapSubDescToChannel(subDesc, chanId);
 
     const dataObject = dataObjects.get(chanId);
     informObserver({"level": "success", "title": "data is available"}, [subDesc]);
@@ -53,23 +43,14 @@ export function assignObserverToId(chanId, subDesc) {
 
 /**
  * Unregisters an observer from its requested data.
- * @param {Observer|ObserverBaseElement} observer2 the observer to unregister
+ * @param {Observer|ObserverBaseElement} observer the observer to unregister
  */
-export function stopDataRequest(observer2) {
-    const chanId = observerChanIdMapping.get(observer2);
-    if (chanId !== undefined) {
-        const subDescs = observer.get(chanId);
-        for (let i = subDescs.length - 1; i >= 0; i--) {
-            if (subDescs[i].observer === observer2) {
-                subDescs.splice(i, 1);
-                break;
-            }
-        }
-        observerChanIdMapping.delete(observer);
-    }
+export function stopDataRequest(observer) {
+    channelObserverMapping.removeObserver(observer);
     subscriptionQueue.remove(observer);
 
 }
+
 /**
  * Updates an observer with order book data.
  * @param {SubscriptionDescriptor} subDesc the SubscriptionDescriptor containing the observer
@@ -191,12 +172,9 @@ export function updateOneObserver(subDesc, dataObject) {
  * @param {Number} chanId the channel's id
  */
 export function updateAllObservers(chanId) {
-    const obs = observer.get(chanId);
-    if (obs === undefined)
-        return;
     const dataObject = dataObjects.get(chanId);
-    for (let i = 0; i < obs.length; i++) {
-        updateOneObserver(obs[i], dataObject)
+    for (const observer of channelObserverMapping.subscriptionDescriptorsOfChannel(chanId)) {
+        updateOneObserver(observer, dataObject);
     }
 }
 
@@ -207,7 +185,7 @@ export function updateAllObservers(chanId) {
  */
 export function informObserver(message, chanIdOrListOfSubDesc = null) {
     if (chanIdOrListOfSubDesc instanceof Number) {
-        for (const subDesc of observer.get(chanIdOrListOfSubDesc)) {
+        for (const subDesc of channelObserverMapping.subscriptionDescriptorsOfChannel(chanIdOrListOfSubDesc)) {
             subDesc.observer.info(message);
         }
     } else if (chanIdOrListOfSubDesc instanceof Array) {
@@ -215,10 +193,8 @@ export function informObserver(message, chanIdOrListOfSubDesc = null) {
             subDesc.observer.info(message);
         }
     } else {
-        for (const listOfSubDesc of observer.values()) {
-            for (const subDesc of listOfSubDesc) {
-                subDesc.observer.info(message);
-            }
+        for (const observer of channelObserverMapping.allObservers()) {
+            observer.info(message);
         }
     }
 }

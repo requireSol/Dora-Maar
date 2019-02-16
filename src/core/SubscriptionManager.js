@@ -1,5 +1,5 @@
 import {send} from "./Connector.js";
-import {assignObserverToId, informObserver, observer} from "./ObserverHandler.js";
+import {assignObserverToId, informObserver, channelObserverMapping} from "./ObserverHandler.js";
 import {remove as removeDataObject} from "./DataHandler.js"
 import {SubDescriptorQueue, requestEqualsRequest} from "../common/collections/SubDescriptorQueue.js";
 import {eventConstants, sentStatusConstants} from "../common/Constants.js";
@@ -53,10 +53,12 @@ export function internalUnsubscribe(unsubscriptionEvent) {
 
         const chanId = unsubscriptionEvent["chanId"];
         if (chanId !== undefined && subscribedChannels.has(chanId)) {
-            const observers = observer.get(chanId);
+            //const observers = chanIdObserverMapping.get(chanId);
+            const observers = channelObserverMapping.subscriptionDescriptorsOfChannel(chanId);
             pendingUnsubscriptions.delete(chanId);
             removeDataObject(chanId);
-            observer.delete(chanId);
+            //chanIdObserverMapping.delete(chanId);
+            channelObserverMapping.removeChannel(chanId);
             subscribedChannels.delete(chanId);
             if (resubscriptionChannels.has(chanId)) {
                 resubscriptionChannels.delete(chanId);
@@ -106,16 +108,6 @@ export function requestSubscription(subDesc) {
                     subscriptionQueue.add(subDesc);
 
             }
-            /*if (hasBeenSent) {
-                pendingQueue.add(subDesc);
-            } else {
-                informObserver({
-                    "level": "warn",
-                    "title": "no internet connection",
-                    "msg": "the request will be sent when connection is available"
-                }, [subDesc]);
-                subscriptionQueue.add(subDesc);
-            }*/
         }
     } else {
         if (unsubscriptionQueue.delete(channelId)) {

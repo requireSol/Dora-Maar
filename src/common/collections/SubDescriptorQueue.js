@@ -1,5 +1,8 @@
 export class SubDescriptorQueue {
     constructor() {
+        /**
+         * @type {Map<SubscriptionDescriptor, Number>}
+         */
         this.sourcePositionMapping = new Map();
         this.queue = [];
         this.offset = 0;

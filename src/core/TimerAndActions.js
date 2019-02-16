@@ -1,5 +1,5 @@
 import {pingWebSocket, reconnect} from "./Connector.js";
-import {observer, informObserver} from "./ObserverHandler.js";
+import {channelObserverMapping, informObserver} from "./ObserverHandler.js";
 import {requestUnsubscription} from "./SubscriptionManager.js";
 
 const config = {
@@ -31,10 +31,8 @@ const config = {
 
     cleanUnusedData: {
         action: function () {
-            for (const [id, obs] of observer.entries()) {
-                if (obs.length === 0) {
-                    requestUnsubscription(id);
-                }
+            for (const chanId of channelObserverMapping.emptyChannels()) {
+                requestUnsubscription(chanId);
             }
         },
         timerInterval: 1000 * 60 * 5,
