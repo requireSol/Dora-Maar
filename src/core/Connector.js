@@ -1,6 +1,6 @@
 import {handle as handleMessage} from "./MessageHandler.js";
 import {informObserver} from "./ObserverHandler.js";
-import {executeAction, startTimer, stopTimer} from "./TimerAndActions.js";
+import {executeAction, abortAction, startTimer, stopTimer} from "./TimerAndActions.js";
 import {eventConstants, platformConstants, sentStatusConstants} from "../common/Constants.js";
 
 const url = "wss://api.bitfinex.com/ws/2";
@@ -35,7 +35,11 @@ export function initialize() {
             connect();
         } else {
             executeAction("waitForPong", 1000);
-            executeAction("pingWebSocket");
+            if (pingWebSocket() !== sentStatusConstants.SENT) {
+                abortAction("waitForPong");
+                console.log("pong was expected, but ping could not been sent");
+            }
+
         }
 
     });
@@ -92,9 +96,9 @@ export function send(data) {
  */
 export function pingWebSocket() {
     const action = {event: eventConstants.PING};
-    if (!send(JSON.stringify(action))) {
+    return send(JSON.stringify(action));
 
-    }
+
 }
 
 /**
@@ -106,20 +110,15 @@ function connect() {
     }
 
     webSocket = new WebSocket(url);
-
     webSocket.onmessage = handleMessage;
-
     webSocket.onopen = function () {
         stopTimer("reconnect");
         console.log("onopen");
-
-
     };
     webSocket.onerror = function (err) {
         console.log("onerror");
         console.log(err);
     };
-
     webSocket.onclose = function (evt) {
         console.log("onclose");
         console.log(evt);

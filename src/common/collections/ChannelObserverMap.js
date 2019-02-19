@@ -8,6 +8,11 @@ export class ChannelObserverMap {
          * @type {Map<Observer|ObserverBaseElement, Number>}
          */
         this.observerToChanId = new Map();
+
+        /**
+         * @type {Map<Observer|ObserverBaseElement, SubscriptionDescriptor>}
+         */
+        this.observerToSubDesc = new Map();
     }
 
     /**
@@ -24,6 +29,8 @@ export class ChannelObserverMap {
         this.chanIdToObserver.set(chanId, subDescSet);
 
         this.observerToChanId.set(subDesc.observer, chanId);
+
+        this.observerToSubDesc.set(subDesc.observer, subDesc);
     }
 
     /**
@@ -36,7 +43,10 @@ export class ChannelObserverMap {
             this.observerToChanId.delete(observer);
 
             let subDescSet = this.chanIdToObserver.get(chanId);
-            subDescSet.delete(observer);
+            let subDesc = this.observerToSubDesc.get(observer);
+
+            this.observerToSubDesc.delete(observer);
+            subDescSet.delete(subDesc);
             this.chanIdToObserver.set(chanId, subDescSet);
             // maybe assignment is unnecessary
         }
@@ -53,6 +63,7 @@ export class ChannelObserverMap {
 
             for (const subDesc of subDescSet.values()) {
                 this.observerToChanId.delete(subDesc.observer);
+                this.observerToSubDesc.delete(subDesc.observer);
             }
         }
     }

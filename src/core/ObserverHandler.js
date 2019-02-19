@@ -3,6 +3,7 @@ import {dataObjects} from "./DataHandler.js";
 import {CandlesRequest, OrderBookRequest, TickerRequest, TradesRequest} from "../model/requests.js";
 import {orderBookTypeConstants, tradesTypeConstants} from "../common/Constants.js";
 import {ChannelObserverMap} from "../common/collections/ChannelObserverMap.js";
+import {Observer, ObserverBaseElement} from "../render/BaseElement.js";
 
 /**
  * Structure to manage observer and channels
@@ -16,7 +17,7 @@ export let channelObserverMapping = new ChannelObserverMap();
  * @param {ClientRequest} clientRequest the object to request specific data
  */
 export function requestData(observer, clientRequest) {
-    stopDataRequest(observer); // only one subscription per observer
+    stopDataRequest(observer, true); // only one subscription per observer
     if (clientRequest.isValid) {
         const subDesc = new SubscriptionDescriptor(observer, clientRequest);
         requestSubscription(subDesc);
@@ -44,11 +45,18 @@ export function assignObserverToId(chanId, subDesc) {
 /**
  * Unregisters an observer from its requested data.
  * @param {Observer|ObserverBaseElement} observer the observer to unregister
+ * @param {boolean} silent
  */
-export function stopDataRequest(observer) {
+export function stopDataRequest(observer, silent=false) {
     channelObserverMapping.removeObserver(observer);
     subscriptionQueue.remove(observer);
-
+    if (!silent) {
+        informObserver({
+            "level": "info",
+            "title": "data request stopped",
+            "msg": "the data flow stopped"
+        }, observer);
+    }
 }
 
 /**
@@ -181,20 +189,23 @@ export function updateAllObservers(chanId) {
 /**
  * Sends a message to the observers of a channel.
  * @param {Object} message the message to send
- * @param {Number|Array} chanIdOrListOfSubDesc the channel id for channel specific observers or null for all observers
+ * @param {Number|Array|IterableIterator<SubscriptionDescriptor>|ObserverBaseElement|Observer} arg
  */
-export function informObserver(message, chanIdOrListOfSubDesc = null) {
-    if (chanIdOrListOfSubDesc instanceof Number) {
-        for (const subDesc of channelObserverMapping.subscriptionDescriptorsOfChannel(chanIdOrListOfSubDesc)) {
+export function informObserver(message, arg = null) {
+    if (arg instanceof Number) {
+        for (const subDesc of channelObserverMapping.subscriptionDescriptorsOfChannel(arg)) {
             subDesc.observer.info(message);
         }
-    } else if (chanIdOrListOfSubDesc instanceof Array) {
-        for (const subDesc of chanIdOrListOfSubDesc) {
-            subDesc.observer.info(message);
-        }
-    } else {
+    } else if (arg instanceof Observer || arg instanceof ObserverBaseElement) {
+        arg.info(message);
+
+    } else if (arg === null) {
         for (const observer of channelObserverMapping.allObservers()) {
             observer.info(message);
+        }
+    } else {
+        for (const subDesc of arg) {
+            subDesc.observer.info(message);
         }
     }
 }

@@ -4,30 +4,39 @@ import {remove as removeDataObject} from "./DataHandler.js"
 import {SubDescriptorQueue, requestEqualsRequest} from "../common/collections/SubDescriptorQueue.js";
 import {eventConstants, sentStatusConstants} from "../common/Constants.js";
 
-
+/**
+ *
+ * @type {Map<Number, APIRequest>}
+ */
 let subscribedChannels = new Map();
+
 /**
  * Sent subscription requests for which no response has yet been received.
+ * @type {SubDescriptorQueue}
  */
 export let pendingQueue = new SubDescriptorQueue();
 
 /**
  * Subscription requests that have not yet been sent to the server.
+ * @type {SubDescriptorQueue}
  */
 export let subscriptionQueue = new SubDescriptorQueue();
 
 /**
  * Channel ids to resubscribe.
+ * @type {Set<Number>}
  */
 export let resubscriptionChannels = new Set();
 
 /**
  * Unsubscription requests that have not yet been sent to the server.
+ * @type {Set<Number>}
  */
 export let unsubscriptionQueue = new Set();
 
 /**
  * Sent unsubscription requests for which no response has yet been received.
+ * @type {Set<Number>}
  */
 export let pendingUnsubscriptions = new Set();
 
@@ -53,11 +62,9 @@ export function internalUnsubscribe(unsubscriptionEvent) {
 
         const chanId = unsubscriptionEvent["chanId"];
         if (chanId !== undefined && subscribedChannels.has(chanId)) {
-            //const observers = chanIdObserverMapping.get(chanId);
             const observers = channelObserverMapping.subscriptionDescriptorsOfChannel(chanId);
             pendingUnsubscriptions.delete(chanId);
             removeDataObject(chanId);
-            //chanIdObserverMapping.delete(chanId);
             channelObserverMapping.removeChannel(chanId);
             subscribedChannels.delete(chanId);
             if (resubscriptionChannels.has(chanId)) {
