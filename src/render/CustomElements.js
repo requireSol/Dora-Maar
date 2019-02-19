@@ -4,6 +4,7 @@ import {OrderBookData} from "../model/OrderBookData.js";
 import {TradesData} from "../model/TradesData.js";
 import {TickerData} from "../model/TickerData.js";
 import {round} from "../common/utils/MathUtils.js";
+import {mtsToLocaleTimeString} from "../common/utils/DateUtils.js"
 import {frequencyConstants, orderBookTypeConstants, precisionConstants, tradesTypeConstants} from "../common/Constants.js";
 
 const isInitializedProperty = Symbol();
@@ -350,7 +351,9 @@ export class TradesView extends ObserverBaseElement {
             // create table
             this.table = document.createElement("div", {is: "trades-table"});
             this.table._columnNames = TradesData.getDataFields();
-            this.table._columnModifier = [null, null, null, null];
+            const round3 = (x) => round(x, 3);
+            const toDate = (x) => mtsToLocaleTimeString(x, "US-en");
+            this.table._columnModifier = [null, toDate, round3, round3];
             this.table._columnOrder = [0, 1, 2, 3];
             // create notification box
             this.notificationBox = document.createElement("div", {is: "notification-box"});
@@ -482,7 +485,8 @@ export class TickerView extends ObserverBaseElement {
             this.table = document.createElement("div", {is: "ticker-table"});
             this.table._columnNames = TickerData.getDataFields();
             const round3 = (x) => round(x, 3);
-            this.table._columnModifier = [null, round3, null, round3, null, null, null, round3, null, null, null];
+            const toDate = (x) => mtsToLocaleTimeString(x, "US-en");
+            this.table._columnModifier = [null, round3, null, round3, null, null, round3, round3, null, null, toDate];
             this.table._columnOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
             // create notification box
             this.notificationBox = document.createElement("div", {is: "notification-box"});
