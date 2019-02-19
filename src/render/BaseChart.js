@@ -288,13 +288,7 @@ export class Chart extends HTMLDivElement {
 
         for (let i = 1; i < this.dataGroup.childElementCount; i++) {
             const candle = this.dataGroup.children[i];
-            const line = candle.children[0];
-            const rect = candle.children[1];
-
-            line.setAttribute("x1", this.xCoords[i - 1]);
-            line.setAttribute("x2", this.xCoords[i - 1]);
-
-            rect.setAttribute("x", this.xCoords[i - 1] - 8 / 2);
+            this.moveDataPointOnXAxis(candle, this.xCoords[i - 1])
         }
         this.dataGroup.removeChild(this.dataGroup.firstChild);
         this.addCandle(count, open, close, high, low, label);
@@ -309,17 +303,21 @@ export class Chart extends HTMLDivElement {
 
         for (let i = this.dataGroup.childElementCount - 2; i >= 0; i--) {
             const candle = this.dataGroup.children[i];
-            const line = candle.children[0];
-            const rect = candle.children[1];
-
-            line.setAttribute("x1", this.xCoords[i + 1]);
-            line.setAttribute("x2", this.xCoords[i + 1]);
-
-            rect.setAttribute("x", this.xCoords[i + 1] - 8 / 2);
+            this.moveDataPointOnXAxis(candle, this.xCoords[i + 1])
         }
         this.dataGroup.removeChild(this.dataGroup.lastChild);
         this.addCandle(1, open, close, high, low, label);
 
+    }
+
+    moveDataPointOnXAxis(element, xValue) {
+        const line = element.children[0];
+        const rect = element.children[1];
+
+        line.setAttribute("x1", xValue);
+        line.setAttribute("x2", xValue);
+
+        rect.setAttribute("x", xValue - 8 / 2);
     }
 
     replaceCandle(x, open, close, high, low, label = null) {
