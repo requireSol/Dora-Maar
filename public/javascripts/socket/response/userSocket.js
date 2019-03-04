@@ -4,7 +4,7 @@
   if(data.response){
     $.notify("Successfully Logged in!", "success");
     wait(1000);
-    window.location.href = "https://chat.enam.io/#profile"; 
+    window.location.href = "https://enam.io/#profile";
     location.reload();
   } else{
     $.notify("Password or Username wrong !", "error");
@@ -16,7 +16,7 @@ socket.on('signUpResponse',function(data){
     if(data.response === "true"){
     $.notify("Successfully Registered! You will be Logged in", "success");
     wait(1000);
-    window.location.href = "https://chat.enam.io/#profile"; 
+    window.location.href = "https://enam.io/#profile";
     location.reload();
     } 
     else if (data.response === "required"){

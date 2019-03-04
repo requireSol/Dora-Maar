@@ -9,7 +9,7 @@ function slideanim(){
 }
 
 function contact(event){
-  window.location.href = "https://chat.enam.io/#contact";
+  window.location.href = "https://enam.io/#contact";
   var chat = document.getElementById("idChat");
   var main = document.getElementById("idAbout");
   var contact = document.getElementById("idContact");
@@ -54,7 +54,7 @@ function contact(event){
 
 }
 function about(){
-  window.location.href = "https://chat.enam.io/#about";
+  window.location.href = "https://enam.io/#about";
   var profile = document.getElementById("idProfile");
   var profile2 = document.getElementById("idProfile2");
   var chat = document.getElementById("idChat");
@@ -92,7 +92,7 @@ function about(){
   
 }
 function chat(){  
-  window.location.href = "https://chat.enam.io/#chat";
+  window.location.href = "https://enam.io/#chat";
   var profile = document.getElementById("idProfile");
   var profile2 = document.getElementById("idProfile2");
   var chat = document.getElementById("idChat");
@@ -133,7 +133,7 @@ function chat(){
 
 
 function profile(){
-  window.location.href = "https://chat.enam.io/#profile";
+  window.location.href = "https://enam.io/#profile";
   var profile = document.getElementById("idProfile");
   var profile2 = document.getElementById("idProfile2");
   var chat = document.getElementById("idChat");

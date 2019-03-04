@@ -10,7 +10,7 @@
 
     function contact(event){
 
-      window.location.href = "https://chat.enam.io/#contact";
+      window.location.href = "https://enam.io/#contact";
       var chat = document.getElementById("idChat");
       var main = document.getElementById("idAbout");
       var contact = document.getElementById("idContact");
@@ -47,7 +47,7 @@
     
     }
     function about(){
-      window.location.href = "https://chat.enam.io/#about";
+      window.location.href = "https://enam.io/#about";
       var chat = document.getElementById("idChat");
       var main = document.getElementById("idAbout");
       var contact = document.getElementById("idContact");
@@ -77,7 +77,7 @@
       
     }
     function chat(){
-      window.location.href = "https://chat.enam.io/#chat";
+      window.location.href = "https://enam.io/#chat";
       var chat = document.getElementById("idChat");
       var main = document.getElementById("idAbout");
       var contact = document.getElementById("idContact");
