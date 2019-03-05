@@ -176,29 +176,17 @@ io.use(sharedsession(session, {
  
 
    socket.on('disconnect',function(){
-        existingUser.sockets.splice(existingUser.sockets.indexOf(socket), 1);
-       if (existingUser.sockets.length === 0){
-            if(socket.handshake.session.userdata){
-                if(firstLogin === 0){
-                    firstLogin++;
-                }else{
-                    if(userConnections){
-                        userConnections.splice(userConnections.indexOf(existingUser.username), 1);
-                        delete socket.handshake.session.userdata;
-                        socket.handshake.session.save();
-                        test = null;
-                        console.log('User disconnected: Online %s', userConnections.length);
-                        firstLogin = 0;
-                    }
-                  
-                }
-            }else{
-                if(userConnections){
-                    userConnections.splice(userConnections.indexOf(existingUser.username), 1);
-                    console.log('User disconnected: Online %s', userConnections.length);
-                }
-            }
-        }
+       existingUser.sockets.splice(existingUser.sockets.indexOf(socket), 1);
+       if (existingUser.sockets.length === 0) {
+           if (userConnections) {
+               console.log(userConnections);
+               userConnections.splice(userConnections.indexOf(existingUser.id), 1);
+               console.log('User disconnected: Online %s', userConnections.length);
+               
+           }
+       } else {
+           console.log("User closed a Tab");
+       }
    });
 
     socket.on('evalServer',function(data){
@@ -212,8 +200,8 @@ io.use(sharedsession(session, {
 
 //Variable is to check if user connected in session first time with his account
 //finde better way to save it maby it overwrites other peoples firstLogin maby with session.firstLogin
-var firstLogin = 0;
 
+/*
 setInterval(function(){
         //  var z = 0;
         //  var socket = SOCKET_LIST[i];
@@ -226,7 +214,7 @@ setInterval(function(){
         test.update();
         console.log(test.metall + "/////" + test.kristall + "////"  + test.deuterium + "/////" + test.hParticle);
     }
-},1000/1);
+},1000/1);*/
 
 };
 
