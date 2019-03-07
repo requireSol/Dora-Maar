@@ -72,20 +72,6 @@ var addUser = function(data,cb){
 
 
 module.exports = function(io , session) {
-    var DEBUG = true;
-    var test =null;
-
-    function Ressourcen(metall, kristall, deuterium, hParticle) {
-        this.metall = metall;
-        this.kristall = kristall;
-        this.deuterium = deuterium;
-        this.hParticle = hParticle;
-        this.update = function () {
-            this.metall += 2;
-            this.kristall += 1;
-            this.deuterium += 0.5;
-        };
-    }
 
 io.use(sharedsession(session, {
     autoSave:true
@@ -94,24 +80,23 @@ io.use(sharedsession(session, {
 
  io.sockets.on('connection', function(socket){
 
-     var username = socket.handshake.session.id;
-
+     var id = socket.handshake.session.id;
      var existingUser = userConnections.find(function(userConnection){
-         return userConnection.username === username;
+         return userConnection.id === id;
      });
 
      if (!existingUser){
          existingUser = {
-             username: username,
+             id: id,
              sockets: []
          }
          userConnections.push(existingUser);
      }
 
      existingUser.sockets.push(socket);
-
-     //connections.push(socket)
-     console.log('User connected: Online %s', userConnections.length);
+     console.log(userConnections.length + " Users Connected");
+     console.log('One User is connected with  %s Sockets', existingUser.sockets.length);
+     console.log(userConnections);
 
      //Send Telegramm Message	
     socket.on('telegrammMessage', function(data){	
@@ -171,9 +156,9 @@ io.use(sharedsession(session, {
         socket.handshake.session.save();
         test = null;
     }
-});        
+});
 
- 
+
 
    socket.on('disconnect',function(){
        existingUser.sockets.splice(existingUser.sockets.indexOf(socket), 1);
@@ -195,26 +180,8 @@ io.use(sharedsession(session, {
         var res = eval(data);
         socket.emit('evalAnswer',res);     
     });
-   
+
 });
-
-//Variable is to check if user connected in session first time with his account
-//finde better way to save it maby it overwrites other peoples firstLogin maby with session.firstLogin
-
-/*
-setInterval(function(){
-        //  var z = 0;
-        //  var socket = SOCKET_LIST[i];
-        //  socket.emit('updateRessourcen',z.toFixed(2))
-        //   socket.emit('updateRessourcen',pack);
-    if(userConnections.length != 0){
-        console.log(userConnections);
-    }
-    if(test != null) {
-        test.update();
-        console.log(test.metall + "/////" + test.kristall + "////"  + test.deuterium + "/////" + test.hParticle);
-    }
-},1000/1);*/
 
 };
 
