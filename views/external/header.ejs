@@ -23,11 +23,11 @@
     <script src="/javascripts/bootstrap/bootstrap.min.js"></script>
     <script src="/javascripts/cookies.js"></script>
     <script src="/javascripts/include/functions.js"></script>
+    <script type="module" src="/javascripts/src/main.js"></script>
 </head>
 
 <div  id="myPage" data-spy="scroll" data-target=".navbar" data-offset="60">
 <script src="/socket.io/socket.io.js"></script>
-
 
 <div id="header">
 <div id="signin" class="modal" style="opacity: 0.95;">
@@ -92,8 +92,8 @@
                 <li><a id="idAbout" class="select" onclick="about(event)">About</a></li>
                 <li><a id="idChat" class="select" onclick="chat(event)">Chat</a></li>
                 <li><a id="idContact" class="select" onclick="contact(event)">Contact</a></li>
-                <li><div class="select" onclick="modalSignIn()">SignIn</div></li>
-                <li><div class="select" onclick="modalSignUp()" style="width:auto;">SignUp</div></li>
+<!--                <li><div class="select" onclick="modalSignIn()">SignIn</div></li>
+                <li><div class="select" onclick="modalSignUp()" style="width:auto;">SignUp</div></li>-->
                 <li><div class="select" onclick="changeStyle()"  id="changeStyle"><span class="glyphicon glyphicon-adjust"></span></div></li>
             </ul>
             <div class="dropdown" style="float:right; margin:20px;" >
@@ -107,8 +107,8 @@
                       <a id="idAbout2" class="select2" onclick="about(event)">About</a>
                       <a id="idChat2" class="select2" onclick="chat(event)">Chat</a>
                       <a id="idContact2"class="select2" onclick="contact(event)">Contact</a>
-                      <a class="select2" onclick="modalSignIn()" style="width:auto;">SignIn</a>
-                      <a class="select2" onclick="modalSignUp()" style="width:auto;">SignUp</a>
+    <!--                  <a class="select2" onclick="modalSignIn()" style="width:auto;">SignIn</a>
+                    <a class="select2" onclick="modalSignUp()" style="width:auto;">SignUp</a>-->
                       <div class="select2" onclick="changeStyle()"><span class="glyphicon glyphicon-adjust"></span></div>
                   </div>
             </div>
