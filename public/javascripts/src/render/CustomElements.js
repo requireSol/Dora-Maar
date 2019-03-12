@@ -289,7 +289,7 @@ export class OrderBookView extends ObserverBaseElement {
 
     get title() {
         let title = this.getAttribute("data-title");
-        if (!this.hasAttribute(title)) {
+        if (!this.hasAttribute("data-title")) {
             title = "ORDERBOOK - " + this.askOrBid.toUpperCase() + " - " + this.pair;
         }
         return title;
