@@ -117,11 +117,11 @@ export function requestSubscription(subDesc) {
             }
         }
     } else {
-        unsubscriptionQueue.delete(channelId)
-        if (pendingUnsubscriptions.delete(channelId)) {
-            resubscriptionChannels.add(channelId);
-        } else {
+        if (unsubscriptionQueue.delete(channelId)) {
             assignObserverToId(channelId, subDesc);
+
+        } else if (pendingUnsubscriptions.delete(channelId)) {
+            resubscriptionChannels.add(channelId);
         }
     }
 }
